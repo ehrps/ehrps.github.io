@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-28T14:59:14+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">单片机：基础知识 02</title><link href="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html" rel="alternate" type="text/html" title="单片机：基础知识 02" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-28T15:10:52+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">单片机：基础知识 02</title><link href="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html" rel="alternate" type="text/html" title="单片机：基础知识 02" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
 
@@ -159,6 +159,168 @@
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
  
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识</summary></entry><entry><title type="html">单片机：基础知识 03</title><link href="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC.html" rel="alternate" type="text/html" title="单片机：基础知识 03" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
+
+&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
+
+&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
+
+&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
+
+&lt;p&gt;三要素：&lt;/p&gt;
+
+&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
+
+&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
+
+&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
+
+&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
+
+&lt;p&gt;准双向口：&lt;/p&gt;
+
+&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
+
+&lt;p&gt;高阻态&lt;/p&gt;
+
+&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
+
+&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
+
+&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
+
+&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
+
+&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
+
+&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
+
+&lt;p&gt;控制应用&lt;/p&gt;
+
+&lt;p&gt;驱动应用&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
+
+&lt;p&gt;VCC 电压是 5V，发光二极管自
+身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
+
+&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;（1）、基本运算符&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
+      &lt;td&gt;~  ^&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
+
+&lt;p&gt;for/while/do…while&lt;/p&gt;
+
+&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;do&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+
+&lt;p&gt;}while(表达式)；&lt;/p&gt;
+
+&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
+
+&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;函数体；&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;（4）、数组&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
+
+&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
+
+&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
+
+&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
+&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ 
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
+ 
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
+ 
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
+ 
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ 
+ &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识</summary></entry><entry><title type="html">单片机：基础知识 01</title><link href="http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01.html" rel="alternate" type="text/html" title="单片机：基础知识 01" /><published>2020-08-01T10:58:43+08:00</published><updated>2020-08-01T10:58:43+08:00</updated><id>http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01.html">&lt;h2 id=&quot;单片机内部结构&quot;&gt;单片机内部结构&lt;/h2&gt;
 
