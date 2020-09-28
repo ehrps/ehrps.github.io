@@ -1,0 +1,164 @@
+I"<p><strong>单片机——硬件基础知识</strong></p>
+
+<p><strong>宗旨：技术的学习是有限的，分享的精神是无限的。</strong></p>
+
+<p><strong>1、单片机内部资源</strong></p>
+
+<p>STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源</p>
+
+<p>（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢</p>
+
+<p>（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用</p>
+
+<p>（3）SFR —— 特殊功能寄存器</p>
+
+<p><strong>2、单片机最小系统</strong></p>
+
+<p><img src="https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img" /></p>
+
+<p>最小系统：最少组件组成单片机可以工作的系统。</p>
+
+<p>三要素：</p>
+
+<p>（1）、 电源电路：5V</p>
+
+<p>（2）、 晶振电路：11.0592MHZ、两个30PF</p>
+
+<p>（3）、 复位电路：</p>
+
+<p>P0：开漏输出，必须加上拉电阻</p>
+
+<p>准双向口：</p>
+
+<p>强推挽输出：电流驱动能力强</p>
+
+<p>高阻态</p>
+
+<p>上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。</p>
+
+<p>上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻</p>
+
+<p><strong><em>*</em>*3****、硬件基础知识****</strong></p>
+
+<p>（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）</p>
+
+<p>（2）、去耦电容的使用</p>
+
+<p>低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。</p>
+
+<p>高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。</p>
+
+<p>（3）、三极管（PNP,NPN） b，c，e  — 电压驱动</p>
+
+<p>控制应用</p>
+
+<p>驱动应用</p>
+
+<p><strong>4、LED发光二极管——电流驱动</strong></p>
+
+<p><img src="https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img" /></p>
+
+<p>通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。</p>
+
+<p>VCC 电压是 5V，发光二极管自
+身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。</p>
+
+<p>R = U/I  —— 1~20mA —— R：150~3K</p>
+
+<p><strong>5、C语言基础</strong></p>
+
+<p>（1）、基本运算符</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;&amp;</td>
+      <td> </td>
+      <td>!  &amp;</td>
+      <td>~  ^</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>（2）、循环（c语言以；表示一条语句）</p>
+
+<p>for/while/do…while</p>
+
+<p>for(表达式1；表达式2；表达式3)</p>
+
+<p>{</p>
+
+<p>​    语句；//可以为空</p>
+
+<p>}</p>
+
+<p>while(表达式)//表达式为真，执行语句</p>
+
+<p>{</p>
+
+<p>​    语句；//可以为空</p>
+
+<p>}</p>
+
+<p>do</p>
+
+<p>{</p>
+
+<p>​    语句；//可以为空</p>
+
+<p>}while(表达式)；</p>
+
+<p>（3）、函数 （模块化的思想）</p>
+
+<p>类型  函数名（参数类型 参数）</p>
+
+<p>{</p>
+
+<p>函数体；</p>
+
+<p>}</p>
+
+<p>（4）、数组</p>
+
+<p>&lt;1&gt;、具有相同数据类型</p>
+
+<p>&lt;2&gt;、具有相同的类型</p>
+
+<p>&lt;3&gt;、在存储器中连续存储</p>
+
+<p>（5）、51单片机常用延时办法——循环、定时器</p>
+
+<p>（P0 = ~(1 « i++)；）</p>
+
+<p><strong><em>*</em>*5****、流水灯****</strong></p>
+
+<p>给IO口一个低电平即可点亮LED灯。</p>
+
+<p>注：单片机对外设的操作其实就是对IO口电平的控制。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;reg52.h&gt;   //包含特殊功能寄存器定义的头文件
+</span> 
+<span class="k">typedef</span> <span class="kt">unsigned</span> <span class="kt">int</span>  <span class="n">uint</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">uchar</span><span class="p">;</span>
+ 
+<span class="kt">int</span>  <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">uint</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 定义循环变量i，用于软件延时</span>
+  <span class="n">uchar</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 定义计数变量j，用于移位控制</span>
+ 
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1">// 主循环，程序无限循环执行该循环体语句</span>
+  <span class="p">{</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">j</span><span class="o">++</span><span class="p">);</span> <span class="c1">// P0等于1左移j位，控制8个LED</span>
+ 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">20000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">);</span>  <span class="c1">//软件延时</span>
+ 
+    <span class="k">if</span><span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">)</span>   <span class="c1">//移位计数超过7后，再重新从0开始</span>
+    <span class="p">{</span>
+      <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+ 
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+</code></pre></div></div>
+:ET

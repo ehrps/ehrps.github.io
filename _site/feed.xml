@@ -1,370 +1,512 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/bulma-clean-theme/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/bulma-clean-theme/" rel="alternate" type="text/html" /><updated>2020-09-28T14:31:45+08:00</updated><id>http://localhost:4000/bulma-clean-theme/feed.xml</id><title type="html">Bulma Clean Theme</title><subtitle>The demo site for Bulma Clean Theme, made for Jekyll and GitHub pages websites
-</subtitle><entry><title type="html">Creating a docs site with Bulma Clean Theme</title><link href="http://localhost:4000/bulma-clean-theme/2020/05/08/creating-a-docs-site-with-bulma-clean-theme/" rel="alternate" type="text/html" title="Creating a docs site with Bulma Clean Theme" /><published>2020-05-08T17:00:07+08:00</published><updated>2020-05-08T17:00:07+08:00</updated><id>http://localhost:4000/bulma-clean-theme/2020/05/08/creating-a-docs-site-with-bulma-clean-theme</id><content type="html" xml:base="http://localhost:4000/bulma-clean-theme/2020/05/08/creating-a-docs-site-with-bulma-clean-theme/">&lt;p&gt;I created Bulma Clean Theme as a theme for my own website and decided to open source it so others could use it as well. One of the key things I wanted to do was to create a theme that worked with GitHub Pages, which also means that you can also use it as a docs site for your project.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-28T14:59:14+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">单片机：基础知识 02</title><link href="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html" rel="alternate" type="text/html" title="单片机：基础知识 02" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-02.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;github-pages-configuration&quot;&gt;GitHub Pages Configuration&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;GitHub pages allows you to create a website for your project with free hosting. Go to your repo on GitHub, then click Settings, then scroll down to the GitHub Pages section. You have the option to create a site from the root of your master branch of from the /docs directory in your master branch. For this example, we are going to use the /docs directory.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Don’t change this setting just yet as if you don’t have a docs directory there will be nothing there to publish.&lt;/p&gt;
+&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
 
-&lt;h2 id=&quot;creating-the-docs-directory&quot;&gt;Creating the docs directory&lt;/h2&gt;
+&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
 
-&lt;p&gt;Clone your git repo to a local directory, let’s say &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/code/my-project&lt;/code&gt; for this example. The below assumes you don’t yet have a docs directory and you have &lt;a href=&quot;https://jekyllrb.com/docs/installation/&quot;&gt;jekyll installed&lt;/a&gt;. If you do already have a docs directory you will have to rename it to something else.&lt;/p&gt;
+&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
 
-&lt;p&gt;Create a new jekyll installation in the docs directory, ensuring you replace your username and project name in the below example.&lt;/p&gt;
+&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/username/my-project.git ~/code/my-project
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/code/my-project
-jekyll new docs
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;You should now have a base install of Jekyll in your freshly created docs directory.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;configuring-the-theme&quot;&gt;Configuring the theme&lt;/h2&gt;
+&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;Replace everything in the Gemfile with the following
-    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;source 'https://rubygems.org'
-gem &quot;bulma-clean-theme&quot;,  '0.7.2'
-gem 'github-pages', group: :jekyll_plugins
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Open the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; and comment out or delete the line &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;theme: minima&lt;/code&gt; and replace it with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;remote_theme: chrisrhymes/bulma-clean-theme&lt;/code&gt;, then add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github-pages&lt;/code&gt; to the list of plugins. Update the baseurl to your GitHub repo name, in this example we are using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;my-project&lt;/code&gt; as the repo name
-    &lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#theme: minima&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;remote_theme&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chrisrhymes/bulma-clean-theme&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;baseurl&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/my-project&quot;&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;plugins&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;github-pages&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Open the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index.md&lt;/code&gt; file and update the front matter so the layout is page and then add a title
-    &lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Docs for My Project&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; and then &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:4000/my-project/&lt;/code&gt; to view your new docs page.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;三要素：&lt;/p&gt;
 
-&lt;h2 id=&quot;menu&quot;&gt;Menu&lt;/h2&gt;
+&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
 
-&lt;p&gt;To create a menu on the left on your docs page you need to create a new yaml file in _data directory, such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;menu.yaml&lt;/code&gt; and then use the below format, where the label will be the menu title and the items are the menu items. Each menu item can have a list of sub menu items if needed.&lt;/p&gt;
+&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example Menu&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Menu item&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/link/&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Sub menu item&lt;/span&gt; 
-          &lt;span class=&quot;na&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/sub-menu-item/&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
 
-&lt;h2 id=&quot;table-of-contents&quot;&gt;Table of contents&lt;/h2&gt;
+&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
 
-&lt;p&gt;If you would like auto generated table of contents for your docs page then add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;toc: true&lt;/code&gt; to the page’s front matter. The table of contents works for markdown pages and loops through the heading 2s and heading 3s in the markdown and then auto generates the contents.&lt;/p&gt;
+&lt;p&gt;准双向口：&lt;/p&gt;
 
-&lt;h2 id=&quot;github-sponsors&quot;&gt;GitHub Sponsors&lt;/h2&gt;
+&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
 
-&lt;p&gt;If you want to link to your GitHub sponsors profile then add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh_sponsor&lt;/code&gt; with your username to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;高阻态&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gh_sponsor: chrisrhymes
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
 
-&lt;h2 id=&quot;making-the-docs-page-live&quot;&gt;Making the docs page live&lt;/h2&gt;
+&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
 
-&lt;p&gt;Once you have finished creating your docs page you can commit your changes and push everything up to GitHub. Go back to the GitHub settings page and scroll back down to the GitHub Pages section. Now we can update the setting to use the Master branch /docs folder and then GitHub will build your new docs page.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;want-to-see-an-example&quot;&gt;Want to see an example?&lt;/h2&gt;
+&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
 
-&lt;p&gt;I recently updated one of my own packages to use Bulma Clean Theme to power the docs page. Check out the docs for &lt;a href=&quot;https://www.csrhymes.com/bulma-block-list&quot;&gt;Bulma Block List&lt;/a&gt; as an example.&lt;/p&gt;</content><author><name>C.S. Rhymes</name></author><category term="bulma-clean-theme" /><category term="jekyll" /><category term="docs" /><summary type="html">I created Bulma Clean Theme as a theme for my own website and decided to open source it so others could use it as well. One of the key things I wanted to do was to create a theme that worked with GitHub Pages, which also means that you can also use it as a docs site for your project.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.csrhymes.com/img/example-docs-page.jpg" /><media:content medium="image" url="https://www.csrhymes.com/img/example-docs-page.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Introducing some new layouts to Bulma Clean Theme</title><link href="http://localhost:4000/bulma-clean-theme/2019/07/23/introducing-some-new-layouts-to-bulma-clean-theme/" rel="alternate" type="text/html" title="Introducing some new layouts to Bulma Clean Theme" /><published>2019-07-23T16:00:07+08:00</published><updated>2019-07-23T16:00:07+08:00</updated><id>http://localhost:4000/bulma-clean-theme/2019/07/23/introducing-some-new-layouts-to-bulma-clean-theme</id><content type="html" xml:base="http://localhost:4000/bulma-clean-theme/2019/07/23/introducing-some-new-layouts-to-bulma-clean-theme/">&lt;p&gt;I’ve been meaning to write about some of the new features I have been rolling out to my Jekyll theme, &lt;a href=&quot;https://www.csrhymes.com/bulma-clean-theme/&quot;&gt;Bulma Clean Theme&lt;/a&gt;, for a while but I have only just managed to push the update for the landing page layout last weekend. This article provides some of the thinking behind the updates, as well as a brief introduction to how to get started.&lt;/p&gt;
+&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
 
-&lt;h2 id=&quot;product-pages&quot;&gt;Product Pages&lt;/h2&gt;
+&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
 
-&lt;p&gt;I use the theme to power my own personal website and decided that it would be good to update my &lt;a href=&quot;https://www.csrhymes.com/books&quot;&gt;book pages&lt;/a&gt;, or book page as it was then. The page had used a very simple layout with both books on one page and was not really up to scratch. I decided it would be better to make each book its own page, and if I ever get round to it and write another book it would be easy to add another to the site in the future. Rather than just building these pages for my own site, I thought it would be a nice addition to the base theme.&lt;/p&gt;
+&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
 
-&lt;p&gt;I really like Jekyll as it is simple to use, but also very powerful. I decided to make the most of the frontmatter and allow you to set most of the product information in there, leaving the main content of the page for the text description.&lt;/p&gt;
+&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
 
-&lt;p&gt;To get started, create your product pages inside a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_products&lt;/code&gt; directory as we will make use of collections later on.&lt;/p&gt;
+&lt;p&gt;控制应用&lt;/p&gt;
 
-&lt;p&gt;The below is an example of the frontmatter for the product page. The product page uses the same hero, title and subtitle settings as other pages, but has additional settings for product code, image, price, rating and features. The product code is important for later on.&lt;/p&gt;
+&lt;p&gt;驱动应用&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Product 1 Name&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Product 1 tagline here&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;This is a product description&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/img/hero-img.jpg&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;product_code&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ABC124&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;product&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://via.placeholder.com/640x480&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;£1.99 + VAT&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;features&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Great addition to any home&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;icon&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fa-location-arrow&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Comes in a range of styles&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;icon&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fa-grin-stars&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Available in multiple sizes&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;icon&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fa-fighter-jet&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;rating&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;
-&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;The features provides a way of making a bullet point list of the key product features, but instead of plain disc bullet points you can use font awesome icons to make it a bit more interesting.&lt;/p&gt;
-
-&lt;p&gt;I don’t know about you, but sometimes I spend longer deciding on what icon to use than making the rest of the page.&lt;/p&gt;
-
-&lt;p&gt;I’ve deliberately made the product pages have a 4 by 3 image ratio as I feel it works best across different screen sizes. Like all themes, if you want to change it you can override the default layouts if you want a different ratio.&lt;/p&gt;
-
-&lt;p&gt;Once you have created your product pages, you will need to tell Jekyll to output them. This is done by adding collections settings in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; for your site.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;collections&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;products&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;product&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://via.placeholder.com/800x600&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;show_sidebar&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;false&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
 
-&lt;p&gt;Now when you run jekyll build it will output a load of product pages for you, now we just need a way of getting to them. This is where the product category page comes in.&lt;/p&gt;
+&lt;p&gt;VCC 电压是 5V，发光二极管自
+身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
 
-&lt;h2 id=&quot;product-category&quot;&gt;Product Category&lt;/h2&gt;
+&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
 
-&lt;p&gt;Create a page, such as products.md or in my case books.md and set it to use the product-category layout. This will generate a list of the products, but you can also add some introduction content in the main content section of the page if you so desire.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Products&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Check out our range of products&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;product-category&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;show_sidebar&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;false&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;title&lt;/span&gt;
-&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
+&lt;p&gt;（1）、基本运算符&lt;/p&gt;
 
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
+      &lt;td&gt;~  ^&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;span class=&quot;s&quot;&gt;This is some page content and it will appear above the product list.&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
 
-&lt;h2 id=&quot;product-reviews&quot;&gt;Product Reviews&lt;/h2&gt;
+&lt;p&gt;for/while/do…while&lt;/p&gt;
 
-&lt;p&gt;The last addition to the product pages is reviews. If you would like to list some customer reviews on your product pages, then you will need to create a reviews directory inside _data and create a separate file for each product with reviews, named after the product code. For example &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_data/reviews/ABC124.yml&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
 
-&lt;p&gt;The data file should follow the below format. The name is the customer name, the rating is how many stars out of 5, the title is the main title of the review and the avatar is a link to an image, if you have one. If you don’t have a customer image then just omit it and a user icon will be used instead. Lastly, the description is the main content of the review.&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mr E Xample&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rating&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Great product, highly recommended&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;01/01/2019&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;avatar&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://bulma.io/images/placeholders/128x128.png&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;The product worked really well. I would recommend this to most people to use. Delivery was quick and reasonable. &lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;Would recommend this to my friends. &lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mrs R E View&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rating&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Nice, really liked this&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;02/02/2019&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;The product worked exactly as described.&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
 
-&lt;p&gt;Example &lt;a href=&quot;https://www.csrhymes.com/bulma-clean-theme/products/&quot;&gt;product category and product pages&lt;/a&gt; can be seen on the theme’s demo site here if you want to take a look.&lt;/p&gt;
+&lt;p&gt;}&lt;/p&gt;
 
-&lt;h2 id=&quot;landing-page-layout&quot;&gt;Landing Page Layout&lt;/h2&gt;
+&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
 
-&lt;p&gt;I was thinking it would be good to create a landing style page so I could highlight a new project or something I was working on separately from the main projects page already on my site. Rather than create a new layout I thought it would be better to enhance the existing page layout so you could choose to use these features if you so desired.&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
 
-&lt;p&gt;I started by adding a call to action (otherwise known as a large button) in the hero at the top of the page. This can be used by adding hero_link and hero_link_text to the frontmatter.&lt;/p&gt;
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example Landing Page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;This is an example landing page with callouts&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_height&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;is-large&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/page-1/&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_link_text&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example Call To Action&lt;/span&gt;
-&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;}&lt;/p&gt;
 
-&lt;p&gt;Next, I wanted to make some nice callouts to help shout about key features of whatever you are talking about on your landing page. This started out as a simple icon and a title, but slowly evolved to allow for a subtitle, description text and a call to action button as well.&lt;/p&gt;
+&lt;p&gt;do&lt;/p&gt;
 
-&lt;p&gt;To make it more flexible, only the title and subtitle are required and the rest can be used as and when necessary.&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
 
-&lt;p&gt;To make the callouts reusable in different pages on your site, the content is defined in a datafile, for example, example_callouts.yml. The below shows the example structure for the callouts.&lt;/p&gt;
+&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;is-light&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example callout &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example subtitle &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;icon&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fa-space-shuttle&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;&lt;/span&gt;
-      &lt;span class=&quot;s&quot;&gt;The example description text goes here and can be multiple lines.&lt;/span&gt;
+&lt;p&gt;}while(表达式)；&lt;/p&gt;
 
-      &lt;span class=&quot;s&quot;&gt;For example, such as this. &lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;call_to_action_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Call to action &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;call_to_action_link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/page-1/&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
 
-&lt;p&gt;The style is the style of the hero that the callouts are contained in. This makes use of Bulma hero styles.&lt;/p&gt;
+&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
 
-&lt;p&gt;Then to display the callouts on the page, add a callouts setting to the pages frontmatter with the name of the data file without the extension.&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Example Landing Page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;This is an example landing page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;callouts&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;example_callouts&lt;/span&gt;
-&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;函数体；&lt;/p&gt;
 
-&lt;p&gt;An example &lt;a href=&quot;https://www.csrhymes.com/bulma-clean-theme/landing/&quot;&gt;landing page layout&lt;/a&gt; can be seen in the theme’s demo site.&lt;/p&gt;
+&lt;p&gt;}&lt;/p&gt;
 
-&lt;h2 id=&quot;what-do-you-think&quot;&gt;What do you think?&lt;/h2&gt;
+&lt;p&gt;（4）、数组&lt;/p&gt;
 
-&lt;p&gt;I’ve tried to make these additions easy to use and flexible where possible. I’ve updated the readme file and the theme demo site with more information to help you get started with these new features.&lt;/p&gt;
+&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
 
-&lt;p&gt;If you decide to give the theme a go, it would be great to see how you are using it and if you have any ideas of how it can be developed further. You never know, if I get enough responses then I may even make a showcase page on the demo theme site to highlight how others are using it.&lt;/p&gt;</content><author><name>C.S. Rhymes</name></author><category term="webdev" /><category term="showdev" /><category term="webdesign" /><summary type="html">I’ve been meaning to write about some of the new features I have been rolling out to my Jekyll theme, Bulma Clean Theme, for a while but I have only just managed to push the update for the landing page layout last weekend. This article provides some of the thinking behind the updates, as well as a brief introduction to how to get started.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.csrhymes.com/img/landing-page.jpg" /><media:content medium="image" url="https://www.csrhymes.com/img/landing-page.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Getting started with Bulma Clean Theme for Jekyll</title><link href="http://localhost:4000/bulma-clean-theme/development/2019/02/10/getting-started-with-bulma-clean-theme/" rel="alternate" type="text/html" title="Getting started with Bulma Clean Theme for Jekyll" /><published>2019-02-10T04:00:07+08:00</published><updated>2019-02-10T04:00:07+08:00</updated><id>http://localhost:4000/bulma-clean-theme/development/2019/02/10/getting-started-with-bulma-clean-theme</id><content type="html" xml:base="http://localhost:4000/bulma-clean-theme/development/2019/02/10/getting-started-with-bulma-clean-theme/">&lt;p&gt;I have made a &lt;a href=&quot;https://rubygems.org/gems/bulma-clean-theme&quot;&gt;theme for Jekyll&lt;/a&gt; which is based on the Bulma frontend framework. It might look familiar, because I am also using it for this site. If you like the look of this theme then I thought I would write a little blog post about how to use it for your own site and how you can use it with GitHub Pages.&lt;/p&gt;
+&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
 
-&lt;h2 id=&quot;getting-started&quot;&gt;Getting started&lt;/h2&gt;
+&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
 
-&lt;p&gt;First things first, you need a local instance of Jekyll running on your computer. I’m assuming you are familiar with Jekyll and have everything you need installed. If this is not the case, check out the documentation on the &lt;a href=&quot;https://jekyllrb.com/docs/&quot;&gt;Jekyll website&lt;/a&gt;. For this example, lets call the site myblog.&lt;/p&gt;
-
-&lt;p&gt;Create a new installation of Jekyll, then go into the myblog directory:&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jekyll new myblog
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;myblog
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Then add the theme to the Gemfile:&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem &quot;bulma-clean-theme&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Then add the theme to your _config.yml:&lt;/p&gt;
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;theme&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bulma-clean-theme&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Then run bundle to install everything&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can then preview your site by running the usual command&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;creating-pages&quot;&gt;Creating pages&lt;/h2&gt;
-
-&lt;p&gt;A page can either be a html or a markdown file, as long as you set the frontmatter. There are a few settings that pages can use to customise the default theme a bit further if you so choose.&lt;/p&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Page Title&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;subtitle&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Page Subtitle&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/path/to/image.jpg&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;The pages meta description&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/path/to/hero-image.jpg&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;hero_height&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;is-fullheight&lt;/span&gt;
-&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;If you don’t set a subtitle, image, hero_image or hero_height then defaults will be used or in the case of the hero_image, no image will be used on the hero.&lt;/p&gt;
-
-&lt;p&gt;The theme uses the jekyll-seo-tag plugin so it will use the information you provide in the frontmatter to auto populate the meta tags and open graph tags.&lt;/p&gt;
-
-&lt;h2 id=&quot;posts&quot;&gt;Posts&lt;/h2&gt;
-
-&lt;p&gt;Posts are created as per the standard Jekyll method, in a _posts directory, with each post named YYYY-MM-DD-name-of-post.markdown. For the post frontmatter you can use the same settings as a page, except you need to change the layout to post and add date and author settings.&lt;/p&gt;
-
-&lt;h2 id=&quot;blog-page&quot;&gt;Blog page&lt;/h2&gt;
-
-&lt;p&gt;For the blog homepage, create a blog.html page with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;layout: blog&lt;/code&gt; and use the other settings from a normal page. The theme is set up to use jekyll-paginate so you just need to add pagination options to your _config.yml&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Pagination settings&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;paginate&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;paginate_path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/blog/page:num&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;site-defaults&quot;&gt;Site defaults&lt;/h2&gt;
-
-&lt;p&gt;If you don’t want to set each hero_image individually, then you can set default values in your _config.yml. The below example sets a default author, layout and hero image for every post. It also turns on the side bar on the right of post pages, which will display links to your latest posts.&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;scope&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;posts&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Name&quot;&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;post&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;hero_image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/path/to/hero-image.jpg&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;show_sidebar&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;styles&quot;&gt;Styles&lt;/h2&gt;
-
-&lt;p&gt;The theme uses Bulma frontend framework which provides a wide range of sass variable customisations. If you want to overwrite any of the standard variables, such as the primary theme colour, then set a sass variable in a new file in assets/css/app.scss before importing the main stylesheet.&lt;/p&gt;
-
-&lt;div class=&quot;language-scss highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-$&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;primary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#333333&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// Import Main CSS file from theme&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@import&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;main&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can also add any of your own custom css to this file if you want to.&lt;/p&gt;
-
-&lt;h3 id=&quot;navigation&quot;&gt;Navigation&lt;/h3&gt;
-
-&lt;p&gt;Once you have created posts and pages, you will need to create a way for visitors to access them. The theme makes use of the Bulma navbar, which is configured through a simple yaml file. All you need to do is create a navigation.yml file in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_data&lt;/code&gt; directory with the following format with the pages you want to include in the top navigation. You can now also add items to a dropdown menu.&lt;/p&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Page &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page-1&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Blog&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blog&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;dropdown&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Page &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;page-2&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Bulma is pretty handy in the way it converts the same HTML into a mobile / tablet friendly navigation, so you only need to set the menu up once for all screen sizes.&lt;/p&gt;
-
-&lt;h2 id=&quot;using-bulma-clean-theme-with-github-pages&quot;&gt;Using bulma-clean-theme with Github Pages&lt;/h2&gt;
-
-&lt;p&gt;For the site to work with Github Pages, all you need to do is update the _config.yml so it uses remote_theme instead of theme and update it to chrisrhymes/bulma-clean-theme so it knows which GitHub repo to pull the theme from when it builds your site.&lt;/p&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#theme: bulma-clean-theme&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;remote_theme&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chrisrhymes/bulma-clean-theme&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;And then push up your changes to Github as normal.&lt;/p&gt;
-
-&lt;p&gt;There seems to be an issue where Jekyll doesn’t work locally with remote_theme, so when working locally you have to add theme back in, but remember to comment theme out again before pushing back up to GitHub or you will probably get a build warning email.&lt;/p&gt;
-
-&lt;h2 id=&quot;i-hope-youre-not-feeling-overwhelmed&quot;&gt;I hope you’re not feeling overwhelmed&lt;/h2&gt;
-
-&lt;p&gt;It may seem like there is a lot to do to get started, but really it shouldn’t take very long to get a site up and running. All the options are there just in case you want to further customise the theme to be more personal to you, but you can just use the basic minimal settings to get yourself up and running.&lt;/p&gt;
-
-&lt;h2 id=&quot;feedback-and-issues&quot;&gt;Feedback and Issues&lt;/h2&gt;
-
-&lt;p&gt;If you have any feedback, ideas or issues with how the theme could be improved, then please create an issue on the theme’s GitHub page and I will try and take a look into it as soon as I can. The theme is still quite new and I have quite a few ideas for future enhancements, so I will write a new blog post on this site when any new features become available.&lt;/p&gt;</content><author><name>C.S. Rhymes</name></author><category term="development" /><summary type="html">I have made a theme for Jekyll which is based on the Bulma frontend framework. It might look familiar, because I am also using it for this site. If you like the look of this theme then I thought I would write a little blog post about how to use it for your own site and how you can use it with GitHub Pages.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.csrhymes.com/img/bulma-clean-theme.jpg" /><media:content medium="image" url="https://www.csrhymes.com/img/bulma-clean-theme.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Why use a static site generator</title><link href="http://localhost:4000/bulma-clean-theme/development/2018/05/28/why-use-a-static-site-generator/" rel="alternate" type="text/html" title="Why use a static site generator" /><published>2018-05-28T18:50:07+08:00</published><updated>2018-05-28T18:50:07+08:00</updated><id>http://localhost:4000/bulma-clean-theme/development/2018/05/28/why-use-a-static-site-generator</id><content type="html" xml:base="http://localhost:4000/bulma-clean-theme/development/2018/05/28/why-use-a-static-site-generator/">&lt;p&gt;There are many ways to make a website and many different CMS platforms you can use, such as WordPress and Joomla, as well as site builder tools that offer you drag and drop interfaces, but what about static site generators?&lt;/p&gt;
-
-&lt;p&gt;A static site is pretty much what it sounds like, a set of pre generated html pages. Other platforms take what you enter into the CMS and process the information stored in the database, alongside a template or many template partials and dynamically construct the page before serving the html to you in your browser.&lt;/p&gt;
-
-&lt;h2 id=&quot;speed&quot;&gt;Speed&lt;/h2&gt;
-&lt;p&gt;The initial advantage of a static site over a dynamic, database driven site is the page speed as means a lot less processing has to be done before the page is delivered. Some CMS’s provide caching which means that the first visitor to the page gets a dynamic version and then stores a cache of the page. This means subsequent visitor to the page gets the page quicker than the first. If you have a regularly cleared cache, or low numbers of visitors, subsequent visitors may not benefit from the caching and would all experience the increased load times.&lt;/p&gt;
-
-&lt;h2 id=&quot;version-control&quot;&gt;Version Control&lt;/h2&gt;
-&lt;p&gt;The next advantage of a static site is that it is that it can be version controlled. Usually a CMS relies on a database, which means that if you delete a page or some page content you either have to have revisions enabled in your CMS so you can roll back to a previous version or you need regular backups of your database so you can roll that back to a previous version. A static site with version control means you can easily revert to a previous version of your site and content without the need for database manipulation.&lt;/p&gt;
-
-&lt;h2 id=&quot;data-files&quot;&gt;Data Files&lt;/h2&gt;
-&lt;p&gt;Static sites, such as Jekyll, also offer a way of storing data in a more human readable format, such as yaml or JSON. This means you can store data that is used in multiple places across your site in one file and reference it in many places. For example, you may have a data file containing products, which you want to list in a category page and a product details page and maybe feature it on the homepage as well. These files can also be version controlled, meaning any changes or updates to your datafiles can be undone easily. The files can also be easily edited in a text editor so if you need to make multiple product amends, such as updating a misspelt brand name you can use something as simple as find and replace to update the spelling in all places at once without having to navigate to multiple different pages in a CMS.&lt;/p&gt;
-
-&lt;h2 id=&quot;design-freedom&quot;&gt;Design Freedom&lt;/h2&gt;
-&lt;p&gt;The biggest benefit I find to a static site is there is more freedom for a frontend developer and how they design and build your site. Some CMS’s work in a particular way and you are limited by the way they work. Page builders are available for many CMS’s but it often results in a lot of effort to get a particular piece of content in a particular place on the page.&lt;/p&gt;
-
-&lt;p&gt;A static site generator gives you more freedom to write your own html and text onto the page in the format you want it, rather than having to customise or overwrite the html and css classes output by the page builder tool.&lt;/p&gt;
-
-&lt;h2 id=&quot;data-protection&quot;&gt;Data Protection&lt;/h2&gt;
-&lt;p&gt;A lot of people like the idea of installing a plugin into a CMS to handle things such as contact forms, so people can contact you about something, but in all honesty, it’s easier just to have an email address on the page that users can click on and email you directly. The reason I say this is that you have to try and prevent spam emails by using some kind of captcha on the form, as well as maintaining an email service that will handle the form submission and either store the form data somewhere on your site or send it to you as an email. This is pretty basic stuff, but is further complicated by data privacy laws that dictate how you store customers data and how you protect it. I know a lot of small business users would prefer to not have the hassle of managing stored user data on their site.&lt;/p&gt;
-
-&lt;h2 id=&quot;security&quot;&gt;Security&lt;/h2&gt;
-&lt;p&gt;One last thing to consider is website security. There is always a chance that using a popular CMS will leave your site vulnerable as there are always security issues being identified. You need to constantly keep your site up to date and lock down the CMS login as secure as possible. With a static site, there is no login screen. The original content lives somewhere else and the compiled, generated html is all that needs to be uploaded to your website, minimising the risk. Any public facing website has some risk but anything you can do to minimise it is better for your website in the long run.&lt;/p&gt;
-
-&lt;h2 id=&quot;what-will-you-use-on-your-next-project&quot;&gt;What will you use on your next project?&lt;/h2&gt;
-&lt;p&gt;A static site may not be the first thing you consider when building your new website, but it’s definitely worth exploring the pros and cons before you start the next project. After all, a faster, more secure site is better for you and your visitors.&lt;/p&gt;</content><author><name>C.S. Rhymes</name></author><category term="development" /><summary type="html">There are many ways to make a website and many different CMS platforms you can use, such as WordPress and Joomla, as well as site builder tools that offer you drag and drop interfaces, but what about static site generators?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.csrhymes.com//img/static-site-generator.jpg" /><media:content medium="image" url="https://www.csrhymes.com//img/static-site-generator.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
+
+&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
+
+&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
+&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ 
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
+ 
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
+ 
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
+ 
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ 
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识</summary></entry><entry><title type="html">单片机：基础知识 01</title><link href="http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01.html" rel="alternate" type="text/html" title="单片机：基础知识 01" /><published>2020-08-01T10:58:43+08:00</published><updated>2020-08-01T10:58:43+08:00</updated><id>http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/01/%E7%A1%AC%E4%BB%B6%E6%95%99%E7%A8%8B-01.html">&lt;h2 id=&quot;单片机内部结构&quot;&gt;单片机内部结构&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;单片机是一种集成电路芯片，是采用超大规模集成电路技术把具有数据处理能力的中央处理器CPU、随机存储器RAM、只读存储器ROM、多种I/O口和中断系统、定时器/计数器等功能（可能还包括显示驱动电路、脉宽调制电路、模拟多路转换器、A/D转换器等电路）集成到一块硅片上构成的一个小而完善的微型计算机系统&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;分类：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1、通用型
+按单片机（Microcontrollers）适用范围来区分。例如，80C51式通用型单片机，它不是为某种专门用途设计的；专用型单片机是针对一类产品甚至某一个产品设计生产的，例如为了满足电子体温计的要求，在片内集成ADC接口等功能的温度测量控制电路。&lt;/li&gt;
+  &lt;li&gt;2、总线型
+按单片机（Microcontrollers）是否提供并行总线来区分的。总线型单片机普遍设置有并行地址总线、 数据总线、控制总线，这些引脚用以扩展并行外围器件都可通过串行口与单片机连接，另外，许多单片机已把所需要的外围器件及外设接口集成一片内，因此在许多情况下可以不要并行扩展总线，大大减省封装成本和芯片体积，这类单片机称为非总线型单片机。&lt;/li&gt;
+  &lt;li&gt;3、控制型
+按照单片机（Microcontrollers）大致应用的领域进行区分的。一般而言，工控型寻址范围大，运算能力强；用于家电的单片机多为专用型，通常是小封装、低价格，外围器件和外设接口集成度高。 显然，上述分类并不是惟一的和严格的。例如，80C51类单片机既是通用型又是总线型，还可以作工控用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;51单片机的结构与功能&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;基本功能：
+1.8位数据总线，16位地址总线的CPU；
+2.具有布尔处理能力和位处理能力；
+3.采用哈佛结构，程序存储器与数据存储器地址空间各自独立，便于程序设计；
+4.相同地址的64KB程序存储器和64KB数据存储器；
+5.0-8KB片内程序存储器(8031无，8051有4KB，8052有8KB，89C55有20KB)；
+6.128字节片内数据存储器（8051有256字节）；
+7.32根双向并可以按位寻址的I/O线；
+8.两个16位定时/计数器(8052有3个)；
+9.一个全双工的串行I/O接口；
+10.多个中断源的中断结构，具有两个中断优先级；
+11.片内时钟振荡器 。&lt;/p&gt;
+
+&lt;p&gt;特点：
+1.以微处理器（CPU）为核心；
+2.CPU与其他部件间通过三总线连接。
+总线: 指能为多个部件服务的信息传送线 。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;内部结构&lt;/strong&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526114221796.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526114711179.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;单片机外部结构&quot;&gt;单片机外部结构&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526115541954.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;一共40根外部引脚如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/2019052611494879.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;strong&gt;引脚功能介绍&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;引脚号&lt;/th&gt;
+      &lt;th&gt;引脚名称&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1~8&lt;/td&gt;
+      &lt;td&gt;P1.0~P1.7&lt;/td&gt;
+      &lt;td&gt;端口P1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;9&lt;/td&gt;
+      &lt;td&gt;RST&lt;/td&gt;
+      &lt;td&gt;复位信号输入端&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10~17&lt;/td&gt;
+      &lt;td&gt;P3.0~P3.7&lt;/td&gt;
+      &lt;td&gt;端口P3，该端口具备第二功能&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;18&lt;/td&gt;
+      &lt;td&gt;XTAL2&lt;/td&gt;
+      &lt;td&gt;时钟震荡器输出端，内部震荡器输出段&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;19&lt;/td&gt;
+      &lt;td&gt;XTAL1&lt;/td&gt;
+      &lt;td&gt;时钟震荡器输入端，内部震荡器输入段&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;20&lt;/td&gt;
+      &lt;td&gt;GND&lt;/td&gt;
+      &lt;td&gt;电源地&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;21~28&lt;/td&gt;
+      &lt;td&gt;P2.0~P2.7&lt;/td&gt;
+      &lt;td&gt;端口P2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;29&lt;/td&gt;
+      &lt;td&gt;PSEN（低）&lt;/td&gt;
+      &lt;td&gt;外部程序存储器从程序存储器中取指令或读取数据时，该信号有效&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;30&lt;/td&gt;
+      &lt;td&gt;ALE/PROG（低）&lt;/td&gt;
+      &lt;td&gt;地址锁存信号访问外部存储器时，该信号锁存低8位地址；无RAM时，此引脚输出晶振的6分频信号&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;31&lt;/td&gt;
+      &lt;td&gt;EA（低）/VPP&lt;/td&gt;
+      &lt;td&gt;程序存储器有效地址，EA=1时从内部开始执行程序；EA=0时从外部开始执行程序&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;32~39&lt;/td&gt;
+      &lt;td&gt;P0.7~P0.0&lt;/td&gt;
+      &lt;td&gt;端口P0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;40&lt;/td&gt;
+      &lt;td&gt;VCC&lt;/td&gt;
+      &lt;td&gt;电源正&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;1、P0口的结构&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P0口字节地址为80H，位地址80H～87H。
+如图，一个端口由锁存器、输入缓冲器、多路开关、一个非门、一个与门及场效应管驱动电路构成。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P0位结构：
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526125249154.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;输入缓冲器
+在P0口中，有两个三态的缓冲器，三态门有3个状态，即在其输出端可以是高电平、低电平，同时还有一种高阻状态(或称为禁止状态)，要读取D锁存器输出端Q的数据，需要使读锁存器中这个缓冲器的三态控制端有效，下面一个是读引脚的缓冲器，要读取P0.X引脚上的数据，也要使标号为“读引脚”的三态缓冲器的控制端有效，引脚上的数据才会传输到单片机的内部数据总线上。&lt;/li&gt;
+  &lt;li&gt;D锁存器
+构成一个锁存器，通常要用一个时序电路，一个触发器可以保存一位二进制数(即具有保持功能)，在51单片机的32根I/O口线中，都是用一个D触发器来构成锁存器的。图1-4中的D锁存器，D端是数据输入端，CP是控制端(即时序控制信号输入端)，Q是输出端，Q非是反向输出端。
+对于D锁存器来讲，当D输入端有一个输入信号，如果这时控制端CP没有信号(即时序脉冲没有到来)，这时输入端D的数据是无法传输到输出端Q及反向输出端的。如果时序控制端CP的时序脉冲到达，这时D端输入的数据就会传输到Q及Q非端。数据传送过来后，当CP时序控制端的时序信号消失时，输出端还会保持着上次输入端D的数据(即把上次的数据锁存起来)。如果下一个时序控制脉冲信号到来，这时D端的数据才再次传送到Q端，从而改变Q端的状态。&lt;/li&gt;
+  &lt;li&gt;多路开关
+在51单片机中，当内部的存储器够用时(即不需要外扩展存储器时，这里讲的存储器包括数据存储器及程序存储器)，P0口可以作为通用的输入/输出端口(即I/O)使用，对于8031(内部没有ROM)的单片机，或者编写的程序超过了单片机内部的存储器容量需要外扩存储器时，P0口就作为地址/数据总线使用。那么这个多路选择开关就是用于选择是作为普通I/O口使用还是作为地址/数据总线使用的选择开关了。从图1-4可知，当多路开关与下端接通时，P0口作为普通的I/O口使用;当多路开关是与上端接通时，P0口作为地址/数据总线使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;利用P0口进行扩展外部存储器和I/O时，P0口将作为地址和数据分时复用，CPU发控制信号，打开与门，使MUX打向上边，形成推拉式结构，数据信号可直接读入或输出到内部总线。利用P0作为通用I/O时，此时P0口是一个准双向口，CPU发控制信号，封锁与门，使上拉管截止，MUX打向下边，与D触发器Q连接。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;2、P1口的结构&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P1口字节地址为90H，位地址为90H～97H。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P1位结构：
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130222842.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;与P0不同，P1口只能作为I/O口使用，无MUX，但其内部有一个上拉电阻，所以连接外围负载时不需要外接上拉电阻，这一点P1、P2、P3都一样。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;3、P2口的结构&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P2口字节地址为A0H，位地址为A0H～A7H&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P2位结构：
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130425704.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P2口作为I/O口线时用法与P0口一样，当内部开关拨向另一个方向，即作地址输出时，可以输出程序存储器或外部数据存储器的高8位地址，并与P0口输出的低地址一起构成16位的地址线。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;4、P3口的结构&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P3口字节地址为B0H，位地址为B0H～B7H。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130610406.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P3口作为I/O口线用时同其他的端口相同，也是准双向口，不同的是，P3口的每一位都有另一种功能，也叫第二功能，具体作用在用到时将详细解释。当P3口作为通用I/O口时，准双向口第二功能端保持高电平。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当P3口作为第二功能时，锁存器输出Q=1，如图为P3口第二功能列表：
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130736542.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;5、注意&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;(1)在无片外扩展存储器的系统中，这4个端口的每一位都可以作为准双向通用I/O端口使用。在具有片外扩展存储器的系统中，P2口作为高8位地址线，P0口作为双向总线，分时作为低8位地址和数据的输入/输出线。&lt;/li&gt;
+  &lt;li&gt;(2)P0口作为通用双向I/O口使用时，必须外接上拉电阻。&lt;/li&gt;
+  &lt;li&gt;(3)P3口除了作通用I/O口使用外，各位还具有第二功能。当P3口某一位用于第二功能作输出时，则不能再作通用I/O口使用。&lt;/li&gt;
+  &lt;li&gt;(4)当P0～P4端口用作输入时，为了避免误读，都必须先向对应的输出锁存器写入1，使FET截止，然后再读端口引脚，例如以下程序：
+MOV　P1, #0FFH
+MOV　A, P1&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;51的程序存储器和数据存储器是独立分开的，数据寄存器除内部数据寄存器外，还可以扩展数据寄存器，并存但访问指令不同&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;程序寄存器&quot;&gt;程序寄存器&lt;/h2&gt;
+
+&lt;p&gt;当EA引脚接高电平，CPU将使用内部程序寄存器，若程序超过内部程序存储器空间时，则CPU会自动从外部程序存储器重读取超过部分的程序代码&lt;/p&gt;
+
+&lt;h2 id=&quot;数据寄存器&quot;&gt;数据寄存器&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;0000H ~ 007FH&lt;/strong&gt;
+1、寄存器组区
+0000H~001FH共有32个地址位寄存器组区
+每组寄存器组都包括R0、R1、R2、R3、R4、R5、R6、R7等8个寄存器，任何一个时间，都只能使用其中一个寄存器组。
+寄存器组的切换，可由程序状态字（PSW）中的RS1、RS0来决定
+RS0 RS1 寄存器组 位址
+0 0 RB0 0000H~0007H
+0 1 RB1 0008H~000FH
+1 0 RB2 0010H~0017H
+1 1 RB3 0018H~001FH&lt;/p&gt;
+
+&lt;p&gt;2、可位寻址区
+0020H~002FH 共16字节的存储区为可位寻址区
+设置20H存储器地址的位5设置为1：SETB 20H.5
+设置20H存储器地址的位5设置为0：CLR 20H.5&lt;/p&gt;
+
+&lt;p&gt;3、一般数据与堆栈区
+0030H~007FH的80字节为一般数据访问及堆栈区
+0080H~00FFH之间的128B位特殊功能寄存器（SFR）
+特殊功能寄存器
+P0、P1、P2、P3
+它们是51的4个输入/输出端口，其地址分别为80H、90H、A0H及B0H。
+P0口：该8位都为漏级开路输出，每个引脚可以驱动8个LS型TTL负载；且内部没有上拉电阻，执行输出功能时，外部必须接上拉电阻（10千欧即可）；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；若系统连接外部存储器，则P0可作为地址总线（A0A7）及数据总线（D0D7）的多功能引脚。
+P1口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；
+P2口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；若系统连接外部存储器，而外部存储器的地址线超过8条时，则P0口可作为地址总线（A8~A15）引脚。
+P3口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；
+P3口其他功能：
+P3 其它功能 说明
+P3.0 RXD 串行口的接收引脚
+P3.1 RTD 串行口的传送引脚
+P3.2 INT0 INT0中断输入
+P3.3 INT1 INT1中断输入
+P3.4 T0 timer 0输入
+P3.5 T1 Timer 1输入
+P3.6 WR 写入外部存储器控制引脚
+P3.7 RD 读取外部存储器控制引脚&lt;/p&gt;
+
+&lt;p&gt;SP
+SP为堆栈指针寄存器，其地址为81H。&lt;/p&gt;
+
+&lt;p&gt;DPL、DPH
+DPL与DPH均为8位的数据指针寄存器，其地址分别为82H、83H。若以DPL为低8位、DPH为高8位，即可组成一个16位的数据指针寄存器，简称DPTR，如此将可寻址到64KB的数据地址。&lt;/p&gt;
+
+&lt;p&gt;PCON
+PCON作为电源控制寄存器，其地址位87H，其功能是设定CPU的电源方式。
+它是一个不可位寻址的寄存器。如图所示：
+SMOD ― ― ― GF1 GF0 PD IDL
+Bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
+其中各位说明如下：
+SMOD位为比特率倍增位。当串行端口工作于模式1、模式2、模式3，且使用定时器1为其比特率产生器时，若其为1，这比特率加倍，若为0，这比特率正常。
+GF1、GF0位为一般用途标志位，用户可自行设定或清除这两个标志。通常使用这个两个标志作为有中断唤醒闲置模式中的8051系统。
+PD位为功率下降模式位。为1时，进入功率下降模式；为0时，结束功率下降模式。
+IDL位为闲置模式位。为1时，进入闲置模式；为0时，结束闲置模式。&lt;/p&gt;
+
+&lt;p&gt;TCON
+TCON为定时器/计数器控制寄存器，其地址为88H&lt;/p&gt;
+
+&lt;p&gt;TMOD
+TMOD为计数器/计数方式控制寄存器，其地址为89H，其功能是设置它的方式&lt;/p&gt;
+
+&lt;p&gt;TL0、TL1、TH0、TH1
+TL0、TH0为第一组定时器、计数器的计量寄存器，其地址为8AH、8CH，将TL0与TH0组合即可进行16位的定时/计数。TL1、TH1为第二组定时器、计数器的计量寄存器，其地址为8BH、8DH，将TL1与TH1组合即可进行16位的定时/计数。&lt;/p&gt;
+
+&lt;p&gt;SCON
+SCON为串行端口控制寄存器，其地址为98H，其功能是设定串行端口工作方式与标志。&lt;/p&gt;
+
+&lt;p&gt;SBUF
+SBUF为串行端口缓冲器，其地址为99H， 这是由使用同一个地址的两个寄存器所构成，其中一个寄存器作为传送数据用的缓冲器，另一个寄存器作为接收数据用的缓冲器。至于如何分辨同一个地址的两个寄 存器，则视指令而定，若是数据传送指令，则自动定位到传送数据用的缓冲器；若是接受数据指令，则自动定位到接收数据用的缓冲器。详细以后再讲咯。IE
+IE为中断使能寄存器，其地址为A8H。&lt;/p&gt;
+
+&lt;p&gt;IP
+IP为中断优先级寄存器。&lt;/p&gt;
+
+&lt;p&gt;T2CON
+T2CON为Timer 2的定时器/计数器控制寄存器，其地址为C8H，其功能死设定Timer 2的启动、记录定时/计数溢出，以及外部中断触发方式等。&lt;/p&gt;
+
+&lt;p&gt;RCAP、RCAP2H
+RCAP、RCAP2H为捕捉寄存器，其地址为CAH、CBH。当Timer 2在捕捉方式时，若T2EX（P1.1）引脚上的输入信号有高电平转为低电平时，TL2与TH2的内容将被载入RCAP与RCAP2H，就像是把Timer 2的内容捉进RCAP寄存器一样。&lt;/p&gt;
+
+&lt;p&gt;TL2、TH2
+TL2、TH2为第三组定时器、计数器的计量寄存器，其地址为CCH、CDH，将TL2与TH2组合即可进行16位的定时/计数。&lt;/p&gt;
+
+&lt;p&gt;PSW
+PSW为CPU的程序状态字寄存器，其地址为D0H，其内容如下：
+7 6 5 4 3 2 1 0
+PSW CY AC F0 RS1 RS0 OV P
+PSW.7：本位为进位位（CY），加减法时产生进位或错位，将自行设定为1，否则为0。
+PSW.6：本位为辅助进位位（AC），进行加减法运算产生进位或错位，将自行设定为1，否则为0。
+PSW.5：本位为用户标志位，用户自行设定。
+PSW.4与PSW.3：这两个位为寄存器组选择位（RS1、RS0），其功能如下表所示。
+RS1 RS0 寄存器组
+0 0 RB0
+0 1 RB1
+1 0 RB2
+1 1 RB3
+PSW.2：本位为溢出标志位（OV），运行时，若发生溢出，为1，否则为0。
+PSW.1：本位为保留位，没有提供服务。
+PSW.0：本位位奇偶位（P），8051采用偶同位，若ACC中奇数个1，则为1，偶数个1，则为0。&lt;/p&gt;
+
+&lt;p&gt;ACC
+ACC累加器又称为A寄存器，其地址为E0H。
+B
+B寄存器的地址为F0H，主要功能是配合A寄存器进行乘法或除法运算。进行乘法运算时，乘数放在B寄存器，而运算结果，高8位放在B寄存器；进行除法运算时，除数放在B寄存器，而运算的结果，余数放在B寄存器。若不进行乘/除法运算，B寄存器也可当成一般寄存器使用。&lt;/p&gt;
+
+&lt;h2 id=&quot;门电路&quot;&gt;门电路&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;与门&lt;/li&gt;
+  &lt;li&gt;或门&lt;/li&gt;
+  &lt;li&gt;非门&lt;/li&gt;
+  &lt;li&gt;同或门&lt;/li&gt;
+  &lt;li&gt;异或门&lt;/li&gt;
+  &lt;li&gt;门间的组合电路&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602123611150.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;门电路的实现TTL和MOS集成门电路&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;寄存器和锁存器&quot;&gt;寄存器和锁存器&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;触发器分类：
+1、基本R-S触发器
+2、同步RS触发器、同步D触发器
+3、主从R-S触发器、主从JK触发器
+4、边沿触发器：
+上升沿触发器（D触发器、JK触发器）
+下降沿触发器（D触发器、JK触发器）&lt;/li&gt;
+  &lt;li&gt;触发器逻辑功能表示方法：
+特性表、卡洛图、特性方程、状态图、时序图&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;各种触发器介绍&lt;/strong&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104712870.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104721142.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104728648.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104735651.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104748193.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104756656.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
+&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104803564.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机内部结构</summary></entry></feed>
