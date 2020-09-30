@@ -1,4 +1,4 @@
-I"�R<h2 id="单片机内部结构">单片机内部结构</h2>
+I"�R<h2 id="单片机内部结构">单片机内部结构</h2>
 
 <blockquote>
   <p>单片机是一种集成电路芯片，是采用超大规模集成电路技术把具有数据处理能力的中央处理器CPU、随机存储器RAM、只读存储器ROM、多种I/O口和中断系统、定时器/计数器等功能（可能还包括显示驱动电路、脉宽调制电路、模拟多路转换器、A/D转换器等电路）集成到一块硅片上构成的一个小而完善的微型计算机系统</p>
@@ -348,4 +348,5 @@ B寄存器的地址为F0H，主要功能是配合A寄存器进行乘法或除法
 <img src="https://img-blog.csdnimg.cn/20190602104756656.JPG" alt="在这里插入图片描述" />
 <img src="https://img-blog.csdnimg.cn/20190602104803564.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></li>
 </ul>
+
 :ET
