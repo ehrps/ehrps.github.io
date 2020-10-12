@@ -1,1046 +1,1759 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-30T16:47:42+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">技术之链</title><subtitle></subtitle><entry><title type="html">基础知识 02</title><link href="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02.html" rel="alternate" type="text/html" title="基础知识 02" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-12T14:35:25+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">技术之链</title><subtitle></subtitle><entry><title type="html">系统架构师 第十五章 中间件</title><link href="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E4%B8%AD%E9%97%B4%E4%BB%B6.html" rel="alternate" type="text/html" title="系统架构师 第十五章 中间件" /><published>2020-10-12T00:00:00+08:00</published><updated>2020-10-12T00:00:00+08:00</updated><id>http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88%20%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0%20%E4%B8%AD%E9%97%B4%E4%BB%B6</id><content type="html" xml:base="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">&lt;h1 id=&quot;第15章基于中间件的开发&quot;&gt;第15章：基于中间件的开发&lt;/h1&gt;
 
-&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;20世纪90年代初，C/S计算模式成为主流，将数据统一存储在数据服务器上，而有关的业务逻辑都在客户端实现。但是，这种两层结构的模式由于服务器依赖于特定的供应商，数据存取受到限制，再加上难以扩展到广域网或互联网等原因，极大地阻碍着计算机软件系统的发展。有人提出将客户端的业务逻辑独立出来，形成第三层。在这种三层结构中，客户端仅仅是处理图形用户界面，在设计和实现时需要开发的，仅是在应用服务器上的业务逻辑部分的软件。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;随着Internet及WWW的出现，计算机的应用范围更为广阔，许多应用程序需在网络环境的异构平台上运行。在这种分布异构环境中，通常存在多种硬件系统平台(例如PC、工作站、小型机等)，在这些硬件平台上又存在各种各样的系统软件(例如不同的操作系统、数据库、语言编译器等)，以及多种风格的用户界面，这些硬件系统平台还可能采用不同的网络协议和网络架构连接。如何把这些系统集成起来并开发新的应用是一个非常现实而困难的问题。为了解决这个问题，出现了处于系统软件和应用软件之间的中间件。它使设计者集中设计与应用有关的部分，大大简化了设计和维护工作。&lt;/p&gt;
 
-&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
+&lt;h2 id=&quot;151中间件技术&quot;&gt;15.1中间件技术&lt;/h2&gt;
 
-&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
+&lt;p&gt;中间件(middleware)是基础软件的一大类，属于可复用软件的范畴。顾名思义，中间件处在操作系统、网络和数据库之上，应用软件的下层(如图15-1所示)，也有人认为它应该属于操作系统中的一部分。&lt;/p&gt;
 
-&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
+&lt;h3 id=&quot;1511中间件的概念&quot;&gt;15.1.1中间件的概念&lt;/h3&gt;
 
-&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
+&lt;p&gt;中间件从诞生到现在，虽然仅有10多年时间，但发展极其迅速，是有史以来发展最快的软件产品，但在技术上还处于成长阶段，还没有统一的标准和模型，通常都是用C++语言以面向对象的技术来实现的，但是它的特性已超出面向对象的表达能力，由于它属于可重用构件，目前趋向于用构件技术来实现。然而，中间件要涉及软件的所有标准、规范和技术，它有更多的内涵，因为它包括平台功能，自身具有自治性、自主性、隔离性、社会化、激发性、主动性、并发性、认识能力等特性，是近似于Agent(代理)的结构。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;目前很难给中间件一个严格的定义，国际上各家机构都有不同的定义，如IDC对中间件给出的定义是：中间件是一种独立的系统软件或服务程序，分布式应用软件借助这种软件在不同的技术之间共享资源，中间件位于客户机服务器的操作系统之上，管理计算资源和网络通信。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这些服务程序或软件具有标准的程序接口和协议。针对不同的操作系统和硬件平台，它们可以有符合接口和协议规范的多种实现。中间件为处于其上层的应用软件提供运行与开发的环境，帮助用户灵活、高效地开发和集成复杂的应用软件。中间件应具有如下的一些特点：&lt;/p&gt;
 
-&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;满足大量应用的需要；&lt;/li&gt;
+  &lt;li&gt;运行于多种硬件和OS平台；&lt;/li&gt;
+  &lt;li&gt;支持分布计算，提供跨网络、硬件和OS平台的透明性的应用或服务的交互；支持标准的协议；&lt;/li&gt;
+  &lt;li&gt;支持标准的接口。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;三要素：&lt;/p&gt;
+&lt;p&gt;世界著名的咨询机构StandishGroup在一份研究报告中归纳了中间件的十大优越性：&lt;/p&gt;
 
-&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;缩短应用的开发周期；&lt;/li&gt;
+  &lt;li&gt;节约应用的开发成本；&lt;/li&gt;
+  &lt;li&gt;减少系统初期的建设成本；&lt;/li&gt;
+  &lt;li&gt;降低应用开发的失败率；&lt;/li&gt;
+  &lt;li&gt;保护已有的投资；&lt;/li&gt;
+  &lt;li&gt;简化应用集成；&lt;/li&gt;
+  &lt;li&gt;减少维护费用；&lt;/li&gt;
+  &lt;li&gt;提高应用的开发质量；&lt;/li&gt;
+  &lt;li&gt;保证技术进步的连续性；&lt;/li&gt;
+  &lt;li&gt;增强应用的生命力。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
+&lt;p&gt;具体来说，首先，中间件屏蔽了底层操作系统的复杂性，使程序开发人员面对一个简单而统一的开发环境，减少了程序设计的复杂性，将注意力集中在自己的业务上，不必再为程序在不同系统软件上的移植而重复工作，从而大大减少了技术上的负担。&lt;/p&gt;
 
-&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
+&lt;p&gt;中间件带给应用系统的，不只是开发的简便、开发周期的缩短，也有系统的维护、运行和管理的工作量的减少，还减少了计算机总体费用的投入。Standish的调查报告显示，由于采用了中间件技术，应用系统的总建设费用可以减少50%左右。在网络经济、电子商务大发展的今天，从中间件获得利益的不只是IT厂商，IT用户也同样是赢家，并且是更有把握的赢家。&lt;/p&gt;
 
-&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
+&lt;p&gt;其次，中间件作为新层次的基础软件，其重要作用是将不同时期、在不同操作系统上开发的应用软件集成起来，彼此无缝地整体协调工作，这是操作系统、数据库管理系统本身做不了的。中间件的这一作用，使得在技术不断发展之后，人们以往在应用软件上的劳动成果仍然物有所用，节约了大量的人力、财力投入。&lt;/p&gt;
 
-&lt;p&gt;准双向口：&lt;/p&gt;
+&lt;p&gt;最后，由于标准接口对于可移植性和标准协议对于互操作性的重要性，中间件已成为许多标准化工作的主要部分。对于应用软件开发，中间件远比操作系统和网络服务更为重要，中间件提供的程序接口定义了一个相对稳定的高层应用环境，不管底层的计算机硬件和系统软件怎样更新换代，只要将中间件升级更新，并保持中间件对外的接口定义不变，应用软件几乎不需任何修改，从而节省了企业在应用软件开发和维护中的重大投资。&lt;/p&gt;
 
-&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
+&lt;h3 id=&quot;1512中间件的分类&quot;&gt;15.1.2中间件的分类&lt;/h3&gt;
 
-&lt;p&gt;高阻态&lt;/p&gt;
+&lt;p&gt;好比一个大型城市的交通系统，将网络看作市区马路，通过交通工具(如汽车)实现通信，每分钟将有数以万辆车在马路上行驶，如果没有相应的交通设施和管理规划，城市将会乱成一团，发生各种交通事故，中间件系统就相当于这些配套的交通设施。按照中间件在分布式系统中承担的职责不同，可以划分以下几类中间件产品。&lt;/p&gt;
 
-&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
+&lt;p&gt;(1)通信处理(消息)中间件。&lt;/p&gt;
 
-&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
+&lt;p&gt;正如，安装红绿灯，设立交通管理机构，制定出交通规则，才能保证道路交通畅通一样，在分布式系统中，人们要建网和制定出通信协议，以保证系统能在不同平台之间通信，实现分布式系统中可靠的、高效的、实时的跨平台数据传输，这类中间件称为消息中间件，也是市面上销售额最大的中间件产品，目前主要产品有BEA的eLink、IBM的MQSeries、TongLINK等。实际上，一般的网络操作系统如Windows已包含了其部分功能。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(2)事务处理(交易)中间件。&lt;/p&gt;
 
-&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
+&lt;p&gt;正如城市交通中要运行各种运载汽车，以此来完成日常的运载，同时随时监视汽车运行，在出现故障时及时排堵保畅。在分布式事务处理系统中，经常要处理大量事务，特别是OLTP中，每项事务常常要多台服务器上的程序按顺序协调完成，一旦中间发生某种故障，不但要完成恢复工作，而且要自动切换系统，达到系统永不停机，实现高可靠性运行。要使大量事务在多台应用服务器上能实时并发运行，并进行负载平衡的调度，实现与昂贵的可靠性机和大型计算机系统同等的功能，为了实现这个目标，要求中间件系统具有监视和调度整个系统的功能。BEA的Tuxedo由此而著名，它成为增长率最高的厂商。&lt;/p&gt;
 
-&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
+&lt;p&gt;(3)数据存取管理中间件。&lt;/p&gt;
 
-&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
+&lt;p&gt;在分布式系统中，重要的数据都集中存放在数据服务器中，它们可以是关系型的、复合文档型、具有各种存放格式的多媒体型，或者是经过加密或压缩存放的，该中间件将为在网络上虚拟缓冲存取、格式转换、解压等带来方便。&lt;/p&gt;
 
-&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
+&lt;p&gt;(4)Web服务器中间件。&lt;/p&gt;
 
-&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
+&lt;p&gt;浏览器图形用户界面已成为公认规范，然而它的会话能力差、不擅长做数据写入、受HTTP协议的限制等，就必须进行修改和扩充，形成了Web服务器中间件，如SilverStream公司的产品。&lt;/p&gt;
 
-&lt;p&gt;控制应用&lt;/p&gt;
+&lt;p&gt;(5)安全中间件。&lt;/p&gt;
 
-&lt;p&gt;驱动应用&lt;/p&gt;
+&lt;p&gt;一些军事、政府和商务部门上网的最大障碍是安全保密问题，而且不能使用国外提供的安全措施(如防火墙、加密、认证等)，必须用国产产品。产生不安全因素是由操作系统引起的，但必须要用中间件去解决，以适应灵活多变的要求。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(6)跨平台和架构的中间件。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;当前开发大型应用软件通常采用基于架构和构件技术，在分布式系统中，还需要集成各节点上的不同系统平台上的构件或新老版本的构件，由此产生了架构中间件。功能最强的是CORBA，可以跨任意平台，但是过于庞大；JavaBeans较灵活简单，很适合于做浏览器，但运行效率有待改善；COM+模型主要适合Windows平台，在桌面系统已广泛使用。由于国内新建系统多基于UNIX(包括Linux)和Windows，因此，针对这两个平台建立相应的中间件市场相对要大得多。(7)专用平台中间件。为特定应用领域设计领域参考模式，建立相应架构，配置相应的构件库和中间件，为应用服务器开发和运行特定领域的关键任务(如电子商务、网站等)。(8)网络中间件。它包括网管、接入、网络测试、虚拟社区、虚拟缓冲等，也是当前最热门的研发项目。&lt;/p&gt;
 
-&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
+&lt;h3 id=&quot;1513中间件产品介绍&quot;&gt;15.1.3中间件产品介绍&lt;/h3&gt;
 
-&lt;p&gt;VCC 电压是 5V，发光二极管自
-身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
+&lt;p&gt;本节介绍主流的中间件产品IBMMQSeries和BEATuxedo。&lt;/p&gt;
 
-&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
+&lt;p&gt;1.IBMMQSeries&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;IBM公司的MQSeries是IBM的消息处理中间件。MQSeries提供一个具有工业标准、安全、可靠的消息传输系统，它用于控制和管理一个集成的系统，使得组成这个系统的多个分支应用(模块)之间通过传递消息完成整个工作流程。MQSeries基本由一个信息传输系统和一个应用程序接口组成，其资源是消息和队列。&lt;/p&gt;
 
-&lt;p&gt;（1）、基本运算符&lt;/p&gt;
+&lt;p&gt;MQSeries的关键功能之一是确保信息可靠传输，即使在网络通信不可靠或出现异常时也能保证信息的传输。MQSeries的异步消息处理技术能够保证当网络或者通信应用程序本身处于“忙”状态或发生故障时，系统之间的信息不会丢失，也不会阻塞。这样的可靠性是非常关键的，否则大量的金钱和客户信誉就会面临极大的损害。&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
-      &lt;td&gt;~  ^&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;同时，MQSeries是灵活的应用程序通信方案。MQSeries支持所有的主要计算平台和通信模式，也能够支持先进的技术如(Internet和Java)，拥有连接至主要产品(如LotusNotes和SAP/R3等)的接口。&lt;/p&gt;
 
-&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
+&lt;p&gt;2.BEATuxedo&lt;/p&gt;
 
-&lt;p&gt;for/while/do…while&lt;/p&gt;
+&lt;p&gt;BEA公司的Tuxedo作为电子商务交易平台，属于交易中间件。它允许客户机和服务器参与一个涉及多个数据库协调更新的交易，并能够确保数据的完整性。BEATuxedo一个特色功能是能够保证对电子商务应用系统的不间断访问。它可以对系统构件进行持续的监视，查看是否有应用系统、交易、网络及硬件的故障。一旦出现故障，BEATuxedo会从逻辑上把故障构件排除，然后进行必要的恢复性步骤。&lt;/p&gt;
 
-&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
+&lt;p&gt;BEATuxedo根据系统的负载指示，自动开启和关闭应用服务，可以均衡所有可用系统的负载，以满足对应用系统的高强度使用需求。借助DDR(数据依赖路由)，BEATuxedo可按照消息的上下文来选择消息路由。其交易队列功能，可使分布式应用系统以异步“少连接”方式协同工作。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;BEATuxedo的LLE安全机制可确保用户数据的保密性，应用/交易管理接口(ATMI)为50多种硬件平台和操作系统提供了一致的应用编程接口。BEATuxedo基于网络的图形界面管理可以简化对电子商务的管理，为建立和部署电子商务应用系统提供了端到端的电子商务交易平台。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;h2 id=&quot;152应用服务器技术&quot;&gt;15.2应用服务器技术&lt;/h2&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;Web应用开发大致经历了三个阶段。在第一阶段，大家都使用Web服务器提供的服务器扩展接口，使用C或者Perl等语言进行开发，例如CGI、API等。这种方式可以让开发者自由地处理各种不同的Web请求，动态地产生响应页面，实现各种复杂的Web系统要求。但是，这种开发方式的主要问题是对开发者的素质要求很高，往往需要懂得底层的编程方法，了解HTTP协议，此外，这种系统的调试也相当困难。&lt;/p&gt;
 
-&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
+&lt;p&gt;在第二阶段，大家开始使用一些服务器端的脚本语言进行开发，主要包括ASP、PHP、Livewire等。其实现方法实质上是在Web服务器端放入一个通用的脚本语言解释器，负责解释各种不同的脚本语言文件。这种方法的首要优点是简化了开发流程，使Web系统的开发不再是计算机专业人员的工作。此外，由于这些语言普遍采用在HTML中嵌入脚本的方式，方便实际开发中的美工和编程人员的分段配合。对于某些语言，由于提供了多种平台下的解释器，所以应用系统具有了一定意义上的跨平台性。但是，这种开发方式的主要问题是系统的可扩展性不够好，系统一旦比较繁忙，就缺乏有效的手段进行扩充。此外，从一个挑剔者的眼光来看，这种方式不利于各种提高性能的算法的实施，不能提供高可用性的效果，集成效果也会比较差。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;为了解决这些问题，出现了一个新的Web应用开发方法，也就是应用服务器的方式。目前，应用服务器已经成为电子商务应用中一种非常关键的中间件技术。如今，各大主要软件厂商纷纷将应用服务器作为其电子商务平台的基础，如IBM的Websphere，Oracle的Internet应用服务器，Sybase的Enterprise应用服务器等。本节将阐述应用服务器的概念、相关技术及发展方向，并就目前主流的应用服务器产品进行简单的介绍。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;h3 id=&quot;1521应用服务器的概念&quot;&gt;15.2.1应用服务器的概念&lt;/h3&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;应用服务器是在当今Internet上企业级应用迅速发展、电子商务应用出现并快速膨胀的需求下产生的一种新技术，通过它能将一个企业的商务活动安全有效地实施到Internet上，实现电子商务。它并非一种传统意义上的软件，而是一个可以提供通过Internet来实施电子商务的平台。在分布式、多层结构及基于构件和服务器端程序设计的企业级应用开发中，它提供的是一个开发、部署、运行和管理、维护的平台。它可以提供软件“集群”的功能，因而可以让多个不同的、异构服务器协同工作、相互备份，以满足企业级应用所需要的可用性、高性能、可靠性和可伸缩性等。&lt;/p&gt;
 
-&lt;p&gt;do&lt;/p&gt;
+&lt;p&gt;故而，从某种意义上说，应用服务器提供了一个“企业级应用的操作系统”。实现J2EE规范的应用服务器称为J2EE应用服务器。
+现代社会商机稍纵即逝，电子商务应用要求能很快地开发出功能强大的系统。应用服务器可以帮助企业快速架构一个基Internet的电子商务系统，而且拥有极高的稳定性、可扩展性和安全性。它能够：&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;(1)更合理地分工企业级应用开发，加快应用的开发速度，减少应用的开发量。应用服务器将系统功能与业务功能分开，使得编程人员能够集中精力在业务功能上，在系统内建立/部署的构件越来越多，并且为分布式架构的时候，系统功能必将变得越来越复杂；而与此同时，对可靠性(负载均衡、容错和故障恢复)的需求也会越来越高。开发人员只关注编码业务方面的功能，对系统一级的功能并没有多少兴趣。因为系统级底层功能的实现，一般需要非常复杂的专业技能，因此对功能实现的合理分离可以允许技能的优化。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;在应用服务器上开发采用的模块化方法，提供了大量的可重用模块。一个新的系统可以通过组合一些现成的框架和模块，再加上一定的开发来快速完成。而新开发出的代码又可作为今后重复利用的模块，这一点对于降低开发成本，提高开发速度是非常重要的。&lt;/p&gt;
 
-&lt;p&gt;}while(表达式)；&lt;/p&gt;
+&lt;p&gt;另外，为了便于开发，有些应用服务器还提供开发版的服务器，以便进行各种调试工作。应用服务器一般还提供集成开发环境，将本地编辑、上传、项目管理和调试工具等集中在一起，使开发工作在一个界面内全部完成。还有一些开发环境同时提供后台系统的开发环境，以便同时进行开发管理。此外，还有一些产品内置一些代码的自动生成器，数据库设计辅助工具等，例如ORM(ObjectRelationMapping，对象关系映射)等，这些都有效地提高了开发速度，减少了应用开发量。&lt;/p&gt;
 
-&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
+&lt;p&gt;(2)应用设计、开发、部署、运行、管理、维护的平台。应用服务器既是应用开发的平台，包括表示层、应用层和数据层的设计模式和编程环境；同时又是多层结构应用的部署、运行平台，对多层结构应用进行配置、启动、监控、调整，并在开发的不同阶段承担不同的职责。
+设计：应用服务器完成底层通信、服务，并屏蔽掉复杂的底层技术细节，向用户提供结构简单、功能完善的编程接口，让用户可以专心于商务逻辑的设计。&lt;/p&gt;
 
-&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
+&lt;p&gt;开发：应用服务器提供了完全开放的编程语言和应用接口，用户可以用任何自己习惯的开发工具来工作。另外应用服务器自己也提供快速开发的工具和手段，帮助用户提高开发效率。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;部署：应用服务器可以部署在任何硬件平台、任何操作系统上，而且可以分布在异构网络中，应用服务器帮助用户在复杂的网络环境中配置系统参数，使系统发挥最大的性能，拥有最好的稳定可靠性。&lt;/p&gt;
 
-&lt;p&gt;函数体；&lt;/p&gt;
+&lt;p&gt;运行：应用服务器采用的是开放技术标准，它提供了一个完整的标准实现，即提供了系统的运行环境，任何基于同样标准的系统都能很好地运行于这个环境中。在运行中提供应用系统的名字解析、路由选择、负载平衡、事务控制等服务，并提供系统容错、修复、迁移、升级扩展等功能。
+管理：应用服务器让用户通过图形化的界面方便地管理自己的资源，而且在系统运行时也能动态监控和管理。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;(3)使得应用与底层平台无关，便于商业逻辑的实现与扩展。一个好的应用服务器通过提供对操作系统/数据库平台的广泛支持，或采用平台无关技术，如J2EE，从而能够做到让应用独立于操作系统/数据库平台。显然，它可以确保企业应用具备很好的移植性并保护了企业在应用和开发技能上的投资。&lt;/p&gt;
 
-&lt;p&gt;（4）、数组&lt;/p&gt;
+&lt;p&gt;另外一个方面，在激烈的市场竞争条件下，企业的商业逻辑不可能一成不变，而随着生产经营的拓展，首先需要解决的一个问题就是将按需地对现有的业务系统，方便地进行扩充和升级。应用服务器技术可以很好地解决这个问题，因为它采用了三层结构体系，应用服务器将业务流程单独作为一层，客户可以根据自己的商业逻辑来专心设计这一层。应用服务器能提供这种设计能力，当客户业务扩展时，只需专注于改进中间层的设计，原系统就能平滑方便地升级。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
+&lt;p&gt;(4)为企业应用提供现成的、稳定而强健的、灵活的、成熟的基础架构。在构建电子商务应用的竞争中，许多企业已经没有时间去从容地“千锤百炼”一个电子商务架构体系。通过应用服务器，立刻就可以拥有一个成熟的架构，包括基础平台、标准、应用开发工具和预制构件。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
+&lt;p&gt;另外一方面，随着经济全球化的步伐加快，许多企业的业务服务于全球，计算机业务系统需要提供24小时不间断的服务，系统在大负荷量和长时间运转情况下的稳定性至关重要。应用服务器通过分布式体系来保障这一点，表现为：当系统处理能力不够时，可以通过简单地增加硬件来解决；动态调整不同主机间的负载可以最大地利用系统资源，同时提高单机的稳定性；当系统中的某台机器出现故障时，它的工作可由其他机器来承担，不会影响系统整体的运行，即无单点故障。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
+&lt;p&gt;希赛教育专家提示：目前市面上的应用服务器的解决方案基本都具备了这些作用，因而企业在选购应用服务器产品的时候，不能简单地判断优劣，而需要先充分了解自己的需求到底是什么，然后在各个主要技术问题上，确定适合自己的解决方案，最后寻找使用这些解决方案的产品来完成自己的系统。&lt;/p&gt;
 
-&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
+&lt;h3 id=&quot;1522主要的应用服务器&quot;&gt;15.2.2主要的应用服务器&lt;/h3&gt;
 
-&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
+&lt;p&gt;本节介绍五种主要的应用服务器产品。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1.BEAWebLogic&lt;/p&gt;
 
-&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
+&lt;p&gt;BEAWebLogic作为新一代基于Java的Web应用服务器，是一款满足Web站点对性能和可靠性要求很高的产品。在提供传统的应用服务器功能的同时，还针对当今的Internet技术和Java技术提供了众多功能，它符合最新Java标准。安装WebLogic非常容易。&lt;/p&gt;
 
-&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
+&lt;p&gt;WebLogicEJBDeployerTool提供了对管理多个EJB.jar文件和配置WebLogicServer部署特性和资源的控制。DeployerTool支持两级EJB部署的合法性检测，它自动地检查特性和引用，以确保它们包含正确的值，并检验关键EJB所需的类是否符合EJB1.1规范。&lt;/p&gt;
 
-&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;名为WebLogicZeroAdministrationClient(ZAC)发布向导的图形实用程序使用户可以创建、发布和管理包括应用程序、小程序或Java代码库的软件包。ZAC使用户可以开发客户端Java应用并将这些应用打包分发。&lt;/p&gt;
 
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
+&lt;p&gt;2.IBMWebSphere&lt;/p&gt;
 
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
+&lt;p&gt;IBM的WebSphere强调其在应用开发(WebSphereStudio和VisualAgeforJava)、数据库(DB2)和消息服务(MQseries)的集成性。这些产品构成了该公司总体电子商务产品战略的基础。WebSphere以对多种平台的支持和符合最新的Java标准，提供了开发电子商务应用的可靠平台。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
+&lt;p&gt;WebSphere安装简单易行。对WebSphere服务器及它运行的应用的控制是在WebSphere高级管理控制台中执行的。由于WebSphere可以运行多个服务器，因此，用户必须从控制台分别启动每一个服务器进程。如果必须重新引导系统的话，WebSphere可以记住目前每个不同服务器的状态并自动地重新启动运行的服务器。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;p&gt;IBM提供了像WebSphereStudio和VisualAgeforJava这类专为开发基于Java应用而设计的其他产品。WebSphere的高级版和企业版在发送时附带了IBM的DB2数据库产品和SecureWay轻型目录访问协议服务器。企业版包括用于连接到外部数据库、CICS、IMS或MQSeries应用的一个构件代理应用适配器。&lt;/p&gt;
 
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;3.SUNiPlanet&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识</summary></entry><entry><title type="html">基础知识 03</title><link href="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC.html" rel="alternate" type="text/html" title="基础知识 03" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
-&lt;h1 id=&quot;一级标题&quot;&gt;一级标题&lt;/h1&gt;
-&lt;hr /&gt;
+&lt;p&gt;作为SUN与Netscape联盟产物的iPlanet公司生产的iPlanet应用服务器满足最新J2EE规范的要求，并通过了全套J2EE证书测试套件的测试。iPlanet应用服务器的基本核心服务包括事务监控器、多负载平衡选项、对集群和故障转移全面的支持、集成的XML解析器和可扩展格式底稿语言转换(XLST)引擎，以及对国际化的全面支持。包括DirectoryServer、WebServer和用于EAI(EnterpriseApplicationIntegration，企业应用集成)的另一些附件在内的其他iPlanet产品之间实现了紧密的集成。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;IPlanetApplicationDeployment工具是基于Java的程序，它可以指导用户完成一个应用的部署过程。iAS提供了一款与WebGainStudio、InspireJBuilder、IBMVisualAge及Java企业版的SUNForte这类第三方工具集成在一起的独立产品iPlanetApplicationBuilder。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;4.OracleInternetApplicationServer&lt;/p&gt;
 
-&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
+&lt;p&gt;毫无疑问，Oracle公司的数据库产品是多种平台上的市场领先产品，凭借这种得天独厚的优势，Oracle的InternetApplicationServer(iAS)与其余Oracle产品实现了相互集成，例如，可以利用OracleiAS向Web部署任何基于OracleForms应用的OracleFormsService。&lt;/p&gt;
 
-&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
+&lt;p&gt;Oracle利用一些扩展的ApacheWebServer作为进入OracleiAS的入口点。iAS管理器是配置和管理应用的工具，提供了综合操作各种系统管理功能的统一界面。Oracle为&lt;/p&gt;
 
-&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
+&lt;p&gt;Apache开发了插件盒模块来处理Java应用程序、Perl程序、PL/SQL程序及SSL上的安全网页。插件盒模块是一个共享库，可以实现程序逻辑访问。插件盒模块中可运行一个或多个插件盒实例，包括PL/SQL插件盒、Jweb插件盒、LiveHTML插件盒、Perl插件盒、C插件盒、ODBC插件盒等。&lt;/p&gt;
 
-&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
+&lt;p&gt;iAS允许开发基于CORBA对象的应用，通信协议采用IIOP。iAS支持以下两种应用模式：CORBA应用和EJB应用。这两种模式都允许不同的CORBA客户访问。iAS企业版配置了OraclePortal。OraclePortal提供了部署企业信息用户所需的工具。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;OracleiAS是该公司将应用推向Web战略的关键组成部分。Oracle的客户可以比较容易地将他们的OracleForms和OracleReports放到Web上运行。但是，OracleiAS价格也比较昂贵。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;5.SybaseEnterpriseApplicationServer&lt;/p&gt;
 
-&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
+&lt;p&gt;SybaseEnterpriseApplicationServe(rEAServer)将Sybase的JaguarCTS和PowerDynamo紧密集成并加以发展，是同时实现Web联机事务处理(WebOLTP)和动态信息发布的企业级应用服务器平台。它对各种工业标准提供广泛的支持，符合基于构件的多层架构，是支持所有主要构件模型的应用服务器产品，并且在它的最新版本中加强了对PowerBuilder构件和EJB的深层支持。这样，用户可以运用它提供的灵活的开发能力，充分利用多样化的计算环境，建立更加高效的企业Web应用系统。&lt;/p&gt;
 
-&lt;p&gt;三要素：&lt;/p&gt;
+&lt;p&gt;EAServer支持多种构件模型，同一应用中可以结合使用各种构件，支持标准脚本语言和任意客户类型，集成了PowerSite开发环境，使Web应用开发和提交方便快捷。除了优良的性能之外，EAServer还支持多种数据库访问方式，给用户提供了可靠的安全性。&lt;/p&gt;
 
-&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
+&lt;h2 id=&quot;153j2ee&quot;&gt;15.3J2EE&lt;/h2&gt;
 
-&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
+&lt;p&gt;J2EE是针对WebService、业务对象、数据访问和消息报传送的一组规范。这组应用编程接口确定了Web应用与驻留它们的服务器之间的通信方式。J2EE注重两件事，一是建立标准，使Web应用的部署与服务器无关；二是使服务器能控制构件的生命周期和其他资源，以便能够处理扩展、并发、事务处理管理和安全性问题。&lt;/p&gt;
 
-&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
+&lt;p&gt;J2EE规范定义了以下几种构件：应用客户端构件、EJB构件、Servlets和JSP、Applet构件。J2EE采用的是多层分布式应用模型，意味着应用逻辑将根据功能分成几个部分，用户可以在相同或不同的服务器上安装不同应用构件组成的J2EE应用。这些层次可以参见图&lt;/p&gt;
 
-&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
+&lt;p&gt;15-2。&lt;/p&gt;
 
-&lt;p&gt;准双向口：&lt;/p&gt;
+&lt;h3 id=&quot;1531表示层&quot;&gt;15.3.1表示层&lt;/h3&gt;
 
-&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
+&lt;p&gt;J2EE客户端可以基于Web，也可以基于Java。在HTML、Javascript、XML等技术的帮助下，Web浏览器可以支持强大、快速的用户界面。实际上，如果HTML足以捕获和显示应用所需的信息，则HTML为首选；如果HTML不足以达到此目的，则应该由客户端执行必要的捕获和操作。无论是Applet还是独立的Java程序，都可提供更丰富的图形用户界面。Applet还可以与中层通信，从而进一步加强程序控制和系统灵活性。&lt;/p&gt;
 
-&lt;p&gt;高阻态&lt;/p&gt;
+&lt;p&gt;分布式企业应用可以同时包括多种客户端，并且这些客户端都可以访问相同的业务逻辑。如图15-3所示：当客户端是HTML时，JSP/Servlet组合将成为能实现业务目标的真正客户端。当客户端是Java程序或基于COM程序时，它可以直接访问业务逻辑。&lt;/p&gt;
 
-&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
+&lt;h3 id=&quot;1532应用服务层&quot;&gt;15.3.2应用服务层&lt;/h3&gt;
 
-&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
+&lt;p&gt;一般情况下，应用服务层包含表示层请求的表示逻辑和业务逻辑。表示层由显示HTML页面的JSP页面和Servlets实现。业务逻辑通过RMI对象和EJB实现。EJB依靠容器来实现事务处理、生命周期和状态管理、资源池、安全等问题，容器是EJB运行的环境。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1.Servlet
+JavaServlets是指可以扩展Web服务器功能的程序。Servlet从客户端接受请求，动态生成响应，然后将包含HTML或XML文档的请求发送给客户端。Servlet类似于CGI(公共网关接口)，但Servlet使用Java类和流，更易于编写；由于Servlet可编译为Java字节码，在运行时，Servlet例程驻留在内存中，每一个用户请求都生成一条新线程，故而它们的执行速度也更快。&lt;/p&gt;
 
-&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
+&lt;p&gt;2.JSP
+JSP页面是基于文本的Servlet开发方式。JSP页面具有Servlet的所有优点，如果与JavaBeans类结合在一起，可以容易地将内容和显示逻辑分开。这使得无须了解Java代码就能更新页面的外观，更新JavaBeans类的人也无须深入了解Web页面的设计。相对CGI而言，由于CGI依赖于平台，消耗资源更多，而且程序不能容易地访问参数数据等缺点，故而JSP页面和Servlet都比CGI应用广泛。
+用户可以使用带JavaBeans类的JSP页面定义Web模板，以便建立由外观相似的页面组成的Web站点，而JavaBeans类负责组织数据。用户还可以借助标记和脚本将内容与应用逻辑捆绑在一起，或是嵌入一些Java小应用程序来实现一些简单的Web应用。&lt;/p&gt;
 
-&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
+&lt;p&gt;3.EJB
+EJB构件用于封装业务逻辑，使开发人员无须再担心数据访问、事务处理支持、安全性、高速缓存和迸发等琐碎任务的编程。在EJB规范中，它们由EJB容器负责。EJB包含接口和类。客户端通过EJB的本地接口和远程接口访问EJB方法。本地接口提供的方法可用于生成、删除和查找EJB，远程接口则提供业务方法。部署时，容器从这些接口生成类，这些类使客户端可以访问、生成、删除、查找和调用EJB上的业务方法。EJB类为业务方法、生成方法和查找方法提供实施，如果Bean管理自己的存储，还得提供生成生命周期方法的实施。
+EJB共有三种类型：EntityBean(实体Bean)、SessionBean(会话Bean)和MessageDrivenBean(消息驱动Bean)，下面分别说明。&lt;/p&gt;
 
-&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
+&lt;p&gt;(1)实体Bean。实体Bean表示数据库中的数据及作用于数据的方法。在关系型数据库中，表中的每一行就是一个Bean的实例。实体Bean是具有持久性的事务处理型EJB，只要数据存在于数据库中，实体Bean就存在。&lt;/p&gt;
 
-&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
+&lt;p&gt;用容器管理的持久性访问关系数据库的EJB，不需要为数据库访问使用任何JDBCAPI，因为容器可以负责完成这项任务。但是，如果使用Bean管理的持久性或想访问关系数据库以外的企业信息系统，就需要提供相应的程序代码才能完成。但是如果EJB使用Bean管理的持久性访问数据库，用户必须借助于JDBCAPI实施Bean生命周期方法，这样才能加载和保存数据，并保持运行和持久数据库存储之间的一致性。&lt;/p&gt;
 
-&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
+&lt;p&gt;(2)会话Bean。会话Bean代表与客户间的短暂对话。在执行数据库读写时，会话Bean可以请求JDBC调用，也可以使用实体Bean执行调用，这时会话Bean是实体Bean的客户端。会话Bean的字段中包含对话的状态，如果服务器或客户端出现故障，会话Bean将消失。&lt;/p&gt;
 
-&lt;p&gt;控制应用&lt;/p&gt;
+&lt;p&gt;会话Bean可以有状态，也可以无状态。有状态会话Bean包含客户端方的对话状态，对话状态是会话Bean实例的字段值加上可以从会话Bean字段阅读的所有对象。有状态的会话Bean不表示持久数据库中的数据，但能够以客户端的名义访问和更新数据。&lt;/p&gt;
 
-&lt;p&gt;驱动应用&lt;/p&gt;
+&lt;p&gt;无状态会话Bean没有客户端的任何状态信息。它们一般不提供保留任何状态的服务器行为。无状态会话Bean需要的系统资源较少。提供通用服务或表示共享数据视图的业务对象适合作为无状态的会话Bean。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(3)消息驱动Bean。EJB2.0规范中的消息驱动Bean能处理从JMS消息队列接收到的异步消息。JMS将消息路由到消息驱动Bean，由消息驱动Bean从池中选择某个实例处理消息。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;消息驱动Bean在EJB容器中管理。由于它们不是由用户的应用直接调用的，因此不能借助EJB本地接口从应用进行访问。但是，用户的应用可以将消息发送到Bean所监听的JMS队列中，以此来实例化消息驱动Bean。&lt;/p&gt;
 
-&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
+&lt;p&gt;4.JMS
+JMS是支持Java程序之间信息交换的J2EE机制。这也是Java支持异步通信的方法——发送者和接收者无须相互了解，因此可以独立操作。JMS支持两种消息传播模式：点到点(pointtopoint)。基于消息队列，消息产生者将消息发送到队列中。消息消费者可以将自身与队列连接，以倾听消息。当消息到达队列时，客户可以从队列中取走，并给出响应。消息只能发送到一个队列，只能由一个消费者使用。消费者可以过滤消息，以便获得希望获得的消息。出版和订阅(publish/subscribe)。消息生产者将消息发送到一个话题(topic)，注册到此话题的消费者都能接收到这些消息。这种情况下，许多消费者都能接收到同样的消息。&lt;/p&gt;
 
-&lt;p&gt;VCC 电压是 5V，发光二极管自
-身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
+&lt;p&gt;5.JNDI
+由于J2EE应用的构件可以独立运行，而且是在不同的设备上运行，因此客户端和应用
+服务器层代码必须以某种方式查找和参考其他代码和资源。客户端和应用代码使用JNDI(JavaNamingandDirectoryInterface，Java命名和目录接口)查找用户定义对象(如EJB)和环境实体(EnvironmentEntities)。在JDBC2.0中，数据源可以绑定到JNDI上，并允许应用程序访问。&lt;/p&gt;
 
-&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
+&lt;p&gt;6.事务处理
+J2EE事务处理模型可以在部署过程中定义组成一个事务处理的方法之间的联系，以便事务处理中的所有方法可以作为一个整体存在。如果用户希望完成这一任务，因为事务处理是一系列步骤，要么全部执行成功，要么全部回滚。例如，EJB中可能有一系列方法，其作用是将资金从一个账户转到另一个账户，方法是借记第一个账户和贷记第二个账户。用户可能希望将全部操作作为一个整体，这样，如果借记之后，贷记之前出现故障，借记将滚回。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;事务处理的属性在应用构件的集成过程中确定。它可以将各种方法组合成应用构件间的事务处理，即用户可以在J2EE应用中方便地重新分配应用构件的事务处理属性，无须修改代码和重新编译。J2EE事务处理API(JTA)和Java事务处理服务(JTS)形成J2EE中事务处理支持的基础，而且更适合EJB和JDBC2.0。JTS是低级事务处理管理API，主要作用是将Java映射到对象管理组(OMG)的对象事务处理服务。JTA是高级API，包括两个部分：&lt;/p&gt;
 
-&lt;p&gt;（1）、基本运算符&lt;/p&gt;
+&lt;p&gt;事务处理接口。该接口允许事务处理定界，通过分布式构件由进行全局事务处理登记来完成工作。这种方法可以令多组操作组成一个事务处理。&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
-      &lt;td&gt;~  ^&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;XA资源接口。基于能处理分布式事务处理的X/Open/XA接口，有时也称为两步提交事务处理，需要多种资源之间的协调，如数据库或序列。分布式事务处理由两步提交协议协调，可跨越用XA兼容的JDBC驱动程序访问的多个数据库，如针对Oracle/XA的BEAWebLogicDriver等。&lt;/p&gt;
 
-&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
+&lt;p&gt;EJB规范定义了Bean管理的事务处理和Container管理的事务处理。当EJB用Container管理的事务处理部署时，应用服务器将自动协调事务处理。如果EJB由Bean管理事务处理部署，EJB参数必须提供事务处理代码。&lt;/p&gt;
 
-&lt;p&gt;for/while/do…while&lt;/p&gt;
+&lt;p&gt;基于JMS或JDBCAPI的应用代码可以启动事务处理，或参与先前启动的事务处理。一个事务处理联系与执行应用的应用服务器线程相关，所有事务处理操作都在参与当前事务处理的线程上执行。&lt;/p&gt;
 
-&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
+&lt;p&gt;多数情况下，用户无须担心用JTA编写明确事务处理的问题，因为此项工作由JDBC完成，EJBAPI由Container处理，并由应用部署说明符配置。这样，用户就可以将精力集中在事务处理设计而非实施上。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;h2 id=&quot;154net&quot;&gt;15.4.NET&lt;/h2&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;Microsoft.NET战略基于一组开放的互联网协议，推出了一系列的产品、技术和服务，吹响了互联网技术变革的号角。关于.NET，微软公司CEO鲍尔默这样描述：“Microsoft.NET代表了一个集合、一个环境、一个可以作为平台支持下一代Internet的可编程结构。”这句话简单扼要地概括了.NET的外部特性。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;h3 id=&quot;1541net平台&quot;&gt;15.4.1.NET平台&lt;/h3&gt;
 
-&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
+&lt;p&gt;.NET首先是一个环境。这是一个理想化的未来互联网环境，微软的构想是一个“不再关注单个网站、单个设备与Internet相连的网络环境，而是要让所有的计算机群、相关设备和服务商协同工作”的网络计算环境。简而言之，互联网提供的服务，要能够完成更高程度的自动化处理。未来的互联网，应该以一个整体服务的形式展现在最终用户面前，用户只需要知道自己想要什么，而不需要一步步地在网上搜索、操作来达到自己的目的。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;而要搭建这样一种互联网环境，首先需要解决的问题是针对现有Internet的缺陷来设计和创造一种新一代Internet结构。这种结构不是物理网络层次上的拓扑结构，而是面向软件和应用层次的一种有别于浏览器只能静态浏览的可编程Internet软件结构。因此.NET把自己定位为可以作为平台支持下一代Internet的可编程结构。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;.NET的最终目的就是让用户在任何地方、任何时间，以及利用任何设备都能访问他们所需要的信息、文件和程序。而用户不需要知道这些东西存在于什么地方，甚至连如何获得等具体细节都不需要知道。他们只需发出请求，然后只负责接收即可，而所有后台的复杂性是完全屏蔽起来的。故而，对于企业的IT人员来说，工作量将大大减少，他们也不需要管理复杂的平台及了解各种分布应用之间的工作是如何协调的。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;.NET包括4个重要特点：&lt;/p&gt;
 
-&lt;p&gt;do&lt;/p&gt;
+&lt;p&gt;一是软件变服务，二是基于XML的共同语言，三是融合多种设备和平台，四是新一代的人机界面。这4个特点基本上覆盖了.NET的技术特征。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;(1)软件变服务。鲍尔默在谈到软件服务时说道：“今天的软件产品仅仅是一张光盘，用户购买软件，亲自安装、管理和维护。但是软件服务是来自Internet的服务，它替用户安装、更新和跟踪这些软件，并让它们和用户一同在不同的机器间漫游。它为用户存储自己的信息和参考资料。这些就是软件和软件服务各自不同的风格。”这段话概括了软件变服务的核心。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;伴随着ASP(应用服务提供)产业的兴起，软件正逐渐从产品形式向服务形式转化，这是IT行业的整体趋势。在.NET中，最终的软件应用是以Web服务的形式出现并在Internet发布的。Web服务是一种包装后的、可以在Web上发布的构件，.NET通过WSDL协议来描述和发布这种Web服务信息，通过DISCO协议来查找相关的服务，通过SOAP协议进行相关的简单对象的传递和调用。&lt;/p&gt;
 
-&lt;p&gt;}while(表达式)；&lt;/p&gt;
+&lt;p&gt;如图15-4所示，.NET平台中Orchestration可视化编程工具用于产生基于XML的XLANG代码，它和BizTalk服务器、.NET框架，以及VisualStudio.NET都曾是WindowsDNA2000战略的重要部分。&lt;/p&gt;
 
-&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
+&lt;p&gt;微软的.NET战略意味着：微软公司及在微软平台上的开发者将会制造服务，而不是制造软件。在未来几年之内，微软将陆续发布有关.NET的平台和工具，在Internet上开发Web服务。那时，工作在.NET上的用户、开发人员和IT工作人员都不再购买软件、安装软件和维护软件。取而代之的是，他们将定制服务，软件会自动安装，所有的维护和升级也会通过互联网进行。&lt;/p&gt;
 
-&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
+&lt;p&gt;(2)基于XML的共同语言。XML是从SGML语言演化而来的一种标记语言。作为元语言，它可以定义不同种类应用的数据交换语言。在.NET架构中，XML作为一种应用间无缝接合的手段，用于多种应用之间的数据采集与合并，用于不同应用之间的互操作和协同工作。具体而言，.NET通过XML语言定义了简单对象访问协议(SimpleObjectAccessProtocol，SOAP)、Web服务描述语言(WebServicesDescriptionLanguage，WSDL)、Web服务发现协议。SOAP协议提供了在无中心分布环境中使用XML交换结构化有类型数据的简单轻量的机制。WSDL协议定义了服务描述文档的结构，如类型、消息、端口类型、端口和服务本身。Web服务发现协议定义了如何从资源或者资源集合中提取服务描述文档、相关服务发现算法等。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;(3)融合多种设备和平台。随着Internet逐渐成为一个信息和数据的中心，各种设备和服务已经或正在接入和融入Internet，并试图成为其中的一部分。.NET谋求与各种Internet接入设备和平台的一体化，主要关注在无线设备和家庭网络设备及相关软件、平台方面。&lt;/p&gt;
 
-&lt;p&gt;函数体；&lt;/p&gt;
+&lt;p&gt;(4)新一代的人机界面。新一代人机界面主要体现在“智能与互动”两个方面。.NET包括通过自然语音、视觉、手写等多种模式的输入和表现方法；基于XML的可编辑复合信息架构——通用画布；个性化的信息代理服务；使机器能够更好地进行自动处理的智能标记等技术。
+.NET的平台及框架是基于微软软件工业基础的又一次升级和演化。然而，.NET还是要尽力保证Windows系统及系列产品和.NET能够融为一体，尽量在微软公司原有的软件资产基础上，使.NET继续成为Internet的中心。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;h3 id=&quot;1542net框架&quot;&gt;15.4.2.NET框架&lt;/h3&gt;
 
-&lt;p&gt;（4）、数组&lt;/p&gt;
+&lt;p&gt;Microsoft.NET开发框架如图15-5所示。通用语言运行时及它所提供的一组基础类库是整个开发框架的基础；在开发技术方面，.NET提供了全新的数据库访问技术ADO.NET，以及网络应用开发技术ASP.NET和Windows编程技术WinForms；在开发语言方面，.NET提供了VB、VC++、C#等多种语言支持；而VisualStudio.NET则是全面支持.NET的开发工具。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
+&lt;p&gt;1.通用语言运行时&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
+&lt;p&gt;Microsoft.NET给开发人员带来了一种全新的开发框架，而通用语言运行时(CommonLanguageRuntime，CLR)则处于这个框架的最底层，是这个框架的基础。读者也许对于所谓的C运行时、VB运行时、Jave虚拟机这些概念已经有所了解，而通用语言运行时则为多种语言提供了一种统一的运行环境。另外，它还提供了更多的功能和特性，例如，统一和简化的编程模型，用户不必迷惑于Win32API和COM；避免了DLL的版本和更新问题，从而大大简化了应用程序的发布和升级；多种语言之间的交互，例如，甚至可以在VB中使用C++编写的类；自动的内存和资源管理等。Microsoft.NET正是基于通用语言运行时，实现了这些开发人员梦寐以求的功能。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
+&lt;p&gt;基于通用语言运行时开发的代码称为受控代码，它的运行步骤大体如下：首先使用一种通用语言运行时支持的编程语言编写源代码，然后使用针对通用语言运行时的编译器生成独立于机器的微软中间语言(MicrosoftIntermediateLanguage，MIL)，同时产生运行所需的元数据，在代码运行时再使用即时编译器(JustInTimeCompiler，JITC)生成相应的机器代码来执行。&lt;/p&gt;
 
-&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
+&lt;p&gt;2.基础类库&lt;/p&gt;
 
-&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
+&lt;p&gt;当然对于开发者而言，他们除了关心通用语言运行时提供的那些新特性外，还关心它究竟给开发者提供了什么样的编程接口，这就是基础类库(BaseClassLibrary)。这组基础类库包括了从输入输出到数据访问等各方面，提供了一个统一的面向对象的、层次化的、可扩展的编程接口。它使用一种点号分隔的方法，使得查找和使用类库非常容易。例如基础类库中的根，它的命名空间是System，提供数据访问的类库的命名空间是System.Data。在使用时，开发者只需在自己的应用中添加所需的基础类库的引用，然后就可以使用这个类库中的所有方法、属性等。跟传统的Windows编程相比，使用和扩展基础类库都非常容易，这使得开发者能够高效、快速地构建基于下一代互联网的网络应用。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;3.ADO.NET&lt;/p&gt;
 
-&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
+&lt;p&gt;几乎所有的应用程序都需要访问从简单的文本文件到大型的关系型数据库等各种不同类型的数据。在Microsoft.NET中访问数据库的技术是ADO.NET。ADO.NET提供了一组用来连接到数据库、运行命令、返回记录集的类库，与从前的ADO(ActiveXDataObject)相比，Connection和Command对象很类似，而ADO.NET的革新主要体现在如下几个方面：&lt;/p&gt;
 
-&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
+&lt;p&gt;首先，ADO.NET提供了对XML的强大支持，这也是ADO.NET的一个主要设计目标。在ADO.NET中通过XMLReader，XMLWriter，XMLNavigator，XMLDocument等可以方便地创建和使用XML数据，并且支持W3C的XSLT、DTD、XDR等标准。ADO.NET对XML的支持也为XML成为Microsoft.NET中数据交换的统一格式提供了基础。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-C&quot;&gt;printf(&quot;hello world!&quot;)
-  printf
+&lt;p&gt;其次，ADO.NET引入了DataSet的概念，这是一个驻于内存的数据缓冲区，它提供了数据的关系型视图。不管数据来源于一个关系型的数据库，还是来源于一个XML文档，人们都可以用一个统一的编程模型来创建和使用它。它替代了原有的Recordset的对象，提高了程序的交互性和可扩展性，尤其适合于分布式的应用场合。&lt;/p&gt;
 
+&lt;p&gt;另外，ADO.NET中还引入了一些新的对象，例如DataReader可以用来高效率地读取数据，产生一个只读的记录集等。简而言之，ADO.NET通过一系列新的对象和编程模型，并与XML紧密结合，使得在Microsoft.NET中的数据操作十分方便和高效。&lt;/p&gt;
 
+&lt;p&gt;4.ASP.NET&lt;/p&gt;
 
+&lt;p&gt;ASP.NET是Microsoft.NET中的网络编程结构，它使得建造、运行和发布网络应用非常方便和高效。可以从以下几个方面来了解ASP.NET：&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(1)Web表单。ASP.NETWEB表单的设计目的就是使开发者能够非常容易地创建Web表单，它把VB中的快速开发模型引入网络开发中，从而大大简化了网络应用的开发。具体来说：在ASP.NET中可以支持多种语言，不仅仅支持脚本语言，通用语言运行时支持的所有语言在ASP.NET中都可以使用；代码和内容分开，在现在的ASP(ActiveServerPages)开发中，内容和脚本交错，维护和升级很困难，将它们分开可以使得开发人员和设计人员能够更好地分工合作，提高开发效率；另外在ASP.NET中通过引入服务器端控件，将类似VB的快速开发应用到了网络开发中来，这样大大提高了构建网络表单效率，并且服务器端控件是可扩展的，开发者可以建造自己需要的服务器端控件。&lt;/p&gt;
 
-&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;(2)ASP.NETWeb服务。Web服务是下一代可编程网络的核心，它实际上就是一个可命名的网络资源，可用来在Internet范围内方便表现和使用对象，就像使用今天的COM对象一样，不同的是使用和表现网络服务是通过SOAP甚至HTTP来实现的。在ASP.NET中，建造和使用网络服务都非常方便。&lt;/p&gt;
 
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
+&lt;p&gt;在ASP.NET中建造网络服务就是编写一个后缀为.ASMX的文件，在这个文件中加入想要表现出来的方法即可，网络服务的建造者不需要了解SOAP，XML的细节，只需要把精力集中在自己的服务本身，这也为独立软件服务开发商提供了很好的机会；使用网络服务最简单的方式就是使用HTTP协议(HTTPGET或HTTPPOST)，用户只需要直接访问网络服务(.ASMX文件)的URL即可；当然用户还可以通过SOAP在自己的应用中更灵活地使用网络服务。&lt;/p&gt;
 
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
+&lt;p&gt;(3)ASP.NET应用框架。ASP.NET应用不再是解释脚本，而是编译运行，再加上灵活的缓冲技术，使其性能从根本上得到了提高；由于ASP.NET的应用框架基于通用语言运行时，故而发布一个网络应用，仅仅是一个复制文件的过程，即使是构件的发布也是如此，更新和删除网络应用，可以直接替换/删除文件；开发者可以将应用的配置信息存放到XML格式的文件中，管理员和开发者对应用程序的管理可以分开进行；提供了更多样的认证和安全管理方式；在可靠性等多方面都有很大提高。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
+&lt;p&gt;5.WinForms
+传统的基于Windows的应用(WinForms)，它仍然是Microsoft.NET战略中不可或缺的一部分。在Microsoft.NET中开发传统的基于Windows的应用程序时，除了可以利用现有的技术例如ActiveX控件及丰富的Windows接口外，还可以基于通用语言运行时开发，可以使用ADO.NET、网络服务等，这样也可以实现诸如避免DLL地狱、多语言支持等.NET的新特性。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;p&gt;6.开发语言&lt;/p&gt;
 
- &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;从上面的介绍中，已经知道Microsoft.NET开发框架支持多种语言，在目前的测试版中已经支持VB，C++，C#和Jscript四种语言及它们之间的深层次交互。而且微软支持第三方生产针对Microsoft.NET的编译器和开发工具，这也就是说几乎所有市场上的编程语言都有可能应用于Microsoft.NET开发框架。这样开发者可以任意选择自己喜爱的语言，这种开放和交互的特性正是开发者所热爱的。&lt;/p&gt;
 
+&lt;p&gt;需要特别指出的是，微软在Microsoft.NET中推出了全新的C#语言，这种全新的面向对象的语言使得开发者可以快速地构建从底层系统级到高层商业构件的不同应用。C#在保证了强大的功能和灵活性的同时，给C和C++带来了类似于VB的快速开发，并且它还针对.NET做了特别设计，例如，C#允许XML数据直接映射为它的数据类型等，这些特性结合起来使得C#成为优秀的下一代网络编程语言。&lt;/p&gt;
+
+&lt;p&gt;与此同时，Microsoft.NET对原有的VB和C++也做了很大的改进，使得它们更加适应Microsoft.NET开发框架的需求。例如在VisualBasic.NET中增加了继承等面向对象的特性，结构化的出错处理等；可管理的C++扩展，大大提高了利用C++来开发Microsoft.NET应用的效率等。&lt;/p&gt;
+
+&lt;p&gt;VisualStudio.NET和.NET开发框架紧密结合，是构建互联网应用的优秀工具。VisualStudio.NET通过提供一个统一的集成开发环境及工具，大大提高了开发者的效率；集成了多种语言支持；简化了服务器端的开发；提供了高效地创建和使用网络服务的方法等。.NET框架的一个主要目的是使COM开发变得更加容易。COM开发过程中最难的是COM基本结构的处理。因此，为了简化COM开发，.NET框架实际上已自动处理了所有在开发人员看来是与COM紧密相关的任务，包括引用计算、接口描述及注册。必须认识到，这并不意味着.NET框架构件不是COM构件。事实上，使用VisualStudio6.0的COM开发人员可以调用.NET框架构件，并且在他们看来，后者更像是拥有iUnknown数据的COM构件。相反，使用VisualStudio.NET的.NET框架开发人员则将COM构件视作.NET框架构件。&lt;/p&gt;
+
+&lt;p&gt;为了避免引起误解，这里需对这种关系加以特别说明：COM开发人员必须手动去做大多数.NET框架开发人员可以在运行时自动执行的事情。例如，必须手写COM构件的安全性模块，且无法自动管理模块占用的内存，而在安装COM构件时，注册条目必须放进Windows注册表中。对.NET框架而言，运行时实现了这些功能的自动化。例如，构件本身是自我描述型的，因而无须注册到Windows注册表中便能安装。&lt;/p&gt;
+
+&lt;p&gt;当把COM与Microsoft事务服务器(MTS)和分布式COM(DCOM)结合在一起时，就变成了COM+。COM+提供了一组面向中间层的服务。特别是COM+提供了进程管理功能和数据库与对象连接池处理功能。在将来的版本中，它还将提供一种称为分区的功能——专门为应用程序服务提供商设计的更强大的进程隔离功能。COM+服务主要面向中间层应用程序开发，并主要为大型分布式应用程序提供可靠性和可扩展性。这些服务是对.NET框架所提供服务的补充；通过.NET框架类，可以直接访问这些服务。&lt;/p&gt;
+
+&lt;p&gt;7.其他特征
+.NET框架有几个要素值得一提。首先是它的安全系统和配置系统。这两个系统协同工作，有力地遏止了运行不安全代码的可能性，并大幅度减少了“DLL地狱”对应用程序进行配置时所面临的挑战。安全系统是一个高度细化、基于事实的系统，它赋予开发人员和管理员多种代码处理权限(而不仅仅是“on”或“off”)。将来，还会根据代码本身的核心要素来决定如何实施上述权限。&lt;/p&gt;
+
+&lt;p&gt;例如，当.NET框架应用程序被下载到某一系统中时，它会申请一组权限(诸如对临时目录的写入权限)。运行时将收集有关应用程序的事实信息(诸如：它是从何处下载的、是否用了有效签名、甚至它访问系统的准确程度)，并按管理策略决定是否允许应用程序运行。运行时甚至还可告之应用程序它无法授权申请的所有权限，并允许应用程序自行决定是否继续运行。&lt;/p&gt;
+
+&lt;p&gt;有这种安全系统做保障，许多应用程序配置问题便会迎刃而解。开发人员和管理员(最终是用户)所面临的最大挑战之一是版本的管理问题。如果在新装了某个应用程序之后，一切都陷于瘫痪状态，而在这之前系统一直运行得非常良好，那么最大的可能就是新安装的应用程序重写了一些共享库，并极有可能修正了现有应用程序正使用的程序错误。这种情况出现的频率很高，以致人们将它称为“DLL地狱”。&lt;/p&gt;
+
+&lt;p&gt;.NET框架拥有的几项高级功能可以彻底消除“DLL地狱”现象。首先，它有一个非常强大的内部命名系统，能够有效地防止两个库因互相重名而被错当为对方的情况发生。除此之外，它还提供一项被称作“并行”配置的新功能。如果前例中新安装的应用程序确实重写了共享库，现有应用程序可对该库进行修复。等现有应用程序再次启动时，它会检查所有的共享文件。如果发现文件被更改，同时这些更改又是不兼容的，则它可以请求运行时提取一个它可以使用的版本。得益于强大的安全系统，运行时可以安全地执行该操作，这样应用程序就完成了本身的修复工作。&lt;/p&gt;
+
+&lt;p&gt;总之，Microsoft.NET开发框架在通用语言运行时的基础上，给开发者提供了完善的基础类库、下一代的数据库访问技术ADO.NET、网络开发技术ASP.NET，开发者可以使用多种语言及VisualStudio.NET来快速构建下一代的网络应用。随着相关的互联网标准及技术的普及，可以预言将会有越来越多的开发者采用这种开发结构，并开发出丰富多样的下一代互联网应用。&lt;/p&gt;
+
+&lt;h2 id=&quot;155企业应用集成&quot;&gt;15.5企业应用集成&lt;/h2&gt;
+
+&lt;p&gt;许多企业的信息系统在最初设计时没有考虑多个系统“协同工作”的需要。这主要是由于企业信息化建设者对信息系统由不熟悉到熟悉，从了解信息化的好处，到真正体会到好处需要一个长期的过程，这就客观上造成企业信息化建设缺乏一个整体规划，实际需要的时候才会想到。因而，企业的信息化往往是从单项业务系统开始的，不同系统的开发方式及对于开发规范的遵从程度都有所不同，这使得系统间存在很强的孤立性，再加上对企业外部的信息未予以足够的重视，致使各部门开发出的信息系统最终成为一个个信息孤岛，一个系统很难与其他系统交换信息。同时，大多数企业都有过去遗留下来的异构的系统、应用、商务流程及数据源构成的应用环境。应用环境的通信状况是混乱的，只有很少的接口文档，并且维护代价也非常昂贵。&lt;/p&gt;
+
+&lt;p&gt;据有关数据统计，一家典型的大型企业平均拥有49个应用系统，33%的IT预算是花在传统的集成上，而且普遍是通过“点对点”连接，如图15-6所示，众多的信息孤岛联系起来，以便让不同的系统之间交换信息。&lt;/p&gt;
+
+&lt;p&gt;EAI(EnterpriseApplicationIntegration，企业应用集成)，可以在一定程度上帮助人们解决这一问题。EAI是指通过将业务流程，应用软件、硬件和各种标准联合起来，对企业中完成不同业务功能的应用系统进行无缝集成，使它们像一个整体一样进行业务处理和信息共享，从而提高企业效率，为客户提供灵活的业务服务。&lt;/p&gt;
+
+&lt;p&gt;EAI使人们可以从更高层次来看待企业内的信息资源，使新的信息和应用可以通过可插拔的方式和原有的资源在一个全新的信息集成共享平台上协同工作，共同发挥“1+1&amp;gt;2”的集成效应。企业在借助EAI系统整合企业内部已有的各种信息系统的同时，也加速了数据的即时共享和提高了企业的信息反应能力。特别是，目前处在电子商务时代的企业不仅仅需要在企业内部系统之间进行集成，同时也需要对供应链中的不同环节进行集成。而EAI不仅是连接企业内应用的高效手段，它也是在企业之间建立信息沟通共享的一种科学而有效的方式，从而有效地降低供应链网络的整体拥有成本。&lt;/p&gt;
+
+&lt;p&gt;EAI可以通过中间件技术来连接企业级各种应用，使异构应用系统之间能够相互“交流”与“协作”，如图15-7所示。通过15.1节的介绍，读者对中间件技术的特点有了一定的了解，这里就不再赘述。正因为这些特点，中间件技术能给企业带来的好处也就显而易见了。&lt;/p&gt;
+
+&lt;p&gt;首先，中间件产品对各种硬件平台、操作系统、网络数据库产品及客户端实现了兼容和开放。&lt;/p&gt;
+
+&lt;p&gt;其次，中间件保持了平台的透明性，使开发者不必考虑操作系统的问题。&lt;/p&gt;
+
+&lt;p&gt;第三，中间件实现了对交易的一致性和完整性的保护，提高了系统的可靠性。&lt;/p&gt;
+
+&lt;p&gt;第四，中间件产品可以缩短开发周期50%~75%，从而大大地降低了开发成本，提高了工作效率。&lt;/p&gt;
+
+&lt;p&gt;EAI包括的内容很复杂，涉及结构、硬件、软件及流程等企业系统的各个层面，根据EAI集成的深度来划分可以分为应用集成、业务过程集成、数据集成。&lt;/p&gt;
+
+&lt;p&gt;1.应用集成&lt;/p&gt;
+
+&lt;p&gt;应用层次的集成主要为两个以上的应用中的数据和函数提供接近实时的集成。在网络环境中的跨平台应用程序之间的应用到应用(ApplicationtoApplication，A2A)的集成。它涵盖了普通的代码(COBOL，C++，Java)撰写、应用程序接口、远端过程调用、分布式中间件如TP监控、分布式对象、CORBA、RMI、面向消息的中间件及Web服务等各种技术。应用层次的集成一般来说是通过处理多个应用系统之间的消息交换，实现系统间的集成。各个应用能够处于同步模式，即基于客户(请求程序)和服务器(响应程序)之间的请求响应交互机制。应用系统能够自己处理消息的转换，并且它将影响被集成系统的数据转换和有效性。但是，这需要对系统进行修改以建立发送和接收消息的接口。&lt;/p&gt;
+
+&lt;p&gt;2.业务过程集成&lt;/p&gt;
+
+&lt;p&gt;业务过程集成需要处理企业范围内的业务过程和把企业存在的应用系统整合到这些业务过程中。它是一个完全的企业应用集成实现策略，因为它使企业内的一个个分离系统变成了一个支持业务过程的连续系统，从而满足企业的整个业务过程需求。&lt;/p&gt;
+
+&lt;p&gt;当对业务过程进行集成的时候，企业必须在各种业务系统中定义、授权和管理各种业务信息的交换，以便改进操作、减少成本、提高响应速度。业务过程集成包括业务管理、进程模拟，以及综合任务、流程、组织和进出信息的工作流，还包括业务处理中每一步都需要的工具。业务过程集成至少包括以下两种形式的流程。&lt;/p&gt;
+
+&lt;p&gt;(1)交互式流程。&lt;/p&gt;
+
+&lt;p&gt;交互式流程包含了跨两个系统之间的事务处理。这种流程是完整的且不间断的，它不包含任何需要人为参与的工作和间断的流程。由于交互式流程通常是在两个系统之间流转的，它不需要特别复杂的EAI处理。&lt;/p&gt;
+
+&lt;p&gt;(2)多步流程。&lt;/p&gt;
+
+&lt;p&gt;作为业务流程的一部分，许多单独的事务处理根据事先定义的顺序在两个或者多个系统之间流转，这就涉及工作流和业务流程重组。多步流程有一系列的步骤并同多个系统相关，能在一定的时间内完成。这种流程可以是一对多、多对一或者多对多的关系。&lt;/p&gt;
+
+&lt;p&gt;3.数据集成&lt;/p&gt;
+
+&lt;p&gt;要完成应用集成和业务过程集成，必须首先解决数据和数据库的集成问题。为了处理多个数据库之间的数据移动，很多企业把数据级EAI作为他们实施EAI的切入点。当应用系统必须分享信息时，这种集成可以支持不同数据库之间的数据交换。目前有很多支持数据级EAI的工具，这使得数据级EAI实现起来相对容易，甚至不用修改应用系统的源程序。通行的做法就是将历史数据批量导入新系统中和现行系统中的批量、实时数据处理，也称数据同步。&lt;/p&gt;
+
+&lt;p&gt;随着数据仓库的建立，越来越多的数据同步工作能够采用批量的方式来处理。这样可以掌握更多的信息，例如客户类型、客户交易历史和客户习惯的购买、交货方式都能够每日或者每周更新一次。关键数据、新客户的数据和可用库存增加的需求都能够进行批量实时的更新。很多企业也在寻找方法来进行批量数据的集成，缓解日益增长的数据给数据同步带来的压力。&lt;/p&gt;
+
+&lt;p&gt;当然，更深层次的数据集成，需要首先对数据进行标识并编成目录，另外还要确定元数据模型。这三步完成后，数据才能在数据库系统中分布和共享。但是，目前数据集成解决方案中最普遍的方法发生在企业内的数据库和数据源级别，即通过从一个数据源将数据移植到另外一个数据源来完成数据集成。下面举出数据集成的一些例子：&lt;/p&gt;
+
+&lt;p&gt;将订单从ERP系统更新到CRM(CustomerRelationshipManagement，客户关系管理)系统中，以便销售人员能够实时了解订单的情况。从多个系统中同步和规范客户信息，使企业能够360°全面审视客户。将运作数据实时地保存在系统中，客户和分销商能通过商业智能网络访问企业的库存和订单信息。&lt;/p&gt;
+
+&lt;p&gt;每天一次或者多次地将ERP中的数据导入SCM(SupplyChainManagement，供应链管理)系统中，将有助于企业制订物料需求计划。每天多次将运输的价格信息传输给各个下游分销商。&lt;/p&gt;
+
+&lt;p&gt;数据集成的一个最大的问题是商业逻辑常常只存在于主系统中，无法在数据库层次去响应商业流程的处理，因此限制了实时处理的能力。
+在企业内部，EAI通过建立底层结构来联系横贯整个企业的异构系统、应用、数据源等，完成在企业内部的ERP、CRM、SCM、数据库、数据仓库，以及其他重要的内部系统之间无缝地共享和交换数据的需要。而在电子商务时代，企业不仅需要在内部的应用系统之间进行集成，还需要对供应链中的不同企业系统进行集成，以帮助企业创建一条畅通于企业的各个部门以及它的供应商、承运商、分销商、零售商和顾客之间的信息流，从而进行有效的数据和业务集成。&lt;/p&gt;
+
+&lt;p&gt;特别是随着信息技的普及和企业各种应用的迅速增加，越来越多的企业开始采用EAI解决方案将企业内部的应用软件与外部客户和供应商的应用软件进行链接，实现数据流和业务运作的自动化，从而达到业务的实时与快速。好的企业应用集成解决方案可以实现对于未来业务的集成，维护和修改实现时间和成本的节约，从而提升企业的核心竞争力。&lt;/p&gt;
+
+&lt;h2 id=&quot;156轻量级架构和重量级架构&quot;&gt;15.6轻量级架构和重量级架构&lt;/h2&gt;
+
+&lt;p&gt;MVC模式是一种目前广泛流行的软件设计模式，随着J2EE的成熟，它正成为J2EE平台上推荐的一种设计模型，将业务处理与显示分离，将应用分为模型、视图及控制层，增加了应用的可扩展性。MVC模式为搭建具有可伸缩性、灵活性、易维护性的Web系统提供了良好的机制。&lt;/p&gt;
+
+&lt;p&gt;J2EE多层结构的出现促进了软件业的巨大改变，但是，J2EE只是提出了一般意义上的框架设计，且其庞大的体系显得有些臃肿。轻量级Web架构不仅保持了J2EE的优势，还简化了Web的开发。目前主流的轻量级架构是把Struts、Spring和Hibernate这三种在业内比较推崇的开源技术基于MVC模式相结合，这样在项目开发中不管是从效率上，费用上，还是易维护上都能达到很好的效果。下面将分别介绍这三种框架。&lt;/p&gt;
+
+&lt;h3 id=&quot;1561struts框架&quot;&gt;15.6.1Struts框架&lt;/h3&gt;
+
+&lt;p&gt;Struts是一个基于SUNJ2EE平台的MVC框架，主要是采用Servlet和JSP技术来实现的。在Struts框架中，模型由实现业务逻辑的JavaBean或EJB构件构成，控制器由ActionServlet和Action来实现，视图由一组JSP文件构成，如图15-8所示。&lt;/p&gt;
+
+&lt;p&gt;Struts把Servlet、JSP、自定义标签和信息资源整合到一个统一的框架中，开发人员利用其进行开发时不用自己再编码实现全套MVC模式，极大地节省了时间。&lt;/p&gt;
+
+&lt;p&gt;Struts将业务数据、页面显示、动作处理进行分离，这有利于对各部分的维护。Struts采用FrontController模式来实现动作处理，使所有的动作请求都经过一个统一入口，然后进行分发。这方便了人们在入口中加入一些全局控制代码，如安全控制、日志管理、国际化编码等。通常情况下借助StrutsValidator框架帮助完成Web层的验证工作，不用再去为每个Web页面写验证代码，只需通过配置即可实现。这也减少了开发量，由于验证代码的集中管理，也为维护带来便利。&lt;/p&gt;
+
+&lt;p&gt;Struts的工作流程为：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;首先，JSPview发起一个以.do表示的请求；&lt;/li&gt;
+  &lt;li&gt;ActionForm封装用户请求数据，同时提供验证数据的功能；&lt;/li&gt;
+  &lt;li&gt;ActionServlet根据struts-config.xml文件来得到处理这个请求的Action对象，并将请求发送给这个Action对象；&lt;/li&gt;
+  &lt;li&gt;Action对象调用model去处理这个请求，将结果返回给ActionServlet；&lt;/li&gt;
+  &lt;li&gt;ActionServlet决定将结果返回给对应的view；&lt;/li&gt;
+  &lt;li&gt;view得到结果，并将它显示给用户。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里需要提到的是，可以通过Struts提供的ActionForm封装webform中的元素，使重用web表单成为可能。&lt;/p&gt;
+
+&lt;h3 id=&quot;1562spring框架&quot;&gt;15.6.2Spring框架&lt;/h3&gt;
+
+&lt;p&gt;Spring Framework是由Rod Johnson创立的一个开放源码的应用框架。它是轻量级的J2EE应用程序框架，旨在简化J2EE的开发，降低J2EE项目实施的难度。这个框架包括声明性事务管理，通过RMI或webservices远程访问业务逻辑，mail支持工具，以及对于数据和数据库之间持久层的各种配置的支持。Spring允许自由选择和组装各部分功能，还提供和其他软件集成的接口，如与Hibernate、Struts的集成。&lt;/p&gt;
+
+&lt;p&gt;Spring核心本身是个容器，管理物件的生命周期、物件的组态、相依注入等，并可以控制物件在创建时是以原型(Pro-totype)或单例子(Singleton)的方式来创立。&lt;/p&gt;
+
+&lt;p&gt;Spring的核心概念是控制反转(Inversion of Control，IoC)，更具体而易懂的名词是依赖注入(Depen-dency Injection)，使用Spring，不必自己在程序码中维护物件的依赖关系，只需在构件中加以设定，Spring核心容器会自动根据构件将依赖注入指定的物件。Spring的目标是实现一个全方位的整合框架，在Spring框架下实现多个子框架的组合，这些子框架之间可以彼此独立，也可以使用其他的框架方案加以替代，Spring成为企业级应用程序一站式的解决方案。其架构如图15-9所示。&lt;/p&gt;
+
+&lt;p&gt;Spring模块构建在核心容器之上。核心容器定义了创建、配置和管理bean的方式。Core封装包的主要构件是BeanFactory，它提供对Factory模式的经典实现来消除对程序性单例模式的需要，并真正地允许从程序逻辑中分离出依赖关系和配置。&lt;/p&gt;
+
+&lt;p&gt;DAO提供了JDBC的抽象层，它可消除冗长的JDBC编码和解析数据库厂商特有的错误代码。并且，JDBC封装包还提供了一种比编程性更好的声明性事务管理方法，不仅仅实现了特定接口，而且对所有的POJOs(PlainOldJavaObjects，普通的Java对象)都适用。&lt;/p&gt;
+
+&lt;p&gt;ORM框架提供了对象关系映射工具，其中包括JDO(JavaDataObject，Java持久对象)、Hibernate、Ibstis、JPA(JavaPersistenceAPI，Java持久API)。所有这些都遵从Spring的通用事务和DAO异常层次结构。&lt;/p&gt;
+
+&lt;p&gt;Context(上下文)是一个配置文件。Spring的上下文包括企业服务，例如，EJB、JNDI、RemodelingMail、Validation。&lt;/p&gt;
+
+&lt;p&gt;Web包提供了基础的针对Web开发的集成特性，例如多方文件上传，利用Servletlisteners进行IoC容器初始化和应用上下文。当与Web或Struts一起使用Spring时，这个包使Spring可与其他框架结合。&lt;/p&gt;
+
+&lt;p&gt;通过策略接口，MVC框架变为高度可配置的，容纳了大量视图技术。&lt;/p&gt;
+
+&lt;p&gt;Spring的核心要点是支持不绑定到特定J2EE服务的可重用业务和数据访问对象。Spring的IoC控件主要服务于利用类、对象和服务去组成一个企业级应用，通过规范的方式，将各种不同的控件整合成一个完整的应用。&lt;/p&gt;
+
+&lt;h3 id=&quot;1563hibernate框架&quot;&gt;15.6.3Hibernate框架&lt;/h3&gt;
+
+&lt;p&gt;Hibernate是一种对象和关系之间映射的框架，是Java应用和关系数据库之间的桥梁。它可以将数据库资源映射为一个或者多个POJO。将面向数据库资源的各种业务操作以POLO的属性和方法的形式实现，使人们摆脱烦琐的JDBC代码，将精力更多地集中在编写数据表示和业务逻辑上。Hibernate的基本实现框架如图15-10所示。&lt;/p&gt;
+
+&lt;p&gt;Hibernate是一个工具，而不是一个J2EE的服务器。可以在各种流行的服务器中使用Hibernate，利用Hibernate来作为持久化的处理技术，或者在桌面程序中直接利用Hibernate来完成数据库操作，还可以基于Hibernate成熟的持久化技术框架来扩展平台软件的功能，例如基于Hibernate来完成对EJB3.0标准的实现。Hibernate在支持集成方面提供了对JMX标准的支持，实现了封装Hibernate全部功能的MBean接口。Hibernate的作用如图15-11所示。&lt;/p&gt;
+
+&lt;p&gt;在Hibernate中对象/关系映射机制的核心是一个XML文件，通常命名为&lt;em&gt;.hbm.xml。这个映射文件描述了数据库模式是怎么与一组Java类绑定在一起的。Hibernate提供工具从已有的数据库模式和Java代码生成&lt;/em&gt;.hbm.xml文件。一旦有了*.hbm.xml文件，就可以生成Java代码，或数据库模式，或者两者兼得。&lt;/p&gt;
+
+&lt;p&gt;Hibernate只是一个将持久化类与数据库表映射的工具，Hibernate只需要将每个持久化实例对应于数据库表中的一个数据行即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;1564基于strutsspring和hibernate的轻量级架构&quot;&gt;15.6.4基于Struts、Spring和Hibernate的轻量级架构&lt;/h3&gt;
+
+&lt;p&gt;基于Struts、Spring和Hibernate框架，可以构造出Web轻量级架构。如图15-12所示，该系统逻辑上分成三层。&lt;/p&gt;
+
+&lt;p&gt;(1)表示层。&lt;/p&gt;
+
+&lt;p&gt;由Struts实现，主要完成如下任务：管理用户请求和响应；提供一个控制器代理以调用业务逻辑和各层的处理；处理从其他层抛给StrutsAction的异常；为显示提供数据模型；借助StrutsValidator框架帮助完成Web层的验证工作，通常情况下，不用再去为每个Web页面写验证代码，只需通过配置即可实现。Struts里的控制器也就是ActionServlet会解析核心配置文件struts-config.xml。其中用户登录验证的配置文件如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;struts-config&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;form-beans&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;form-bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;loginForm&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;com.authorise.LoginForm&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;form-property&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;java.lang.String&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form-bean&amp;gt;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/form-beans&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;action-mappings&amp;gt;&lt;/span&gt;			
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;actionpath&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&quot;/&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;loginForm&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;com.authorise.LoginAction&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;scope=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;request&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;input=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/Login.jsp&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;validate=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;false&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/action-mappings&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/struts-config&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h1 id=&quot;二级标题&quot;&gt;二级标题&lt;/h1&gt;
+&lt;p&gt;(2)持久层。&lt;/p&gt;
 
-&lt;hr /&gt;
+&lt;p&gt;由Hibernate实现。它通过一个面向对象的查询语言(Hibernate Query Language，HQL)或正则表达式的API来检索对象的相关信息。HQL类似于SQL，只是把SQL里的表和列用对象和它的字段代替。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;加黑&lt;/strong&gt;&lt;/p&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识 一级标题</summary></entry><entry><title type="html">基础知识 04</title><link href="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC2.html" rel="alternate" type="text/html" title="基础知识 04" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC2</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-02%E7%9A%84%E5%89%AF%E6%9C%AC2.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
-&lt;h1 id=&quot;一级标题&quot;&gt;一级标题&lt;/h1&gt;
-&lt;hr /&gt;
+&lt;p&gt;Hibernate还负责存储、更新、删除数据库记录。同时Hibernate支持大部分主流数据库，且支持父表/子表关系、事务处理、继承和多态。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(3)业务层。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;由Spring来实现。使用Spring的优点是：利用延时注入思想组装代码，提高了系统扩展性和灵活性，实现插件式编程。利用AOP思想，集中处理业务逻辑，减少重复代码，构建了较理想的解决方案。利用其对Hibernate的会话工厂(SessionFactory)、事务管理的封装，可以更简洁地应用Hibernate。&lt;/p&gt;
 
-&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
+&lt;h3 id=&quot;1565轻量级架构和重量级架构的探讨&quot;&gt;15.6.5轻量级架构和重量级架构的探讨&lt;/h3&gt;
 
-&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
+&lt;p&gt;重量级的开发倒并不是指EJB或者是JNDI，很大意义上，重量级的开发都是需要依赖一个非常庞大的容器系统进行开发，在EJB的开发中，所有开发的内容基本都需要放置在一个容器系统中进行运行这些容器因为基本针对大型企业应用，所以体积庞大，占用资源过多，在开发的过程中效率很低。因为使用大型容器作为开发环境的话，很大一部分时间都用在了配置、运行这样的过程上，有时候改动一个小小的部分，需要等很长的时间才能看到结果。如果做单元测试也比较麻烦，虽然现在有很多针对容器的单元测试框架，但是还是没有很好地解决配置的等待问题，所以在开发者这里，EJB逐渐失去了吸引力，因为感觉实在是太笨重了。&lt;/p&gt;
 
-&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
+&lt;p&gt;轻量级框架的优势很大程度上是因为加速了开发的速度，不用部署一个很庞大的容器系统就可以实现以前需要容器才能实现的功能，可以使用Spring代替EJB中的无状态的会话Bean，可以使用Hibernate代替EJB中的实体Bean，而且可以直接写一个应用程序运行已经完成的系统，马上可以看到结果，做单元测试非常简单，不需要做太多的工作就可以构建系统，这些特性对于开发人员来说非常有吸引力。&lt;/p&gt;
 
-&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
+&lt;p&gt;关于轻量级和重量级之间的论战已经由来已久了，最终也没有出现一个很好的结果，重量级框架在大规模运行的时候会表现出非常优异的性能，劣势主要是开发效率较低，轻量级框架正好相反，开发的时候非常迅速，但是在大规模运行的时候，性能与重量级框架相比还是有差异的。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;但是随着最近一些框架标准的成熟，可以有新的选择，因为不管是轻量级还是重量级框架，基本解决的是两个问题，一个是事务控制，另一个是持久化控制，在JPA标准发布以后，看到一个很好的解决方式，持久化的开发可以和任何框架没有关系，直接使用JPA的标准注解即可，所以开发持久化部分的时候可以使用JPA进行注解，开发时期用Hibernate作为JPA的实现进行开发测试，需要上线运行的时候就可以直接部署到EJB的实体Bean上，在EJB3.0之后，已经很好进行移植部署了。关于事务控制，现在所有的实现方式都比较简单，针对方法进行注解事务类型即可，开发的时候可以用一个转换器将这些注解转化为Spring的映射，快速地进行开发，在上线运行的时候，直接使用EJB的会话Bean进行部署就可以解决，这些方式实现起来并不困难，可以很好地解决“重量级”和“轻量级”之间的矛盾。&lt;/p&gt;</content><author><name></name></author><summary type="html">第15章：基于中间件的开发</summary></entry><entry><title type="html">系统架构师 第十八章 软件知识产权</title><link href="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E8%BD%AF%E4%BB%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83.html" rel="alternate" type="text/html" title="系统架构师 第十八章 软件知识产权" /><published>2020-10-12T00:00:00+08:00</published><updated>2020-10-12T00:00:00+08:00</updated><id>http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88%20%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0%20%E8%BD%AF%E4%BB%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83</id><content type="html" xml:base="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E8%BD%AF%E4%BB%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83.html">&lt;h1 id=&quot;第18章软件的知识产权保护&quot;&gt;第18章:软件的知识产权保护&lt;/h1&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;知识产权也称为“智力成果权”、“智慧财产权”。它是人类通过创造性的智力劳动而获得的一项权利。根据我国民法通则的规定，知识产权是指民事权利主体(自然人、法人)基于创造性的智力成果。知识产权具有无形性、专有性、地域性和时间性四大特点。&lt;/p&gt;
 
-&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
+&lt;p&gt;计算机软件具有固定的表达形式，容易复制等特征，大多数国家将其列为版权法的保护范畴，也是知识产权保护中的一个重要方面，因此作为一个软件从业人员，一方面应该了解法规，带头维护知识产权;另一方面也应学会利用知识产权维护自身的合法利益。我国十分重视知识产权的保护，出台了一系列的相关法律法规。其中主要包括《著作权法》、《计算机软件保护条件》、《专利法》、《商标法》和《反不正当竞争法》。本章就针对这些主要的法律法规进行详细的介绍。&lt;/p&gt;
 
-&lt;p&gt;三要素：&lt;/p&gt;
+&lt;h2 id=&quot;181著作权法及实施条例&quot;&gt;18.1著作权法及实施条例&lt;/h2&gt;
 
-&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
+&lt;p&gt;1990年9月通过，1991年6月1日正式实施的《中华人民共和国著作权法》是知识产权保护领域的最重要的法律基础。另外国家还颁发了《中华人民共和国著作权法实施条例》作为执行补充，该条例于1991年5月通过，2002年9月修订。在这两部法律法规中，十分详细、明确地对著作权保护及具体实施作出大量明确的规定。&lt;/p&gt;
 
-&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
+&lt;h3 id=&quot;1811著作权法客体&quot;&gt;18.1.1著作权法客体&lt;/h3&gt;
 
-&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
+&lt;p&gt;著作权法及实施条件的客体是指受保护的作品。这里的作品，是指文学、艺术和自然科学、社会科学、工程技术领域内具有独创性并能以某种有形形式复制的智力成果。&lt;/p&gt;
 
-&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
+&lt;p&gt;1.作品类型其中包括以下9种类型。文字作品:&lt;/p&gt;
 
-&lt;p&gt;准双向口：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;包括小说、诗词、散文、论文等以文字形式表现的作品。&lt;/li&gt;
+  &lt;li&gt;口述作品:是指即兴的演说、授课、法庭辩论等以口头语言形式表现的作品。&lt;/li&gt;
+  &lt;li&gt;音乐、戏剧、曲艺、舞蹈、杂技作品。&lt;/li&gt;
+  &lt;li&gt;美术、摄影作品。&lt;/li&gt;
+  &lt;li&gt;电影、电视、录像作品。&lt;/li&gt;
+  &lt;li&gt;工程设计、产品设计图纸及其说明。&lt;/li&gt;
+  &lt;li&gt;地图、示意图等图形作品。&lt;/li&gt;
+  &lt;li&gt;计算机软件。&lt;/li&gt;
+  &lt;li&gt;法律、行政法规规定的其他作品。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
+&lt;p&gt;2.职务作品&lt;/p&gt;
 
-&lt;p&gt;高阻态&lt;/p&gt;
+&lt;p&gt;为完成单位工作任务所创作的作品，称为职务作品。如果该职务作品是利用单位的物质技术条件进行创作，并由单位承担责任的;或者有合同约定，其著作权属于单位。那么作者将仅享有署名权，其他著作权归单位享有。&lt;/p&gt;
 
-&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
+&lt;p&gt;其他职务作品，著作权仍由作者享有，单位有权在业务范围内优先使用，并且在两年内，未经单位同意，作者不能够许可其他人、单位使用该作品。&lt;/p&gt;
 
-&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
+&lt;h3 id=&quot;1812著作权法的主体&quot;&gt;18.1.2著作权法的主体&lt;/h3&gt;
 
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;著作权法及实施条例的主体是指著作权关系人，通常包括著作权人、受让者两种。&lt;/p&gt;
 
-&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;著作权人与受让者著作权人又称为原始著作权人，是根据创作的事实进行确定的，创作、开发者将依法取得著作权资格。受让者又称为后继著作权人，是指没有参与创作，通过著作权转移活动成为享有著作权的人。&lt;/li&gt;
+  &lt;li&gt;著作权人的确定著作权法在认定著作权人时，是根据创作的事实进行的，而创作就是指直接产生文学、艺术和科学作品的智力活动。而为他人创作进行组织，提供咨询意见、物质条件或者进行其他辅助工作，不属于创作的范围，不被确认为著作权人。&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
+&lt;p&gt;如果在创作的过程中，有多人参与，那么该作品的著作权将由合作的作者共同享有。合作的作品是可以分割使用的，作者对各自创作的部分可以单独享有著作权，但不能够在侵犯合作作品整体的著作权的情况下行使。&lt;/p&gt;
 
-&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
+&lt;p&gt;如果遇到作者不明的情况，那么作品原件的所有人可以行使除署名权以外的著作权，直到作者身份明确。&lt;/p&gt;
 
-&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
+&lt;p&gt;希赛教育专家提示:如果作品是委托创作的，著作权的归属应通过委托人和受托人之间的合同来确定。如果没有明确的约定，或者没有签订相关合同，则著作权仍属于受托人。&lt;/p&gt;
 
-&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
+&lt;h3 id=&quot;1813著作权&quot;&gt;18.1.3著作权&lt;/h3&gt;
 
-&lt;p&gt;控制应用&lt;/p&gt;
+&lt;p&gt;根据著作权法及实施条例规定，著作权人对作品享有5种权利。发表权:即决定作品是否公之于众的权利。署名权:即表明作者身份，在作品上署名的权利。修改权:即修改或者授权他人修改作品的权利。保护作品完整权:即保护作品不受歪曲、篡改的权利。使用权、使用许可权和获取报酬权、转让权:即以复制、表演、播放、展览、发行、摄制电影、电视、录像或者改编、翻译、注释、编辑等方式使用作品的权利;以及许可他人以上述方式使用作品，并由此获得报酬的权利。&lt;/p&gt;
 
-&lt;p&gt;驱动应用&lt;/p&gt;
+&lt;p&gt;1.著作权保护期&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;限根据著作权法相关规定，著作权的保护是有一定期限的。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;著作权属于公民。署名权、修改权、保护作品完整权的保护期没有任何限制，永远
+属于保护范围。而发表权、使用权和获得报酬权的保护期为作者终生及其死亡后的50年(第50年的12月31日)。作者死亡后，著作权依照继承法进行转移。&lt;/li&gt;
+  &lt;li&gt;著作权属于单位。发表权、使用权和获得报酬权的保护期为50年(首次发表后的第50年的12月31日)，若50年内未发表的，不予保护。但单位变更、终止后，其著作权由承受其权利义务的单位享有。&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
+&lt;p&gt;2.使用许可&lt;/p&gt;
 
-&lt;p&gt;VCC 电压是 5V，发光二极管自
-身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
+&lt;p&gt;当第三方需要使用时，需得到著作权人的使用许可，双方应签订相应的合同。合同中应包括许可使用作品的方式，是否专有使用，许可的范围与时间期限，报酬标准与方法，违约责任。在合同未明确许可的权力，需再次经著作权人许可。合同的有效期限不超过10年，期满时可以续签。&lt;/p&gt;
 
-&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
+&lt;p&gt;对于出版者、表演者、录音录像制作者、广播电台、电视台而言，在下列情况下使用作品，可以不经著作权人许可、不向其支付报酬。但应指名作者姓名、作品名称，不得侵犯其他著作权。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;为个人学习、研究或者欣赏，使用他人已经发表的作品。为介绍、评论某一个作品或者说明某一个问题，在作品中适当引用他人已经发表的作品。为报道时间新闻，在报纸、期刊、广播、电视节目或者新闻记录影片中引用已经发表的作品。报纸、期刊、广播电台、电视台刊登或者播放其他报纸、期刊、广播电台、电视台已经发表的社论、评论员文章。报纸、期刊、广播电台、电视台刊登或者播放在公众集会上发表的讲话，但作者声明不许刊登、播放的除外。为学校课堂教学或者科学研究，翻译或者少量复制已经发表的作品，供教学或者科研人员使用，但不得出版发行。&lt;/p&gt;
 
-&lt;p&gt;（1）、基本运算符&lt;/p&gt;
+&lt;p&gt;国家机关为执行公务使用已经发表的作品。图书馆、档案馆、纪念馆、博物馆、美术馆等为陈列或者保存版本的需要，复制本馆收藏的作品。&lt;/p&gt;
+
+&lt;p&gt;免费表演已经发表的作品。对设置或者陈列在室外公共场所的艺术作品进行临摹、绘画、摄影、录像。&lt;/p&gt;
+
+&lt;p&gt;将已经发表的汉族文字作品翻译成少数民族文字在国内出版发行。将已经发表的作品改成盲文出版。&lt;/p&gt;
+
+&lt;h2 id=&quot;182计算机软件保护条例&quot;&gt;18.2计算机软件保护条例&lt;/h2&gt;
+
+&lt;p&gt;1991年6月通过，10月1日正式实施的《计算机软件保护条例》是我国计算机软件保护的法律依据。该条例最新版本是在2001年底通过，2002年1月1日正式实施的。&lt;/p&gt;
+
+&lt;p&gt;由于计算机软件也属于《中华人民共和国著作权法》保护的范围，因此在具体实施时，首先适用于《计算机软件保护条例》条文规定，在《计算机软件保护条例》中没有规定适用条文的情况下，才依据《著作权法》的原则和条文规定执行。&lt;/p&gt;
+
+&lt;p&gt;《计算机软件保护条例》的客体是计算机软件，而在此计算机软件是指计算机程序及其相关文档。根据条例规定，受保护的软件必须由开发者独立开发，并且已经固定在某种有形物体上(如光盘、硬盘、软盘)。&lt;/p&gt;
+
+&lt;p&gt;希赛教育专家提示:《计算机软件保护条例》对软件著作权的保护只是针对计算机软件和文档，并不包括开发软件所用的思想、处理过程、操作方法或数学概念等。&lt;/p&gt;
+
+&lt;p&gt;1.著作权人的确定&lt;/p&gt;
+
+&lt;p&gt;(1)合作开发。&lt;/p&gt;
+
+&lt;p&gt;对于由两个以上开发者或组织合作开发的软件，著作权的归属根据合同约定来确定。若无合同，共享著作权。若合作开发的软件可以分割使用，那么开发者对自己开发的部分单独享有著作权，可以在不破坏整体著作权的基础上行使。&lt;/p&gt;
+
+&lt;p&gt;(2)职务开发。&lt;/p&gt;
+
+&lt;p&gt;如果开发者在单位或组织中任职期间，所开发的软件符合以下条件，则软件著作权应归单位或组织所有:&lt;/p&gt;
+
+&lt;p&gt;针对本职工作中明确规定的开发目标所开发的软件。开发出的软件属于从事本职工作活动的结果。使用了单位或组织的资金、专用设备、未公开的信息等物质、技术条件，并由单位或组织承担责任的软件。&lt;/p&gt;
+
+&lt;p&gt;(3)委托开发。&lt;/p&gt;
+
+&lt;p&gt;如果是接受他人委托而进行开发的软件，其著作权的归属应由委托人与受托人签订书面合同约定;如果没有签订合同，或合同中未规定的，其著作权由受托人享有。&lt;/p&gt;
+
+&lt;p&gt;另外，由国家机关下达任务开发的软件，著作权的归属由项目任务书或合同规定，若未明确规定，其著作权应归任务接受方所有。&lt;/p&gt;
+
+&lt;p&gt;2.软件著作权根据《计算机软件保护条例》规定，软件著作权人对其创作的软件产品，享有以下权利:发表权、署名权、修改权、复制权、发行权、出租权、信息网络传播权、翻译权、使用许可权、获得报酬权、转让权。软件著作权自软件开发完成之日起生效。&lt;/p&gt;
+
+&lt;p&gt;(1)著作权属于公民。&lt;/p&gt;
+
+&lt;p&gt;著作权的保护期为作者终生及其死亡后的50年(第50年的12月31日)。对于合作开发的，则以最后死亡的作者为准。在作者死亡后，将根据继承法转移除了署名权之外的著作权。&lt;/p&gt;
+
+&lt;p&gt;(2)著作权属于单位。&lt;/p&gt;
+
+&lt;p&gt;著作权的保护期为50年(首次发表后的第50年的12月31日)，若50年内未发表的，不予保护。但单位变更、终止后，其著作权由承受其权利义务的单位享有。&lt;/p&gt;
+
+&lt;p&gt;(3)合法复制品所有人权利。&lt;/p&gt;
+
+&lt;p&gt;当得到软件著作权人的许可，获得了合法的计算机软件复制品，则复制品的所有人享有以下权利:根据使用的需求，将该计算机软件安装到设备中(电脑、PDA等信息设备)。可以制作复制品的备份，以防止复制品损坏，但这些复制品不得通过任何方式转给其他人使用。根据实际的应用环境，对其进行功能、性能等方面的修改。但未经软件著作权人许可，不得向任何第三方提供修改后的软件。&lt;/p&gt;
+
+&lt;p&gt;(4)使用许可的特例。&lt;/p&gt;
+
+&lt;p&gt;如果使用者只是为了学习、研究软件中包含的设计思想、原理，而以安装、显示、存储软件等方式使用软件，可以不经软件著作权人许可，不向其支付报酬。(5)侵权责任。根据计算机软件保护条件，侵犯软件著作权的法律责任包括民事责任、刑事责任和行政责任3种。希赛教育专家提示:如果是因为可供选用的表达方式有限，而造成与原来存在的软件相似，则不构成对原有软件著作权的侵犯。&lt;/p&gt;
+
+&lt;h2 id=&quot;183商标法及实施条例&quot;&gt;18.3商标法及实施条例&lt;/h2&gt;
+
+&lt;p&gt;任何能够将自然人、法人及组织的商品与他人的商品区别开的可视性标志，就是可以用于注册的商标。商标可以包括文字、图形、字母、数字、三维标志和颜色组合。商标必须报商标局核准注册。通常包括商品商标、服务商标、集体商标，以及证明商标。&lt;/p&gt;
+
+&lt;p&gt;除了一些与国家、政府、国际组织相同、相似的，以及一些带有民族歧视、影响社会道德等性质的标志不能够作为商标注册外，县级以上行政区划的地名也不能够作为商标。&lt;/p&gt;
+
+&lt;p&gt;1.商标的使用期限商标的使用，是指将商标用于商品、包装、容器、交易文书、广告宣传、展览，以及其商业活动中。&lt;/p&gt;
+
+&lt;p&gt;注册商标的有效期是10年，从核准通过、正式注册之日起开始计算。在有效期满之后，可以续注册，但必须在期满前6个月提出申请，如未在此期间提出申请的，则给予6个月的宽限期，在宽限期还未提出申请的，将注销其商标。&lt;/p&gt;
+
+&lt;p&gt;2.注册商标的申请&lt;/p&gt;
+
+&lt;p&gt;要申请商标注册，应当按照公布的商品和服务分类表按类申请。每一件商标注册申请应当向商标局提交《商标注册申请书》1份、商标图样5份(清晰，长宽不大于250px，不小于125px);指定颜色的，并应当提交着色图样5份、黑白稿1份。&lt;/p&gt;
+
+&lt;p&gt;如果商标是三维标志，应在申请书中声明，并提交能够确定三维形状的图样。商标为外文或者包括外文的，应说明其含义。&lt;/p&gt;
+
+&lt;p&gt;如果有多个申请人，在同一天申请注册相同或近似的商标，则申请人应该提交其申请注册前在先使用该商标的证据，先使用者获得商标注册。如果都没有使用证据，那么将通过协商解决，协商无效，则通过抽签决定。&lt;/p&gt;
+
+&lt;p&gt;3.注册商标专用权保护注册商标的专用权，以核准注册的商标和核定使用的商品为限。而若存在以下行为之一，就属于侵犯注册商标专用权。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;未经商标注册人的许可，使用相同或近似商标。&lt;/li&gt;
+  &lt;li&gt;销售侵犯商标专用权的商品(注:如果销售方不知道是侵权商品，并且能够证明自己是合法取得的，不承担相应责任)。&lt;/li&gt;
+  &lt;li&gt;伪造他人注册商标，或销售这些伪造的注册商标。&lt;/li&gt;
+  &lt;li&gt;未经商标注册人同意，更换其注册商标，并将更换商标的商品投入市场。当出现侵犯注册商标的专用权时，双方当事人可以协商解决。如果无法协商解决，可以向人民法院起诉，或提请工商局处理。法院可以根据侵权行为的情节判处50万元以下的赔偿。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;4.注册商标使用的管理当合法地注册了商标使用权后，就可以在商品、商品包装、说明书或者其他附着物上标明“注册商标”或者注册标记(包括©和®)。&lt;/p&gt;
+
+&lt;p&gt;希赛教育专家提示:若商标注册人死亡或者终止，自死亡或终止之日起1年期满，而没有继续办理转移手续，任何人都可以向商标局申请注销该注册商标。&lt;/p&gt;
+
+&lt;h2 id=&quot;184专利法及实施细则&quot;&gt;18.4专利法及实施细则&lt;/h2&gt;
+
+&lt;p&gt;专利法的客体是发明创造，也就是其保护的对象。这里的发明创造是指发明、实用新型和外观设计。发明是指对产品、方法或者其改进所提出的新的技术方案;实用新型是指对产品的形状、构造及其组合，提出的适于实用的新的技术方案;外观设计是指对产品的形状、图案及其组合，以及色彩与形状、图案的结合所作出的富有美感并适于工业应用的新设计。&lt;/p&gt;
+
+&lt;p&gt;1.授予专利权的条件要想申请专利权的发明和实用新型，应当具备新颖性、创造性和实用性等特点。&lt;/p&gt;
+
+&lt;p&gt;新颖性:也就是在申请专利之前没有同样的发明或实用新型在国内外出现过(不过如果是自己在政府主办或承认的展会上展出，在规定的学术会议或技术会议上发表，他人未经同意泄露等情况，并不丧失新颖性)。创造性:是指同原有的技术相比，有突出的特点和显著的进步。实用性:是指其能够被制造或者使用，并且有积极的效果。而对于想申请专利权的外观设计，应保证与在国内外发表的外观设计不相同、不相近似。&lt;/p&gt;
+
+&lt;p&gt;希赛教育专家提示:对于科学发现、智力活动的规则和方法、疾病的诊断和治疗方法、动植物品种及用原子核变换方法获得的物质，不能够被授予专利权。&lt;/p&gt;
+
+&lt;p&gt;2.确定专利权人&lt;/p&gt;
+
+&lt;p&gt;根据专利法的规定，专利权归属于发明人或者设计人，这是指对发明创造作出创造性贡献的人。对于在发明创造过程中，只负责组织、提供方便、从事辅助工作的都不属于发明人或设计人。&lt;/p&gt;
+
+&lt;p&gt;(1)职务发明。执行单位任务，或者利用本单位的物质技术条件所完成的发明创造，被视为职务发明创造，通常包括:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;在本职工作中作出的发明创造。&lt;/li&gt;
+  &lt;li&gt;在履行单位交付的本职工作之外的任务所做出的发明创造。&lt;/li&gt;
+  &lt;li&gt;退职、退休或者调动工作后1年内做的，与其原来承担的任务相关的发明创造。对于职务发明的专利申请被批准后，单位是专利权人。对于利用单位的物质技术条件进行发明创造的，发明人、设计人与单位之间可以签订合同，重新规定专利权的归属。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;(2)合作发明、设计。&lt;/p&gt;
+
+&lt;p&gt;对于合作发明、设计的，其专利权应属共同所有，但可以根据合作方之间另行签订的合同来确定专利权的归属。&lt;/p&gt;
+
+&lt;p&gt;(3)委托发明。&lt;/p&gt;
+
+&lt;p&gt;一个单位或者个人接受其他单位或个人的委托，所完成的发明创造，若没有签订合同规定专利权归属，则专利权归属发明、设计者。如果是非职务发明，则单位无权压制个人进行专利权申请。对于多个相类似的专利申请，则专利权归属最先提交的申请人。&lt;/p&gt;
+
+&lt;p&gt;3.专利权
+未经专利权人许可，实施专利的，就属于侵犯专利权，专利权人可以起诉，申请调解。&lt;/p&gt;
+
+&lt;p&gt;假冒他人专利，没收违法所得，并处3倍以下，或5万元以下的罚款，情节严重的，依法追究刑事责任。以非专利产品冒充专利产品，责令整改，并可处5万元以下的罚款。侵犯专利权的赔偿数额，参照该专利许可使用费的倍数合理确定。专利诉讼的有效期是2年，以专利权人得知侵权行为之日起计算。对于以下情况，不视为侵犯专利权:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;对于专利权人制造、进口或者经专利权人许可而制造、进口的专利产品，或者依照专利方法直接获得的产品售出后，使用、许诺销售或者销售该产品。&lt;/li&gt;
+  &lt;li&gt;在专利申请日前已经制造相同产品，使用相同方法或者已经作好制造、使用的必要准备，并且在原有范围内继续制造、使用。&lt;/li&gt;
+  &lt;li&gt;临时通过中国的国外运输工具，按其自身需要使用了专利。&lt;/li&gt;
+  &lt;li&gt;专为科学研究和实验而使用有关专利的。我国现行专利法规定的发明专利权保护期限为20年，实用新型和外观设计专利权的期限为10年，均从申请日开始计算。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在保护期内，专利权人应该按时缴纳年费。在专利权保护期限内，如果专利权人没有按规定缴纳年费，或以书面声明放弃其专利权的，专利权可以在期满前终止。&lt;/p&gt;
+
+&lt;p&gt;另外，任何单位和个人都可以在授予专利之日起，请求专利复审，如果复审未通过，则将终止专利权。&lt;/p&gt;
+
+&lt;p&gt;对于具备实施条件的单位，可以以合理的条件请求发明或者实用新型专利权人许可实施其专利。若国家出现紧急状态或者非常情况时，可以为了公共利益强制实施发明专利、实用新型专利的许可。&lt;/p&gt;
+
+&lt;h2 id=&quot;185反不正当竞争法&quot;&gt;18.5反不正当竞争法&lt;/h2&gt;
+
+&lt;p&gt;不正当竞争是指经营者违反规定，损害其他经营者的合法权益，扰乱社会经济秩序的行为。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;采用不正当的市场交易手段:例如假冒他人注册商标;擅自使用与知名商品相同或相近的名称、包装，混淆消费者;擅自使用他人的企业名称;在商品上伪造认证标志、名优标志、产地等信息，从而达到损害其他经营者的目的。&lt;/li&gt;
+  &lt;li&gt;利用垄断的地位，来排挤其他经营者的公平竞争。&lt;/li&gt;
+  &lt;li&gt;利用政府职权，限定商品购买，以及对商品实施地方保护主义。&lt;/li&gt;
+  &lt;li&gt;利用财务或其他手段进行贿赂，以达到销售商品的目的。&lt;/li&gt;
+  &lt;li&gt;利用广告或者其他方法，对商品的质量、成分、性能、用途、生产者、有效期、
+产地等进行误导性的虚假宣传。&lt;/li&gt;
+  &lt;li&gt;以低于成本价进行销售，排挤竞争对手。不过对于鲜活商品、有效期将至及积压
+产品的处理，以及季节性降价，清债、转产、歇业等原因进行降价销售均不属于不正当竞争。&lt;/li&gt;
+  &lt;li&gt;搭售违背购买者意愿的商品。&lt;/li&gt;
+  &lt;li&gt;采用不正当的有奖销售。例如谎称有奖，却是内定人员中奖;利用有奖销售推销
+次价高产品;奖金超过5000元的抽奖式有奖销售。&lt;/li&gt;
+  &lt;li&gt;捏造、散布虚伪事实，损害对手商誉。&lt;/li&gt;
+  &lt;li&gt;串通投标，排挤对手。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;采用不正当竞争对别的经营者造成损害的，应承担赔偿责任。无法计算损失的，则赔偿侵权期因侵权所得的利润。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;对于假冒注册商标、姓名、认证、产地的不正当竞争行为根据《商标法》进行处罚;仿冒知名商标的，则可以根据情节处违法所得的1万~3万元罚款，特别严重的追究刑事责任。&lt;/li&gt;
+  &lt;li&gt;通过贿赂达到销售目的，根据情节处以1万~20万元罚款，严重的追究刑事责任。&lt;/li&gt;
+  &lt;li&gt;利用独占地位进行经营，根据情节处以5万~20万元罚款;借此销售质次价高商品的，则没收违法所得，并罚款1万~3万元。&lt;/li&gt;
+  &lt;li&gt;采用广告误导消费者，处以1万~20万元罚款。&lt;/li&gt;
+  &lt;li&gt;采用不合法的有奖销售的，根据情节处以1万~10万元的罚款。&lt;/li&gt;
+  &lt;li&gt;串通投标者，根据情节处以1万~20万元的罚款。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在《反不正当竞争法》中，对商业秘密进行了保护。商业秘密是指不为公众所知，具有经济利益，具有实用性，并且已经采取了保密措施的技术信息与经营信息，如果存在以下行为的，视为侵犯商业秘密:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;以盗窃、利诱、胁迫等不正当手段获取别人的商业秘密。&lt;/li&gt;
+  &lt;li&gt;披露、使用以不正当手段获取的商业秘密。&lt;/li&gt;
+  &lt;li&gt;违反有关保守商业秘密的要求约定，披露、使用其掌握的商业秘密。对于侵犯商业秘密的，将根据情节处以1万~20万元罚款。&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">第18章:软件的知识产权保护</summary></entry><entry><title type="html">系统架构师 第十六章 安全</title><link href="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-%E5%AE%89%E5%85%A8.html" rel="alternate" type="text/html" title="系统架构师 第十六章 安全" /><published>2020-10-12T00:00:00+08:00</published><updated>2020-10-12T00:00:00+08:00</updated><id>http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88%20%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0%20%E5%AE%89%E5%85%A8</id><content type="html" xml:base="http://localhost:4000/2020/10/12/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88-%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-%E5%AE%89%E5%85%A8.html">&lt;h1 id=&quot;第16章安全性和保密性设计&quot;&gt;第16章:安全性和保密性设计&lt;/h1&gt;
+
+&lt;p&gt;随着科技进步、社会发展，尤其是以计算机为代表的信息技术飞速发展，各种信息呈爆炸式发展。计算机及信息技术的应用领域在不断扩展，计算机在政府、企业、民生等各个领域中都得到越来越广泛的应用。与此同时，网络攻击和入侵事件与日俱增，重要机构的信息系统遭黑客袭击的事件时有发生。攻击者可以从容地对那些缺乏足够安全保护的信息系统进行攻击和入侵，如进行拒绝服务攻击、从事非授权的访问、肆意窃取和篡改重要的数据信息、安装后门监听程序以便随时获得内部信息、传播计算机病毒、摧毁主机等。攻击和入侵事件给这些机构和组织带来了巨大的经济损失和形象的损害，甚至威胁到国家的安全。&lt;/p&gt;
+
+&lt;p&gt;信息化时代，人们对信息系统的安全需求越来越迫切。信息安全，具体地说就是保证信息的保密性、完整性、真实性、占有性。保密性是指系统中的信息必须按照该信息拥有者的要求保证一定的秘密性，不会被未经许可的第三方非法获取。系统必须阻止一切对秘密信息的非授权访问或泄露。完整性是指系统中的信息应当安全、准确、有效，要求数据不能被非法改动或删除。完整性是信息安全的最基本要求。为了实现完整性，可以借助本章讲述的数字签名、加密等措施，从而有力地保护数据的完整。真实性是指对信息的发送者身份的确认或系统中有关主体的身份确认，这样可以保证信息的可信度。信息的真实性可以通过数字签名、公钥加密等方式来实现。占有性是指要保护信息赖以存储的节点、介质、载体等不被盗用或窃取。保护信息占有性的方法有使用版权、专利、商业秘密性，提供物理的或逻辑的存取限制方法，维护和检查有关窃取文件的记录等。&lt;/p&gt;
+
+&lt;h2 id=&quot;161-加密和解密&quot;&gt;16.1 加密和解密&lt;/h2&gt;
+
+&lt;p&gt;加密技术源远流长，自从古代有了信息的传递和存储，就有了加密技术的运用。此后，很长一段时间里，加密及解密技术在军事、政治、外交、金融等特殊领域里被普遍采用，并经过长时间的研究和发展，形成了比较完备的一门学科——密码学。&lt;/p&gt;
+
+&lt;p&gt;密码学是研究加密方法、秘密通信的原理，以及解密方法、破译密码的方法的一门科学。&lt;/p&gt;
+
+&lt;p&gt;加密和解密的过程大致如下:首先，信息的发送方准备好要发送信息的原始形式，叫作明文。然后对明文经过一系列变换后形成信息的另一种不能直接体现明文含义的形式，叫作密文。由明文转换为密文的过程叫作加密。在加密时所采用的一组规则或方法称为加密算法。接收者在收到密文后，再把密文还原成明文，以获得信息的具体内容，这个过程叫作解密。解密时也要运用一系列与加密算法相对应的方法或规则，这种方法或规则叫作解密算法。在加密、解密过程中，由通信双方掌握的参数信息控制具体的加密和解密过程，这个参数叫作密钥。密钥分为加密密钥和解密密钥，分别用于加密过程和解密过程。&lt;/p&gt;
+
+&lt;p&gt;在加密和解密的过程中，如果采用的加密密钥与解密密钥相同，或者从一个很容易计算出另一个，则这种方法叫作对称密钥密码体制，也叫作单钥密码体制。反之，如果加密和解密的密钥并不相同，或者从一个很难计算出另外一个，就叫作不对称密钥密码系统或者公开密钥密码体制，也叫作双钥密码体制。&lt;/p&gt;
+
+&lt;h3 id=&quot;1611-对称密钥加密算法&quot;&gt;16.1.1 对称密钥加密算法&lt;/h3&gt;
+
+&lt;p&gt;在过去很长一段时间里，人们一直都采用对称密钥密码体制来对信息进行加密和解密，直到现在，对称密钥密码体制也仍然是一种非常重要的常用加密方法。&lt;/p&gt;
+
+&lt;p&gt;对称密钥密码体制中，加密和解密过程中所使用的是同一个密钥，或者即使加密密钥和解密密钥不同，但是很容易地由一个计算出另外一个。显然，在这种密码体制中，密钥成为整个秘密通信的核心，整个加密系统的安全性完全以密钥的保密为基础。如果密钥暴露，则整个密码体制就完全失去了保密的效果。所以说，密钥的保密是对称密钥加密体制安全保密的关键，必须妥善保存并经由可靠的渠道传递。&lt;/p&gt;
+
+&lt;p&gt;对称密钥加密算法有多种，例如，DES(DataEncryptionStandard，数据加密标准)、IDEA(InternationalDataEncryptionAlgorithm，国际数据加密算法)、Skipjack、3DES、GDES、NewDES、Lucifer、FEALN、LOKI91、RC4、RC5等。&lt;/p&gt;
+
+&lt;p&gt;1.DES算法&lt;/p&gt;
+
+&lt;p&gt;DES算法是1977年美国政府公布的一种加密算法，由于算法实现简单，加密效果好，在很长时间里在全世界范围都被广泛运用。它通过对数据进行非常复杂的迭代和置换进行加密，使得企图破译者从加密后的密文中无法获得任何有效信息。对这种加密方法，如果用穷举的方法进行攻击的话，由一台一秒钟能够进行10000次破译的计算机来计算，则要经过200多年才能够破解，可见DES算法具有很好的保密效果。另外，DES算法实现起来并不复杂，不但在软件中可以容易地实现，而且早已经在芯片上实现了，使用起来非常方便。&lt;/p&gt;
+
+&lt;p&gt;DES算法的过程，简单来说，就是把要加密的明文分成64位的数据段作为输入，再使用根据64位密钥变化生成的52个子密钥，对输入的数据段依次进行初始置换、16轮迭代、逆初始置换，然后得到64位密文。&lt;/p&gt;
+
+&lt;p&gt;DES的解密过程与加密过程几乎相同，只是子密钥的使用顺序不一样。加密时依次使用的部分参数K1K2K3…K16，在解密时则按照K16K15K14…K1顺序使用。其他算法完全一样，这也是DES容易使用的一个方面。&lt;/p&gt;
+
+&lt;p&gt;2.IDEA算法&lt;/p&gt;
+
+&lt;p&gt;IDEA在加密运算中所处理的数据段大小也是64位，但是所用的密钥长度为128位，而且采用更加复杂的加密算法，目的是保证它不会被轻易破译。IDEA是一种加密强度很高的加密算法，迄今为止还没有出现对该算法的有效攻击。假如一台计算机一秒钟可以产生和运行10亿个密钥，则要猜出IDEA密钥需要花费1013年的时间，可见IDEA的加密强度非常高。另外，IDEA实现非常方便，既可以通过软件实现，也可以通过硬件实现。&lt;/p&gt;
+
+&lt;p&gt;IDEA算法对数据的处理是以64位为单位的，在加密前把要加密的明文按每64位作为一个数据段进行分割然后分别加密。&lt;/p&gt;
+
+&lt;p&gt;IDEA的解密过程与加密过程基本相同，所不同的就是解密子密钥的产生方式与加密子密钥的产生方式不一样，解密的其他运算过程同加密一样，也是把64位数据段分成4个16位的数据段，然后经过八轮迭代变换和一轮输出变换，就可以得到对应的明文结果。&lt;/p&gt;
+
+&lt;h3 id=&quot;1612-不对称密钥加密算法&quot;&gt;16.1.2 不对称密钥加密算法&lt;/h3&gt;
+
+&lt;p&gt;对称密钥加密方法是加密、解密使用同样的密钥，由发送者和接收者同时保存，在加密和解密时使用相同的密钥。采用这种方法的主要问题是密钥的生成、导入、存储、管理、分发等过程比较复杂，特别是随着用户的增加，密钥的需求量成倍增加。而在较大规模的信息系统中，大量密钥的分配与管理是一个难以解决的问题。&lt;/p&gt;
+
+&lt;p&gt;例如，系统中有n个用户，其中每两个用户之间需要建立密码通信，则系统中每个用户须掌握(n-1)/2个密钥，而系统中所需的密钥总数为n*(n-1)/2个。对10个用户的情况，每个用户必须有9个密钥，系统中密钥的总数为45个。对100个用户来说，每个用户必须有99个密钥，系统中密钥的总数为4950个。这还仅仅考虑用户之间的通信只使用一种会话密钥的情况，如果不同的会话需要变换不同的密钥，则密钥总数就更多了。如此庞大数量的密钥生成、管理、分发是一个难以处理的问题。&lt;/p&gt;
+
+&lt;p&gt;与对称密钥加密方法不同，不对称密钥加密技术在对信息进行加密和解密时，需要分别采用两个不同的密钥，因此也称为双钥加密方法。它在运算中，先产生一对密钥，其中之一是保密密钥，由用户自己保存，不能向外界泄漏，简称私钥;另一个为公开密钥，可对外公开，甚至可在公共目录中列示，简称公钥，因此也称公开密钥加密方法。&lt;/p&gt;
+
+&lt;p&gt;只有使用私钥才能解密用公钥加密的数据，同时使用私钥加密的数据只能用公钥解密。在通信过程中，如果发送者要向接收者发送保密信息，则需要先用接收者的公开密钥对信息进行加密，然后发送给该接收者，接收方用其私钥能够顺利解密。而其他人即使收到加密的密文也无法正确解读，从而达到保密通信的目的。&lt;/p&gt;
+
+&lt;p&gt;公开密钥加密方法中，要想达到良好的加密效果，算法上必须做到:在计算上产生密钥非常容易;已知公钥的情况下对明文加密在计算上很容易实现;已知私钥的情况下对密文解密在计算上很容易实现;尽管用于加密和解密的两个密钥在数学上是相关的，但是在已知公钥的情况下，要想求得私钥在计算上不可行;已知公钥和密文的情况下，要想求得明文在计算上不可行。只有做到以上几点，才能有效地防止攻击者对算法的破译。&lt;/p&gt;
+
+&lt;p&gt;不对称密钥加密算法有多种，例如，RSA、背包密码、McEliece、DiffeHellman、Rabin、OngFiatShamir、零知识证明的算法、椭圆曲线、EIGamal等。这里主要介绍RSA的加密原理。&lt;/p&gt;
+
+&lt;p&gt;在众多的公钥加密算法中，以1977年由RonRivest、AdiShamir和LeonardAdleman提出的以他们的名字命名的RSA加密算法最为著名。而且它是第一个既能用于数据加密也能用于数字签名的算法。RSA从提出到现在已经二十多年，经历了各种攻击的考验，逐渐为人们所接受，被普遍认为是目前优秀的公钥加密方法之一。由于它易于理解和操作，因而获得了广泛的应用。但RSA的安全性一直未能得到理论上的证明。&lt;/p&gt;
+
+&lt;p&gt;RSA的安全性依赖于大数的分解，即求得两个大数(例如，大于100位的十进制数)的乘积非常容易，但是要把一个大数分解为两个素数却非常困难。&lt;/p&gt;
+
+&lt;p&gt;在RSA加密体制中，每个用户有公开密钥PK=(N，e)和私人密钥SK=(N，d)，其中，N为两个大素数的乘积，为了保密性更好，一般都取两个100位以上的大素数相乘得到N。e和d是根据一定运算法则计算得到的，虽然N、e、d之间存在一定的计算关系，但是攻击者根据N、e无法求解d，从而实现不对称加密。&lt;/p&gt;
+
+&lt;p&gt;1.RSA加密过程&lt;/p&gt;
+
+&lt;p&gt;首先把需要加密的明文按比特位分成等长的数据段，使得每个数据段对应的十进制数小于N，即数据段的长度小于log2N。然后依次对每个明文数据段m做加密运算可以得到密文c∶c=memodN。&lt;/p&gt;
+
+&lt;p&gt;相应的，解密时对密文数据段做解密运算就可以得到明文m∶m=cemodN。&lt;/p&gt;
+
+&lt;p&gt;2.RSA数字签名&lt;/p&gt;
+
+&lt;p&gt;RSA加密算法不仅可以用于信息的加密，而且还可以用于发送者的身份验证或数字签名。例如，用户B要向A发送一个信息m，而且要让A确信该信息就是B本人发出的。为此，B用自己的私钥SK=(N，d)对信息加密得到密文c∶c=mdmodN，然后把c发送给A。A收到密文后，使用B的公钥PK=(N，e)对密文进行解密得到明文m∶m=cemodN。这样，经过验证，A可以确认信息m确实是B发出的，因为只有B本人才有与该公钥对应的私钥，其他人即使知道公钥，也无法猜出或计算出B的私钥来冒充他发送加密信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;162-数字签名与数字水印&quot;&gt;16.2 数字签名与数字水印&lt;/h2&gt;
+
+&lt;p&gt;散列函数是一种公开的数学函数。散列函数运算的输入信息也可叫作报文。散列函数运算后所得到的结果叫作散列码或者叫作消息摘要。散列函数具有如下一些特点:
+(1)不同内容的报文具有不同的散列码，而一旦原始报文有任何改变，哪怕改变一位信息，则通过散列函数计算后得到的散列码也将完全不同。这样，这个散列码就好比是这个报文所特有的“指纹”。
+(2)散列函数是单向的，即求解某一个报文的散列码非常容易，但是根据散列码来倒推原始报文是非常困难的。
+(3)对于任何一个报文，无法预知它的散列码。
+(4)散列码具有固定的长度，不管原始报文的长度如何，通过散列函数运算后的散列码都具有一样的长度。例如，MD5(MessageDigestAlgorithm5，消息摘要算法第5个版本)&lt;/p&gt;
+
+&lt;p&gt;散列算法的散列码长度为128位，并且不管是对一部百科全书，还是对某个人的工资进行MD5散列运算，得到的散列码长度都是128位。
+由于散列函数具有这些特征，因此散列函数可以用来检测报文的可靠性。接收者对收到的报文用与发送者相同的散列函数进行运算，如果得到与发送者相同的散列码，则可以认为报文没有被篡改，否则，报文就是不可信的。&lt;/p&gt;
+
+&lt;p&gt;常见的散列函数有MD5、SHA、HMAC等。MD5是一种非常著名的散列算法，已经成为国际标准，具有很好的安全性能。MD5算法在对输入的报文进行计算时，是以512位为单位进行处理的，结果生成一个128位长的消息摘要;SHA、HMAC等算法都是对任意长度的报文以512位为单位进行处理，最后得出一个160位的消息摘要。&lt;/p&gt;
+
+&lt;h3 id=&quot;1621-数字签名&quot;&gt;16.2.1 数字签名&lt;/h3&gt;
+
+&lt;p&gt;对于计算机系统中传送、存储的重要文件、数据、信息等，一般需要有某种方式来确认其真实性，即接收者能够确认自己得到的信息确实是由该信息所声称的发送者发出的，而不是由非法入侵者伪造、冒充发出的，并且还要能够保证信息在传送、存储中没有被恶意篡改，这样这份信息才能真实地反映发送方的意图。另外，对于发送方来说，如果发出一份信息，还必须有一定的措施阻止其否认自己发出信息的行为，即不可否认性。&lt;/p&gt;
+
+&lt;p&gt;只有做到以上几点，一个信息传送、存储系统才能够安全、可靠，其上所传送、存储的信息才是真实的、值得相信的。&lt;/p&gt;
+
+&lt;p&gt;举例来说，互有贸易往来的买卖双方之间通过计算机系统进行贸易，卖方通过计算机系统给买方发出一张电子报价单，买方收到后，擅自更改了收到的单价，并声称是卖方发出的，而且据此下订单，这就是篡改信息。显然安全的系统应该能够阻止这种行为。&lt;/p&gt;
+
+&lt;p&gt;要实现上述安全的系统，就离不开数字签名技术。数字签名主要由两个算法组成:签名算法和验证算法。通过使用签名算法签名一个消息，所得到的签名能够通过一个验证算法来验证签名的真实性和有效性。所以数字签名技术的大致过程就是:信息的发送方对信息利用自己的私钥进行签名，接着发送方把这个签名和信息一起发送给接收方。接收方收到信息后利用发送方的公钥来对其中的数字签名进行验证，确认其合法性。&lt;/p&gt;
+
+&lt;p&gt;目前已经有大量的数字签名算法，例如，RSA数字签名算法、EIGamal、Fiat-Shamir、Guillon-Oucsquerrter、DSS(DigitalSignatureStandard，数字签名标准)、DSA(Digital Signature Algorithm，数字签名算法)、椭圆曲线等。&lt;/p&gt;
+
+&lt;p&gt;1.RSA结合MD5数字签名&lt;/p&gt;
+
+&lt;p&gt;前面讲过，RSA公钥加密技术本身就可以用来实现数字签名。但是仅仅使用公钥加密算法进行数字签名的运算量比较大，尤其是要传送的信息量比较大时，速度会更加慢。显然，直接用这种方法进行数字签名并不是很好的选择。&lt;/p&gt;
+
+&lt;p&gt;而散列算法(例如，MD5算法)就有很好的特性，它能对每一个不同长度的信息产生相互不同的、独特的、简短的消息摘要。这个消息摘要可以看作这个信息特有的“指纹”，因而非常适合用作数字签名。&lt;/p&gt;
+
+&lt;p&gt;通过散列算法对原始数据进行散列，再对散列码进行公钥加密就可以很好地实现数字签名。它的特点是:它代表了文件的特征，具有唯一性。只要文件发生哪怕一位数据的改变，或者签名者有任何差别，数字签名的值也将随之而发生改变;不同的文件和签名者得到的是不同的数字签名。&lt;/p&gt;
+
+&lt;p&gt;RSA结合MD5数字签名的主要过程是:信息的发送方通过对信息进行散列运算生成一个消息摘要，接着发送方用自己的私钥对这个消息摘要进行加密，就形成发送方的数字签名。然后，把这个数字签名作为信息的附件和信息一起发送给信息的接收方。接收方收到信息后，首先对收到的信息进行与发送者相同的散列运算得到一个消息摘要，接着再用发送方的公钥来对信息中附加的数字签名进行解密得到发送方计算出的散列码。如果两个散列码相同，那么接收方就能确认该信息和数字签名是由发送方发出的。通过数字签名能够实现对原始信息完整性的鉴别和发送方发送信息的不可抵赖性。&lt;/p&gt;
+
+&lt;p&gt;下面结合一个例子，看一看RSA结合MD5数字签名的具体步骤:&lt;/p&gt;
+
+&lt;p&gt;(1)信息发送者A要向B发送一份信息，A先按双方约定的散列算法对该信息进行散列运算，得到一个该信息特有的消息摘要H，从前面所述可以知道，只要改动信息中任何一位，重新计算出的消息摘要值就会与原先的值不相符。这样就保证了信息的不可更改性。
+(2)接着把该消息摘要用A自己的私钥加密，得到A对该信息的数字签名S。
+(3)然后A把信息原文与数字签名S一起发送给B。
+(4)当B收到后，先用A的公钥对数字签名S解密得到A的消息摘要H。
+(5)再用同样的散列算法对收到的信息进行散列运算，得到消息摘要H’。
+(6)比较H与H’，如相等则说明信息确实来自它所声称的发送者A。在传输过程中，如有攻击者对文件进行了篡改，但他并不知道发送方的私人密钥，因此，接收方解密得到的数字签名H与经过计算后的数字签名H’必然不同。这就提供了一个安全的确认发送方身份的办法。当然，以上例子中，对传送的信息是以明文出现的，不具有保密意义。实际应用中，还需要对信息本身运用适当的保密措施。&lt;/p&gt;
+
+&lt;p&gt;RSA用于数字签名的一个重要的特点是能够证实信息发送方的身份及电子文件的可靠性和完整性，它对于发送方和被发送的信息都是独一无二的，具有可验证性和不可否认的权威性特点;另一个重要的特点是它通过在计算机之间交换数字证书就可以确定当事者就是他们所宣称的人。&lt;/p&gt;
+
+&lt;p&gt;2.数字签名标准&lt;/p&gt;
+
+&lt;p&gt;DSS是美国国家标准与技术学会的数字签名标准，自1991年提出以来又经过广泛的修改。DSS为计算和验证数字签名指定了一个数字签名算法——DSA。DSA是ElGamal数字签名算法的一个改进版本，它通过选择较小规格的参数减少数字签名的数据量，从而减少了存储空间和传输带宽。&lt;/p&gt;
+
+&lt;p&gt;DSS中指定SHA作为其散列算法，它对原始信息进行运算后产生160位的消息摘要，然后DSS把这一消息摘要与一个用作这个特殊签名的随机数作为输入送到数字签名算法中，经过运算生成数字签名。&lt;/p&gt;
+
+&lt;p&gt;该数字签名函数还依赖于发送方的私钥SK和一个对许多通信方都公开的由重要的公钥集合组成的全局公钥。&lt;/p&gt;
+
+&lt;p&gt;接收方在收到消息摘要和签名后将其作为验证函数的输入。验证函数还依赖于全局公钥和与发送方的私钥相匹配的公钥PK，这样只有发送方用其自己的私钥才能产生有效的签名。数字签名作为一项重要的鉴别技术，近年来越来越受到人们的重视，在政府、军事、金
+融、安全等领域得到广泛的运用。通过数字签名可以有效地保证数据的完整性，防止第三方伪造或发送方的抵赖。&lt;/p&gt;
+
+&lt;p&gt;2004年8月28日，十届全国人大常委会第十一次会议表决通过了电子签名法。这部法律规定，可靠的电子签名与手写签名或者盖章具有同等的法律效力，并于2005年4月1日起施行。这部法律将对我国电子商务、电子政务等计算机信息系统的发展起到极其重要的促进作用。&lt;/p&gt;
+
+&lt;h3 id=&quot;1622-数字信封&quot;&gt;16.2.2 数字信封&lt;/h3&gt;
+
+&lt;p&gt;数字信封是公钥密码体制在实际中的一个应用，是用加密技术来保证只有规定的特定收信人才能阅读通信的内容。在数字信封中，信息发送方采用对称密钥来加密信息内容，然后将此对称密钥用接收方的公开密钥来加密(这部分称数字信封)，之后，将它和加密后的信息一起发送给接收方，接收方先用相应的私有密钥打开数字信封，得到对称密钥，然后使用对称密钥解开加密信息。这种技术的安全性相当高。&lt;/p&gt;
+
+&lt;h2 id=&quot;163-数字证书与密钥管理&quot;&gt;16.3 数字证书与密钥管理&lt;/h2&gt;
+
+&lt;p&gt;过去，人们总是依赖于对于加密算法和密钥的保密来增加保密的强度和效果。随着现代密码学的发展，大部分的加密算法都已经公开了。一些典型的算法(例如，DES、IDEA、RSA等)更是成了国际标准，被广泛接纳。人们可以从多种途径来获取算法的细节，也已经有很多采用这些算法的软件、硬件设备可以利用。&lt;/p&gt;
+
+&lt;p&gt;因此，在现代密码系统中，算法本身的保密已经不重要了，对于数据的保密在很大程度上，甚至完全依赖于对密钥的保密。只要密钥能够保密，即使加密算法公开，甚至加密设备丢失，也不会对加密系统的坚固性和正常使用产生多大影响。相反，如果密钥丢失，则非法用户可以窃取机密数据，而合法用户却面对密文如读天书，无法提取有效的信息。与其如此，还不如不加密呢!因此，在密码系统中，如何高效地分配密钥、安全地管理密钥对于保证数据安全至关重要。&lt;/p&gt;
+
+&lt;p&gt;16.3.1密钥分配中心&lt;/p&gt;
+
+&lt;p&gt;鉴于密钥的举足轻重的地位，密钥必须通过安全的通路进行分配。例如，可以派非常可靠的信使，以十分安全的方式，物理地携带密钥，人工送达需要进行通信的各方。这种方法虽然可靠，但是效率比较低，在过去信息技术不发达的时候用得比较多。而对于一个用户比较多、相互之间通信比较频繁的信息系统来说，则显然不适合采用这种人工方法，而必须采用计算机自动分配密钥。&lt;/p&gt;
+
+&lt;p&gt;一个方法是在一个信息系统中任意两个用户之间自己协商来选择不同的密钥，如图16-1所示。&lt;/p&gt;
+
+&lt;p&gt;显然，对于有N个用户的这种通信系统中，每个用户都要保存(N−1)个密钥，系统中总共要保存N∗(N−1)/2个密钥。在用户数量较少时，这样来分配密钥还是比较简单、易用的，但是一旦用户数量多起来，系统中要保存的密钥会急剧增多，让每个用户自己高效、安全地管理数量庞大的密钥实际上是不可能的。&lt;/p&gt;
+
+&lt;p&gt;此外有一种非常有效的密钥自动分配方案是密钥分配中心(KeyDistributionCenter，密匙分配中心)技术。&lt;/p&gt;
+
+&lt;p&gt;在KDC方案中，每一个用户都只保存自己的私钥SK和KDC的公钥PKKDC，而在通信时再经由KDC获得其他用户的公钥PK或者仅仅在某一次通信中可以使用的对称密钥加密算法的临时密钥K。&lt;/p&gt;
+
+&lt;p&gt;假设有两个用户A、B都是KDC的注册用户，他们分别拥有私钥SKA和SKB，相应的公钥分别是PKA和PKB。现在A想要与B进行会话，假如采用对称密钥加密算法来加密这次会话，那么密钥的分配过程如图16-2所示。&lt;/p&gt;
+
+&lt;p&gt;首先用户A向KDC发送用自己的私钥SKA加密的请求SKA(A，B)，说明自己想要与B进行会话。&lt;/p&gt;
+
+&lt;p&gt;KDC收到这个请求后，根据某种算法生成一个可以供A、B双方进行秘密会话的对称密码算法的密钥K，然后向A返回一个应答PK(K,PKB(A,K))。这个应答信息是用A的公钥PKA加密的，当然只有用户A自己才能够正确解读，可以从中提取与B会话的密钥K。&lt;/p&gt;
+
+&lt;p&gt;同时，该信息中还有一部分内容PKB(A，K)，表明用户A欲与B进行会话，并且密钥是K，这是用B的公钥PKB加密的。用户A把这一部分信息发送给B，B收到后从中解密出会话密钥。&lt;/p&gt;
+
+&lt;p&gt;至此，完成一次密钥的自动分配过程。此后，A、B双方就可以利用密钥K进行加密通信了。&lt;/p&gt;
+
+&lt;h3 id=&quot;1632-数字证书和公开密钥基础设施&quot;&gt;16.3.2 数字证书和公开密钥基础设施&lt;/h3&gt;
+
+&lt;p&gt;公钥加密算法的密钥分配和对称密钥加密算法中密钥的分配要求有着很大的区别。在对称密钥加密体制中，要求将密钥从一方传送到另一方，并且保证只有通信的双方知道密钥，而不让其他任何一方知道密钥。&lt;/p&gt;
+
+&lt;p&gt;而在公钥加密体制中，则要求通信各方的私钥只有通信的一方知道，而其他任何一方都不能知道，同时每一方的公钥需要公开，其他任何一方都可以查看和提取。&lt;/p&gt;
+
+&lt;p&gt;在公钥加密体制中，私钥的分配相对容易，但是，公钥的发布和获取就需要采取合适的方法来进行，否则很容易留下安全漏洞。一种简单的发布公钥的方法是公开宣布。通信系统中的每一方都独自保管好自己的私钥，而把自己的公钥公开地公布给其他所有各方，以使其他人能够得到他的公钥，从而可以与他进行加密通信。这实现起来非常简单，似乎也没有什么问题。但是，却有一个致命的漏洞，就是任何一个非法入侵者也可以冒充是这个通信系统中的一方，向这个通信系统中公布一个冒充的公钥。此后系统中与该用户的通信实际上就是与该非法冒充者进行通信。&lt;/p&gt;
+
+&lt;p&gt;数字签名和公钥加密都是基于不对称加密技术，因此也存在这样的问题:如何保证公开密钥的持有者是真实的;大规模信息系统环境下公开密钥如何产生、分发和管理。&lt;/p&gt;
+
+&lt;p&gt;要解决上述问题，就要用到数字证书和PKI(PublicKeyInfrastructure，公开密钥基础设施)。&lt;/p&gt;
+
+&lt;p&gt;1.数字证书&lt;/p&gt;
+
+&lt;p&gt;数字证书提供了一个在公钥和拥有相应私钥的实体之间建立关系的机制。目前最常用的数字证书格式是由国际标准ITU-TX.509v3版本定义的。&lt;/p&gt;
+
+&lt;p&gt;数字证书中采用公钥体制，即利用一对互相匹配的密钥进行加密、解密。每个用户自己保存私钥，用它进行解密和签名;同时设定一个公钥，并由本人公开，为一组用户所共享，用于加密和验证签名。&lt;/p&gt;
+
+&lt;p&gt;数字证书是用户在系统中作为确认身份的证据。在通信的各个环节中，参与通信的各方通过验证对方数字证书，从而确认对方身份的真实性和有效性，从而解决相互间的信任问题。数字证书的内容一般包括:唯一标识证书所有者的名称、唯一标识证书签发者的名称、证书所有者的公开密钥、证书签发者的数字签名、证书的有效期及证书的序列号等。&lt;/p&gt;
+
+&lt;p&gt;2.公开密钥基础设施&lt;/p&gt;
+
+&lt;p&gt;PKI在信息系统中的作用就相当于作为公共设施在社会生活中的作用，其目标是向广大的信息系统用户和应用程序提供公开密钥的管理服务。PKI是指由数字证书、证书颁发机构(CertificateAuthority，CA)，以及对电子交易、通信等所涉及的各方的合法性进行检查和验证的其他注册机构组成的一套系统。为了使用户在不可靠的网络环境中获得真实可靠的公开密钥，PKI引入公认可信的第三方;同时PKI中采用数字证书机制来避免在线查询集中存放的公开密钥产生的性能瓶颈。可信的第三方是PKI的核心部件，系统中任意两个实体之间都是通过公认可信的第三方建立安全联系的。数字证书中第三方的数字签名，使用户可以离线地确认一个公开密钥的真实性。&lt;/p&gt;
+
+&lt;p&gt;除了数字证书的有效期，证书撤销列表(CertificateRevocationList，CRL)是另一种数字证书有效期控制机制。当数字证书中认可的事实发生变化时，数字证书发布者必须使用某种机制来撤销以前发出、但现在失效的证书。证书发布者定期发布CRL，列出所有曾发布但当前已被撤销的证书号，证书的使用者依据CRL即可验证某证书是否已被撤销。&lt;/p&gt;
+
+&lt;p&gt;(1) PKI的结构模型。PKI中有三类实体:管理实体、端实体和证书库。管理实体是PKI的核心，是PKI服务的提供者;端实体是PKI的用户，是PKI服务的使用者;证书库是一个分布式数据库，用于证书和CRL的存放和检索。&lt;/p&gt;
+
+&lt;p&gt;CA和注册机构(RegisteAuthority，RA)是两种管理实体。CA是PKI框架中唯一能够发布和撤销证书的实体，维护证书的生命周期;RA负责处理用户请求，在验证了请求的有效性后，代替用户向CA提交。RA可以单独实现，也可以合并在CA中实现。作为管理实体，CA和RA以证书方式向端实体提供公开密钥的分发服务。&lt;/p&gt;
+
+&lt;p&gt;持有者和验证者是两种端实体。持有者是证书的拥有者，是证书所声明的事实上的主体。持有者向管理实体申请并获得证书，也可以在需要时请求撤销或更新证书。持有者使用证书声明自己的身份，从而获得相应的权力。验证者确认持有者所提供的证书的有效性和对方是否为该证书的真正拥有者，只有在成功鉴别之后才可与对方进行更进一步的交互。&lt;/p&gt;
+
+&lt;p&gt;证书库可以用Web、FTP或目录等来实现。由于证书库中存取的对象是证书和CRL，其完整性由数字签名保证，因此对证书库的操作可在无特殊安全保护的通道上传输。&lt;/p&gt;
+
+&lt;p&gt;不同的实体间通过PKI操作完成证书的请求、确认、发布、撤销、更新和获取等过程。PKI操作分成存取操作和管理操作两类。其中，存取操作包括管理实体或端实体，把证书和CRL存放到证书库、从证书库中读取证书和CRL;管理操作则是管理实体与端实体之间或管理实体与管理实体之间的交互，是为了完成证书的各项管理任务和建立证书链。&lt;/p&gt;
+
+&lt;p&gt;(2) PKI层次模型。PKI框架可以分为三个层次。最低层是传输层，向上提供PKI报文的可靠传输，它可以是传输层协议或应用层协议。中间层是密码学服务层，向上提供加密、解密、数字签名、消息摘要等基本密码学服务，可由RSA、MD5等方法实现。最高层是证书服务层，使用前面两层提供的加密和传输服务，向用户提供证书的请求、签发、发布、撤销和更新等服务。&lt;/p&gt;
+
+&lt;p&gt;PKI的三类实体对这三层服务的使用各不相同。证书库不需要特殊的安全交互措施，所以仅使用传输层服务来分发证书和CRL;管理实体和端实体使用证书服务层构造PKI证书，使用密码学服务层来鉴别和保护交互信息，使用传输层服务传送信息。&lt;/p&gt;
+
+&lt;p&gt;(3) X.509数字证书。ISO/ITU、ANSI、IETF等组织制定的X.509标准，对数字证书的格式进行了专门定义，该标准是为了保证使用数字证书的系统间的互操作性而制定的。理论上为一种应用创建的X.509证书可以用于其他任何符合X.509标准的应用。但实际上，不同的公司对X.509证书进行了不同的扩展，并不是所有的证书都彼此兼容。X.509证书具有如下一些突出的特点:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;支持多种算法。X.509证书独立于算法，CA可以根据需要选择证书的签名和摘要算法，以及端实体所拥有密钥对的类型。摘要算法有MD2、MD5和SHA-1，证书签名算法有RSA和DSA，密钥对类型有RSA密钥、DSA签名密钥、D-H密钥交换密钥、KEA密钥和ECDSA密钥。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;支持多种命名机制。X.509证书除了使用X.500名字机制标识持证者和验证者，还支持E-mail地址、IP地址、DNS名和URI。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;可以限制证书(公开密钥)的用途。CA能够规定证书的使用范围，如签名、不可否认、密钥加密、数据加密、密钥协商、证书签发和CRL签发等。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;定义证书遵循的策略。每个CA都定义了一定的安全策略，规范证书的操作过程。这些策略包括:CA的命名空间、身份验证、撤销机制、法律责任和收费等。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;控制信任关系的传递。建立CA体系，跨域认证，使得每个CA除负责本域的证书管理任务外，还要维护与其他CA间的信任关系。X.509证书定义若干字段用于控制信任关系的传递，CA能够将自己管理域的安全策略体现在信任关系中。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;可见，X.509证书适用于大规模信息系统环境，它的灵活性和扩展性能够满足各种应用系统不同类型的安全要求。&lt;/p&gt;
+
+&lt;p&gt;X.509有不同的版本，例如，X.509v3是比较新的版本，它是在原有版本X.509v的基础上进行功能的扩充。每一版本都包含下列数据项：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;版本号。用来区分X.509的不同版本号。&lt;/li&gt;
+  &lt;li&gt;序列号。由CA给每一个证书分配唯一的数字型编号，由同一CA发放的每个证书的序列号是唯一的。&lt;/li&gt;
+  &lt;li&gt;签名算法识别符。用来指定CA签发证书时所使用的公开密钥算法和HASH算法，须向国际标准组织注册。&lt;/li&gt;
+  &lt;li&gt;发行者名称。建立和签署证书的CA名称。&lt;/li&gt;
+  &lt;li&gt;有效期。证书有效的时间包括两个日期:证书开始生效的日期、证书失效的日期和时间。在所指定的这两个时间之间有效。&lt;/li&gt;
+  &lt;li&gt;主体名称。证书持有人的姓名、服务处所等信息。&lt;/li&gt;
+  &lt;li&gt;主体的公开密钥信息。包括主体的公开密钥、使用这一公开密钥的算法的标识符及相应的参数。&lt;/li&gt;
+  &lt;li&gt;发行者唯一识别符。这一数据项是可选的，当CA名称重新用于其他实体时，则用这一识别符来唯一标识发行者。&lt;/li&gt;
+  &lt;li&gt;主体唯一标识符。这一数据项也是可选的，当主体的名称重新用于其他实体时，则用这一识别符来唯一识别主体。&lt;/li&gt;
+  &lt;li&gt;扩充域。其中包括一个或多个扩充的数据项。&lt;/li&gt;
+  &lt;li&gt;签名。CA用自己的私钥对上述各数据项的散列值进行数字签名的结果。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;164-安全协议&quot;&gt;16.4 安全协议&lt;/h2&gt;
+
+&lt;p&gt;Internet是IT领域中发展的重大成就，它的迅速发展和全面普及给人们的生产、生活带来了很大的帮助。&lt;/p&gt;
+
+&lt;p&gt;但是，Internet在当初是为了让更多的人来使用网络、共享资源，并且容易扩充、容易治理等而设计的，因此它是一个全面开放的系统，而没有在安全方面作充分的考虑。加上日益增加的庞大的用户、各种不同的动机等因素，使得Internet上的安全事件层出不穷。&lt;/p&gt;
+
+&lt;p&gt;在Internet安全中，网络通信的安全是一个非常重要的环节，因此有必要研究在网络上安全传输数据的方法。&lt;/p&gt;
+
+&lt;h3 id=&quot;1641ipsec协议简述&quot;&gt;16.4.1IPSec协议简述&lt;/h3&gt;
+
+&lt;p&gt;在TCP/IP协议中，对IP数据包没有提供任何安全保护，攻击者可以通过网络嗅探、IP欺骗、连接截获等方法来攻击正常的TCP/IP通信。因此，通信过程中会存在以下危险:数据并非来自合法的发送者、数据在传输过程中被非法篡改、信息内容已被人窃取等。&lt;/p&gt;
+
+&lt;p&gt;为了确保在IP网络上进行安全保密的通信，IETF制定了一套开放标准的网络安全协议IPSec(IPSecurity)。该协议把密码技术应用在网络层，以向信息的发送方和接收方提供源地址验证、数据传输的完整性、存取控制、保密性等安全服务，保护通信免遭窃听、抵御网络攻击，而且更高层的应用层协议也可以直接或间接地使用这些安全服务，为其上层协议如TCP、UDP等提供透明的安全保护服务，在Internet这样不安全的网络中为通信提供安全保证。&lt;/p&gt;
+
+&lt;p&gt;在IPv6中，IPSec协议是一个必备的组成部分，被强制实施;在IPv4中，它是一个可选的扩展协议。&lt;/p&gt;
+
+&lt;p&gt;由于Internet等网络具有公共特性，因此在通信过程中难以确认传输媒介是安全的，所以要进行安全的通信，则通信数据必须经过加密。IPSec协议对数据的加密以数据包而不是整个数据流为单位，这不仅非常灵活，也有助于进一步提高IP数据包的安全性。&lt;/p&gt;
+
+&lt;p&gt;IPSec协议的基本工作原理是:发送方在发送数据前对数据实施加密，然后把密文数据发送到网络中去，开始传输。在整个传输过程中，数据都是以密文方式传输的，直到数据到达目的节点，才由接收方对密文进行解密，提取明文信息。&lt;/p&gt;
+
+&lt;p&gt;IPSec协议对网络层的通信使用了加密技术，它不是加密数据包的头部和尾部信息(如源地址、目的地址、端口号、CRC校验值等)，而是对数据包中的数据进行加密。由于加密过程发生在IP层，因此可在不改变HTTP等上层应用协议的情况下进行网络协议的安全加密，为通信提供透明的安全传输服务。&lt;/p&gt;
+
+&lt;p&gt;IPSec协议中使用端到端的工作模式，掌握加密、解密方法的只有数据的发送方和接收方，两者各自负责相应的数据加密、解密处理，而网络中其他节点只负责转发数据，无须支持IPSec，从而可以实现加密通信与传输媒介无关，保证机密数据在公共网络环境下的适应性和安全性。因此，IPSec可以应用到非常广泛的环境中，能为局域网、拨号用户、远程站点、Internet之上的通信提供强有力的保护，而且还能用来筛选特定数据流，还可以用于不同局域网之间通过互联网的安全互联。&lt;/p&gt;
+
+&lt;p&gt;IPSec协议不是一个单独的协议，它包括应用于IP层上网络数据安全的一整套协议，主要包括AH(AuthenticationHeader，IP认证头部协议)、ESP(EncapsulatingSecurityPayload，封装安全负载协议)、IKE(InternetKeyExchange，Internet密钥交换协议)和用于网络认证及加密的一些算法等。&lt;/p&gt;
+
+&lt;p&gt;AH提供数据的完整性和认证，但不包括保密性;而ESP原则上只提供保密性，但也可在ESPHeader中选择适当的算法及模式来实现数据的完整性和认证。AH和ESP可分开使用也可一起使用。IKE则提供加密算法、密钥等的协商。&lt;/p&gt;
+
+&lt;p&gt;1.安全关联和安全策略&lt;/p&gt;
+
+&lt;p&gt;安全关联(SecurityAssociation，SA)是指提供通信安全服务的发送方和接收方之间的一种单向关系。安全关联是构成IPSec的基础，它是进行通信的双方经协商建立起来的一种协定。安全关联可以用一个32位的安全参数索引(SecurityParameterIndex，SPI)来唯一标识，一个SPI值决定一个特定的SA，它通常放在AH或ESP头中;安全关联是单向的，如果要对两台主机A与B实现双向安全，则需要两个安全关联，每个方向一个:(A，B)、(B，A)。安全关联的内容包含了IP数据包是否加密、认证，以及加密、认证采用的算法、密钥等相关信息。所有的SA记录都存放在安全关联数据库中，按散列方式存取。&lt;/p&gt;
+
+&lt;p&gt;安全策略(SecurityPolicy)定义了两个IPSec系统之间的安全通信特征，并决定在该通信中为数据包提供的安全服务。一个IPSec系统的所有安全策略都存放在安全策略数据库中，根据选择符(包括源地址、目的地址、协议、端口等)进行检索。安全策略通常与SA合作，共同作用于通信的数据包。&lt;/p&gt;
+
+&lt;p&gt;2.AH&lt;/p&gt;
+
+&lt;p&gt;AH协议先将数据进行校验和加密，然后封装为IP包，从而实现无连接通信的数据完整性、数据源认证和防止重放攻击。AH能完成除数据加密外的所有的ESP所能提供的功能。在认证机制上，它所覆盖的范围比ESP的广，包括对IP头中一些选项的认证。&lt;/p&gt;
+
+&lt;p&gt;为了应用IPSec协议，IP数据包的格式要有所改变，即在IP头和被保护的数据之间插入一个AH头，如图16-3所示。&lt;/p&gt;
+
+&lt;p&gt;AH头的格式如图16-4所示，包括:下一报头、有效载荷长度、保留位、安全参数索引、序列号、认证数据。&lt;/p&gt;
+
+&lt;p&gt;AH使用的典型的认证算法是一种迭代型的消息摘要算法。AH中采用MD5算法，可以提供完整性服务。从前面的讲述可以知道MD5可以对任意长度的信息进行散列运算产生一个唯一的128位消息摘要。由于消息摘要是唯一的，所以对信息的任何修改都将得到另一个不同的消息摘要，因此能防止消息被篡改，从而保证了数据的完整性。AH也可以采用SHA算法提供更强的抗攻击能力，SHA是在MD5的基础上，增加了分组处理的迭代次数和复杂性，产生一个160位的消息摘要。接收者在收到数据后可以通过检验数据包中的单向递增的序列号来确定数据包的合法性，防止重放攻击。&lt;/p&gt;
+
+&lt;p&gt;3.ESP&lt;/p&gt;
+
+&lt;p&gt;ESP通过对数据包的数据进行加密来提供传输信息的保密性，从而实现了数据完整性、数据源认证、数据保密性的安全服务。ESP是一个通用的、可扩展的安全机制，其加密认证算法主要由SA的相应数据项决定。接收者也可以通过在收到数据后检验数据包中的单向递增的序列号来确定数据包的合法性，防止重放攻击。&lt;/p&gt;
+
+&lt;p&gt;在应用中，需要在IP数据包的头和被保护的数据之间插入一个ESP头，在被保护的数据后附加一个ESP尾，如图16-5所示。&lt;/p&gt;
+
+&lt;p&gt;ESP头的格式如图16-6所示，包括:安全参数索引(标识用于处理数据包的安全关联)、序列号(用于防止重放攻击)、有效荷载数据。ESP头的所有字段都是不加密的，因为在解密数据包时需要先读取头部字段。&lt;/p&gt;
+
+&lt;p&gt;ESP尾的格式如图16-7所示，包括:填充项(某些加密算法要求被加密数据的长度是密钥长度的整数倍，若受保护的数据的长度不满足这个要求，就需要在后面追加一些填充项)、填充项长度(指明填充项的长度)、下一个头部、认证数据(数据完整性的检验结果)。&lt;/p&gt;
+
+&lt;p&gt;ESP在提供加密功能的同时，还可以提供认证功能。对于发出的数据包，首先进行加密处理;而对于收到的数据包，则先进行认证处理。
+ESP支持多种加密算法。DES是ESP中默认的加密算法，它采用64位的密钥，对明文进行加密，加密、解密使用同一个密钥，该算法简单高效。此外还可以选择采用3DES、AES、RC5、RC6、Blowfish等算法。&lt;/p&gt;
+
+&lt;p&gt;4.IP密钥交换&lt;/p&gt;
+
+&lt;p&gt;IKE是一个混合协议，它使用了Internet安全关联和密钥管理协议(InternetSecurityAssociationandKeyManagementProtocol，ISAKMP)、密钥确定协议Oakley和描述支持匿名和快速密钥刷新的密钥交换的SKEME协议。IKE除了实现通信双方的密钥交换，还使用ISAKMP实现IPSec的安全关联。&lt;/p&gt;
+
+&lt;p&gt;ISAKMP协议是IKE的核心组成部分，它定义了包括协商、建立、修改、删除安全关联的过程和数据格式。ISAKMP的工作分为两个阶段:第一阶段，通信双方协商并建立一个安全的通道，并对该通道进行验证，为第二阶段的进一步通信提供安全服务;第二阶段，为IPSec建立起具体的IPSec安全关联，用于保护通信双方的数据传输安全。在IKE的协商过程中，使用了Diffie-Hellman机制、Oakley的密钥交换模式和SKEME的共享和密钥更新技术。&lt;/p&gt;
+
+&lt;p&gt;5.IPSec的工作模式&lt;/p&gt;
+
+&lt;p&gt;IPSec的工作模式有两种:传输模式和隧道模式。&lt;/p&gt;
+
+&lt;p&gt;传输模式首先将要传送的数据使用IPSec加密封装起来，再把相关的IPSec头插入IP头和被保护的数据之间封装起来。因为IP头没有加密，接收端收到封装的数据包时直接处理IP头，然后从IPSec头读取SPI值得到相对的SA，再利用SA所定的解密参数解出所加密的数据。&lt;/p&gt;
+
+&lt;p&gt;传输模式的IPSec头直接加在欲传送的数据前，由于加密的部分较少，没有额外的处理，因此比较节省带宽和CPU负载，通信和处理效率较高。&lt;/p&gt;
+
+&lt;p&gt;在传输模式中，解密者就是目的地址端的使用者。&lt;/p&gt;
+
+&lt;p&gt;隧道模式首先使用SA的相关信息将IP的数据包全部加密，接下来在前面加上ESPHeader，然后把它们作为数据为它们再加上一个新的IP头。接收端收到ESP封包后，使用ESPHeader内容中的SPI值提供的SA，然后解出ESPHeader后的装载数据，就可以取回原始的IP头与封包。&lt;/p&gt;
+
+&lt;p&gt;隧道模式可以在两个终端之间建立一个安全的隧道，经由这两个终端之间的通信均在这个隧道中进行，因此安全性较高。
+两种模式的IP数据包的格式如图16-8所示。&lt;/p&gt;
+
+&lt;h3 id=&quot;1642-ssl协议&quot;&gt;16.4.2 SSL协议&lt;/h3&gt;
+
+&lt;p&gt;SSL是用于安全传输数据的一种通信协议。它采用公钥加密技术、对称密钥加密技术等保护两个应用之间的信息传输的机密性和完整性。但是，SSL也有一个不足，就是它本身不能保证传输信息的不可否认性。&lt;/p&gt;
+
+&lt;p&gt;SSL协议包括服务器认证、客户认证、SSL链路上的数据完整性、SSL链路上的数据保密性等几个方面，通过在浏览器和Web服务器之间建立一条安全的通道来保证Internet数据传递的安全性。目前，利用公钥加密的SSL技术，已经成为Internet上进行保密通信的工业标准。SSL协议常常用于增强Web服务的安全性。&lt;/p&gt;
+
+&lt;p&gt;在TCP/IP协议中，SSL协议建立在传输层即TCP之上、应用层之下。SSL协议有一个突出的优点，就是它与应用层协议相独立，高层的应用层协议如HTTP等可以透明地建立在SSL协议之上进行工作。&lt;/p&gt;
+
+&lt;p&gt;通过SSL协议建立的传输通道具有如下的基本安全性:&lt;/p&gt;
+
+&lt;p&gt;(1)通道是保密的，经过握手确定密钥之后，所有的消息被加密。SSL协议在应用层协议工作之前就已经完成了加密算法、密钥的协商、服务器认证等工作，而此后的所有应用层所传送的数据都是经过加密的，因此SSL协议具有很好的保密性。
+(2)通道是被认证的，通信中的服务器端总是被认证，客户端可选认证。在基于SSL协议的通信过程中，服务器端认证是必须进行的，所以，即使在一次会话过程中不进行客户端认证，该会话的确认性也能够有很好的保证。
+(3)通道是可靠的，用MAC对传送的消息进行完整性检查，保证通道上数据的完整性。基于SSL协议的通信过程，因为传递的消息中包括消息完整性检查数据(即MAC数据)，因此，可以保证该通信是可靠的。&lt;/p&gt;
+
+&lt;p&gt;SSL协议由SSL记录协议、SSL握手协议、SSL密码变更说明协议、SSL警告协议等组成。其架构如图16-9所示。&lt;/p&gt;
+
+&lt;p&gt;1.SSL记录协议&lt;/p&gt;
+
+&lt;p&gt;在SSL记录协议中，所有要传输的数据都被封装在记录中，记录是由纪录头和长度不为0的记录数据组成的。所有的SSL通信，包括握手消息、安全空白记录、应用数据等都需要使用SSL记录。&lt;/p&gt;
+
+&lt;p&gt;2.SSL协议记录头格式&lt;/p&gt;
+
+&lt;p&gt;SSL协议记录头格式如图16-10所示。&lt;/p&gt;
+
+&lt;p&gt;SSL协议记录头包括的数据有记录头长度、记录数据长度、记录数据中是否有粘贴数据等。SSL协议记录头长度既可以是2字节、也可以是3字节长。当记录头的最高位为1时，表示不含有粘贴数据，记录头长度为2字节，记录数据最大长度为32767字节;当记录头的最高位为0时，则含有粘贴数据，记录头长度为3字节，记录数据最大长度为16383字节。当记录头的最高位为0时，次高位有特殊的含义。当次高位为1时，表示所传输的记录是普通记录;当次高位为0时，表示所传输的记录是安全空白记录。&lt;/p&gt;
+
+&lt;p&gt;记录头中数据长度编码不包括数据头所占用的字节长度。记录头长度为2字节时记录长度的计算方法为:&lt;/p&gt;
 
 &lt;table&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
-      &lt;td&gt;~  ^&lt;/td&gt;
+      &lt;td&gt;记录长度=((byte[0]&amp;amp;0x7f)«8))&lt;/td&gt;
+      &lt;td&gt;byte[1]&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
-
-&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
-
-&lt;p&gt;for/while/do…while&lt;/p&gt;
-
-&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
-
-&lt;p&gt;{&lt;/p&gt;
-
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
-
-&lt;p&gt;}&lt;/p&gt;
-
-&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
-
-&lt;p&gt;{&lt;/p&gt;
-
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
-
-&lt;p&gt;}&lt;/p&gt;
-
-&lt;p&gt;do&lt;/p&gt;
-
-&lt;p&gt;{&lt;/p&gt;
-
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
-
-&lt;p&gt;}while(表达式)；&lt;/p&gt;
-
-&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
-
-&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
-
-&lt;p&gt;{&lt;/p&gt;
-
-&lt;p&gt;函数体；&lt;/p&gt;
-
-&lt;p&gt;}&lt;/p&gt;
-
-&lt;p&gt;（4）、数组&lt;/p&gt;
-
-&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
-
-&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
-
-&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
-
-&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
-
-&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
-
-&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-C&quot;&gt;printf(&quot;hello world!&quot;)
-  printf
-
-
-
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
- &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;二级标题&quot;&gt;二级标题&lt;/h1&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;加黑&lt;/strong&gt;&lt;/p&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识 一级标题</summary></entry><entry><title type="html">前端：基础知识 03</title><link href="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-05.html" rel="alternate" type="text/html" title="前端：基础知识 03" /><published>2020-08-03T11:00:54+08:00</published><updated>2020-08-03T11:00:54+08:00</updated><id>http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-05</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/03/%E6%95%99%E7%A8%8B-05.html">&lt;p&gt;&lt;strong&gt;单片机——硬件基础知识&lt;/strong&gt;&lt;/p&gt;
-&lt;h1 id=&quot;一级标题&quot;&gt;一级标题&lt;/h1&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;宗旨：技术的学习是有限的，分享的精神是无限的。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1、单片机内部资源&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;STC89C52：8KFLASH、512字节RAM、32个IO口、3个定时器、1个UART、8个中断源&lt;/p&gt;
-
-&lt;p&gt;（1）Flash（硬盘）——程序存储空间 —— 擦写10万次，断电数据不丢失，读写速度慢&lt;/p&gt;
-
-&lt;p&gt;（2）RAM（内存）——数据存储空间 —— 断电数据丢失，读写速度快，无限次使用&lt;/p&gt;
-
-&lt;p&gt;（3）SFR —— 特殊功能寄存器&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2、单片机最小系统&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112618810?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;最小系统：最少组件组成单片机可以工作的系统。&lt;/p&gt;
-
-&lt;p&gt;三要素：&lt;/p&gt;
-
-&lt;p&gt;（1）、 电源电路：5V&lt;/p&gt;
-
-&lt;p&gt;（2）、 晶振电路：11.0592MHZ、两个30PF&lt;/p&gt;
-
-&lt;p&gt;（3）、 复位电路：&lt;/p&gt;
-
-&lt;p&gt;P0：开漏输出，必须加上拉电阻&lt;/p&gt;
-
-&lt;p&gt;准双向口：&lt;/p&gt;
-
-&lt;p&gt;强推挽输出：电流驱动能力强&lt;/p&gt;
-
-&lt;p&gt;高阻态&lt;/p&gt;
-
-&lt;p&gt;上下拉电阻：上拉电路就是将不确定的信号通过一个电阻拉到高电平，同时限流作用。下拉电阻就是下拉到低电平。&lt;/p&gt;
-
-&lt;p&gt;上下拉电阻选取：从降低功耗方面考虑应该足够大，因为电阻越大，电流越小；驱动能力来看，小电阻&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;/em&gt;*3****、硬件基础知识****&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;（1）、电磁干扰（EMI）——静电放电（ESD）、快速瞬间脉冲群（EFT）、浪涌（Surge）&lt;/p&gt;
-
-&lt;p&gt;（2）、去耦电容的使用&lt;/p&gt;
-
-&lt;p&gt;低频滤波电容，平常应用最多的事钽电容，电解电容，陶瓷电容，起到去除电源低频纹波，稳定电源的作用。&lt;/p&gt;
-
-&lt;p&gt;高频滤波电容，电容附近，通常用104电容来进行去除高频干扰。&lt;/p&gt;
-
-&lt;p&gt;（3）、三极管（PNP,NPN） b，c，e  — 电压驱动&lt;/p&gt;
-
-&lt;p&gt;控制应用&lt;/p&gt;
-
-&lt;p&gt;驱动应用&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;4、LED发光二极管——电流驱动&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdn.net/20160304112600808?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;通常红色贴片LED， 靠电流驱动，电压1.8V~2.2V，电流1~20mA，在1~5mA亮度有所变化，5mA以上亮度基本不变。&lt;/p&gt;
-
-&lt;p&gt;VCC 电压是 5V，发光二极管自
-身压降大概是 2V，那么在右边 R34 这个电阻上承受的电压就是 3V。&lt;/p&gt;
-
-&lt;p&gt;R = U/I  —— 1~20mA —— R：150~3K&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;5、C语言基础&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;（1）、基本运算符&lt;/p&gt;
 
 &lt;table&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;+ -  *  /  %  ++  –   =  ==  !=  +=  -=  «  »  &amp;amp;&amp;amp;&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;!  &amp;amp;&lt;/td&gt;
-      &lt;td&gt;~  ^&lt;/td&gt;
+      &lt;td&gt;记录头长度为3字节时记录长度的计算方法为:记录长度=((byte[0]&amp;amp;0x3f)«8))&lt;/td&gt;
+      &lt;td&gt;byte[1]&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;（2）、循环（c语言以；表示一条语句）&lt;/p&gt;
+&lt;p&gt;以上计算式中，byte[0]、byte[1]也分别表示所传输的第一、二个字节。另外，粘贴数据的长度为传输的第三个字节。&lt;/p&gt;
 
-&lt;p&gt;for/while/do…while&lt;/p&gt;
+&lt;p&gt;3.SSL记录数据的格式&lt;/p&gt;
 
-&lt;p&gt;for(表达式1；表达式2；表达式3)&lt;/p&gt;
+&lt;p&gt;SSL记录数据包含三个部分:MAC数据和实际数据和粘贴数据。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;MAC数据用于数据完整性检查。计算MAC所用的散列函数由握手协议中的消息确定。若使用MD5算法，则MAC数据长度是16字节。MAC数据的产生方式为:&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;MAC数据=HASH(密钥、实际数据、粘贴数据、序号)&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;其中，当会话的客户端发送数据时，密钥是客户的写密钥(服务器用读密钥来验证MAC数据);而当会话的客户端接收数据时，密钥是客户的读密钥(服务器用写密钥来验证MAC数据)。序号是一个可以被发送和接收双方递增的计数器。每个通信方都会建立一个计数器，分别属于发送者和接收者。计数器有32位，计数值循环使用，每发送一个记录计数值递增一次，序号的初始值为0。&lt;/p&gt;
 
-&lt;p&gt;while(表达式)//表达式为真，执行语句&lt;/p&gt;
+&lt;p&gt;4.SSL握手协议&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;SSL握手协议建立在SSL记录协议之上，用于在实际的数据传输开始前，通信双方进行身份认证、协商加密算法、交换加密密钥等。SSL握手的过程可以分为两个阶段，第一阶段用于建立秘密的通信信道，第二阶段用于客户验证。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;p&gt;在SSL协议中，同时使用了对称密钥加密算法和公钥加密算法，这是为了综合利用对称密钥加密算法的高速度和公钥加密算法的安全性的优点。SSL协议使用公钥加密算法使服务器端身份在客户端得到验证，并且传递用于会话中对数据加密的对称密钥。然后再利用对称密钥在通信过程中对收到和发送的数据进行比较快速的加密，从而减小系统开销，保证通信效率。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;SSL支持各种加密算法。在“握手”过程中，使用RSA公开密钥系统。密钥交换后，可以使用多种密码，例如，RC2、RC4、IDEA、DES、3DES及MD5信息摘要算法等。&lt;/p&gt;
 
-&lt;p&gt;do&lt;/p&gt;
+&lt;p&gt;SSL协议可以非常有效地保护通信过程。但是，如果某种攻击是利用SSL协议通信进行的，那么，这种攻击也会受到SSL协议的保护，从而使得攻击更加隐蔽，难于被发现。当然，这种攻击也能够很好地穿透防火墙、躲过入侵检测系统的检查。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;另外，SSL在通信过程中，要进行许多加密、解密的操作，这些计算的复杂性随着密码的强度不同而不同，但是高强度的计算会增加服务器负载、增加网络带宽，从而使服务器性能下降，吞吐量也下降。&lt;/p&gt;
 
-&lt;p&gt;​    语句；//可以为空&lt;/p&gt;
+&lt;h3 id=&quot;1643pgp协议&quot;&gt;16.4.3PGP协议&lt;/h3&gt;
 
-&lt;p&gt;}while(表达式)；&lt;/p&gt;
+&lt;p&gt;在信息时代里，电子邮件已经成为人们生活中的一部分，同时电子邮件的安全问题也就日益显得突出。一般来说，电子邮件在网络上的传输是不加密的。这种不加保护的邮件在网络上传输，第三者就会轻易获得通信过程中传送的信息。此外，为了防止冒名顶替，收信人需要确认邮件没有被第三者篡改，确实是发送者本人发出的，这就需要使用数字签名的一些技术。从前面的讲述可以知道，RSA公钥密码体系非常适合用来满足上述要求。但是要直接使用RSA加密电子邮件，还有一些不方便的地方。&lt;/p&gt;
 
-&lt;p&gt;（3）、函数 （模块化的思想）&lt;/p&gt;
+&lt;p&gt;PGP(PrettyGoodPrivacy)是美国人PhilZimmermann于1995年提出的一套电子邮件加密方案。它可以用来对邮件加密以防止非授权者阅读，还能对邮件加上数字签名而使收信人可以确认邮件确实是由发送方发出的。&lt;/p&gt;
 
-&lt;p&gt;类型  函数名（参数类型 参数）&lt;/p&gt;
+&lt;p&gt;PGP并不是新的加密算法或协议，它综合采用了多种加密算法，例如，对邮件内容加密采用IDEA算法、对于加密信息采用RSA公钥加密算法，还采用了用于数字签名的消息摘要算法，加密前进行压缩处理等技术手段进行邮件加密的一套软件。通过组合使用这些加密方法，把RSA公钥加密体系的良好加密效果和对称密钥加密体系的高速度结合起来，并且通过在数字签名和密钥认证管理机制中的巧妙设计，使得PGP成为一个优秀的强有力的数据加密程序。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;由于PGP功能强大、处理迅速、使用简便，而且它的源代码是免费的，因此，PGP在IT等多个行业得到了广泛的应用，迅速普及。如今，PGP除了用于通常的电子邮件加密，还可以用来加密重要文件，用PGP代替UUencode生成RADIX64格式(就是MIME的BASE64格式)的编码文件，以保证它们在网络上的安全传输，或为文件做数字签名，以防止篡改和伪造。&lt;/p&gt;
 
-&lt;p&gt;函数体；&lt;/p&gt;
+&lt;p&gt;1.PGP加密的原理&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;假设一个用户A想要发送一个加密的邮件给另一个用户B。那么加密的过原理如图16-11所示。&lt;/p&gt;
 
-&lt;p&gt;（4）、数组&lt;/p&gt;
+&lt;p&gt;首先，用户A对要发送的邮件P运用MD5散列算法进行计算，生成一个128位的消息摘要，有了这个消息摘要就可以检验邮件信息是否完整、有没有被篡改。然后再通过RSA算法，运用A的私钥SKA对消息摘要进行加密，生成消息摘要的密文H。邮件P与经过加密的邮件消息摘要H共同构成新的报文P1，接着对P1进行ZIP压缩，成为压缩的报文P1.Z。再对P1.Z采用IDEA算法加密，这次加密使用一个一次性的密钥K，并且K必须经过RSA算法使用通信的另一方B的公开密钥PKB加密，与加密后的报文P2一起，再经过BASE64编码，得到一系列ASCII码，作为邮件内容发送到网络上。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;1&amp;gt;、具有相同数据类型&lt;/p&gt;
+&lt;p&gt;用户B接收到A发来的加密的邮件后，执行解密过程:与加密过程相反，首先对邮件内容进行BASE64解码，再利用自己的秘密密钥SKB，通过RSA算法解出IDEA的密钥K。再用此密钥恢复出P1.Z，对P1.Z进行解压缩后还原出P1。接着把明文P和邮件信息摘要的密文H分离开来，并用A的公开密钥PKA解密H得到真正的邮件消息摘要。然后B自己也运用MD5算法对邮件明文P进行运算，生成一个128位的消息摘要。比较这两个摘要是否一致，如果一致，则表明P是A发来的邮件。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;2&amp;gt;、具有相同的类型&lt;/p&gt;
+&lt;p&gt;通过上述通信过程可以看出，PGP既可以保证邮件不被第三方窃取，又可以防止发信人抵赖和信件被途中篡改。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;3&amp;gt;、在存储器中连续存储&lt;/p&gt;
+&lt;p&gt;由于RSA算法的计算量太大、速度太慢，对邮件正文这种大量数据不适合用它来加密。所以PGP实际上用来加密邮件正文的不是RSA本身，而是采用的IDEA加密算法。IDEA的加密和解密使用同一个密钥，它的主要缺点就是在公共网络环境中很难进行安全的密钥的传递，不适合Internet上邮件加密的需要。但IDEA的加密、解密速度比RSA快得多，所以PGP使用一个随机生成的密钥(每次加密都不同)运用IDEA算法对明文加密，然后用RSA算法对IDEA密钥加密。这样收件人同样使用RSA算法解密出这个随机的IDEA密钥，再用IDEA算法解密邮件本身。这样的链式加密就做到了既具有RSA算法的保密效果，又具有IDEA算法的快捷方便。这里，PGP在每次加密邮件时所使用的IDEA密钥是一个随机数，而且为了增强随机性，PGP是从用户敲击键盘的时间间隔上取得随机数种子来产生密钥的，从而更加增强了它的加密效果。&lt;/p&gt;
 
-&lt;p&gt;（5）、51单片机常用延时办法——循环、定时器&lt;/p&gt;
+&lt;p&gt;PGP中使用PKZIP算法来压缩加密前的明文。这对电子邮件而言，一方面压缩后再加密得到的密文有可能比明文更短，这就节省了网络传输的时间;另一方面，明文经过压缩，实际上相当于多经过一次变换，信息更加杂乱无章，对非法攻击的抵御能力更强。
+PGP还可以只签名而不加密，这可以用于公开发表声明。声明人为了证实自己的身份，可以用自己的私钥签名。这样就可以让公众用其公开的公钥来验证该签名，从而确认声明人的身份。&lt;/p&gt;
 
-&lt;p&gt;（P0 = ~(1 « i++)；）&lt;/p&gt;
+&lt;p&gt;2.PGP的密钥管理机制&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;5、流水灯&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在PGP加密通信过程中，密钥无疑起着最为关键的作用。一个成熟的加密体系必然要有一个成熟的密钥管理机制与之相配套。PGP对于密钥管理也提出了一套分配、使用、管理的方案。&lt;/p&gt;
 
-&lt;p&gt;给IO口一个低电平即可点亮LED灯。&lt;/p&gt;
+&lt;p&gt;公钥加密体制本身就是为了解决对称密钥加密体制中的密钥分配难以保密的问题而提出的。例如，攻击者常用的手段之一就是“监听”，如果密钥是通过网络传送就很容易被拦截。PGP中采用公钥来加密，而公钥本来就要公开，所以不存在被监听的问题。但是公钥在发布过程中仍然存在安全隐患。例如，公钥被非法篡改，这就是公钥密码体系中的一大安全隐患，因为这很难被普通用户发现。&lt;/p&gt;
 
-&lt;p&gt;注：单片机对外设的操作其实就是对IO口电平的控制。&lt;/p&gt;
+&lt;p&gt;举例来说，假如用户A要向用户B发一封加密的邮件，那么A必须拥有B的公钥。于是A从公共目录中查到了B的公钥，并用它加密了邮件然后发给了B。这是一个正常的过程。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-C&quot;&gt;printf(&quot;hello world!&quot;)
-  printf
+&lt;p&gt;但是，在这个过程中可能出现攻击:A和B都不知道，另一个用户C用他自己假冒B的名字生成的密钥当中的公钥替换了B的公钥!&lt;/p&gt;
 
+&lt;p&gt;那么A用来发信的公钥就不是B的而是C的公钥。然而一切看来都很正常，因为A拿到的公钥的用户名是B。于是C就可以用他手中的私钥来解密A发给B的邮件，甚至他还可以用B真正的公钥来转发A发给B的信，这样A和B都不会发现什么异常，而他们的通信却全部泄漏了。甚至C如果想改动A发给B的邮件也毫无问题。&lt;/p&gt;
 
+&lt;p&gt;而且，C还可以伪造B的签名给A或其他人发送信息，因为A和其他人手中的公钥是C伪造的，A和其他人可以正常解密这份伪造的签名，因而以为真是来自B的信息。&lt;/p&gt;
 
+&lt;p&gt;要防止这种情况，必须防止任何人伪造其他人的公钥。例如，通信双方直接见面并交换密钥，就可以避免得到伪造的公钥。然而当双方相隔遥远或不方便直接见面时，就难以直接交换密钥。这种情况下，PGP是通过一种公钥介绍机制来解决这个问题的。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;继续上面的例子:如果A和B有一个共同的朋友D，而D知道他手中B的公钥是正确的(这里假设D已经认证过B的公钥)。这样D就可以用他自己的私钥在B的公钥上签名，表示他担保这个公钥是B的真正的公钥，并把它发送给A。然后A用D的公钥来验证D发给A的B的公钥，同样D也可以向B担保A的公钥。这样D就成为了A和B之间的公钥介绍人。&lt;/p&gt;
 
-&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;reg52.h&amp;gt;   //包含特殊功能寄存器定义的头文件
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;这样B或D就可以放心地把D签过名的B的公钥列示到公共目录中，供A读取，没有人能够伪造B的公钥而不被A发现。这就是PGP从不安全的Internet上传递公钥的安全手段。&lt;/p&gt;
 
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;  &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义循环变量i，用于软件延时&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uchar&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定义计数变量j，用于移位控制&lt;/span&gt;
+&lt;p&gt;不过，如何确认D的公钥的安全可靠性呢?对这种情况PGP建议通过一个大家普遍信任的人或权威部门担当认证机构角色。每个由权威认证机构签字的公钥都被认为是真实的，这样大家只要有一份认证机构的公钥就行了。由于认证机构广泛提供公钥服务，因而其公钥流传广泛，假冒其公钥是很困难的，所以认证其公钥也非常方便。&lt;/p&gt;
 
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 主循环，程序无限循环执行该循环体语句&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;P0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// P0等于1左移j位，控制8个LED&lt;/span&gt;
+&lt;p&gt;在PGP中使用密钥，要注意在使用任何一个公钥之前，一定要首先认证它。无论什么情况下，都不要直接信任一个从公共渠道得来的公钥。而要使用可信的人介绍的公钥，或者自己与对方亲自认证。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//软件延时&lt;/span&gt;
+&lt;p&gt;由于PGP能够实现数字签名、不可否认、防止篡改、防止破译等功能，所以自从PGP推出以来，就受到人们的普遍欢迎。目前，PGP几乎成为最流行的公钥加密软件。随着人们通信的增加和安全意识的增强，PGP将会得到更加广泛的应用。&lt;/p&gt;
 
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//移位计数超过7后，再重新从0开始&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;h2 id=&quot;165-计算机病毒与防治&quot;&gt;16.5 计算机病毒与防治&lt;/h2&gt;
 
- &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;计算机技术和网络技术的飞速发展，为人们的工作、学习、生活带来了极大的方便。计算机已经成为人们不可缺少的现代化工具。但是计算机病毒的出现带给人们不安和忧虑，同时向人们提出了挑战。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;1651-计算机病毒概述&quot;&gt;16.5.1 计算机病毒概述&lt;/h3&gt;
 
-&lt;h1 id=&quot;二级标题&quot;&gt;二级标题&lt;/h1&gt;
+&lt;p&gt;计算机病毒(ComputerVirus)的概念最早是由美国计算机病毒研究专家F.Cohen博士提出的。对于计算机病毒的定义，不同的国家、不同的专家从不同的角度给出的定义也不尽相同。根据《中华人民共和国计算机信息系统安全保护条例》第28条规定:“计算机病毒，是指编制或者在计算机程序中插入的破坏计算机功能或者毁坏数据，影响计算机使用，并能自我复制的一组计算机指令或者程序代码。”此定义在我国具有法律效力和权威性。&lt;/p&gt;
 
-&lt;hr /&gt;
+&lt;p&gt;和生物病毒一样，计算机病毒的复制能力使得计算机病毒可以很快地蔓延，又常常难以根除。它们能把自身附在宿主系统或文件中，当系统被运行或文件从一个用户传送到另一个用户时，它们就随同系统运行或文件传输一起蔓延开来。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;加黑&lt;/strong&gt;&lt;/p&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机——硬件基础知识 一级标题</summary></entry><entry><title type="html">基础知识 01</title><link href="http://localhost:4000/hardware/2020/08/01/%E6%95%99%E7%A8%8B-01.html" rel="alternate" type="text/html" title="基础知识 01" /><published>2020-08-01T10:58:43+08:00</published><updated>2020-08-01T10:58:43+08:00</updated><id>http://localhost:4000/hardware/2020/08/01/%E6%95%99%E7%A8%8B-01</id><content type="html" xml:base="http://localhost:4000/hardware/2020/08/01/%E6%95%99%E7%A8%8B-01.html">&lt;h2 id=&quot;单片机内部结构&quot;&gt;单片机内部结构&lt;/h2&gt;
+&lt;p&gt;在病毒的生命周期中，病毒一般会经历潜伏阶段、传染阶段、触发阶段和发作阶段4个阶段。多数病毒是基于某种特定的方式进行工作的，因此也依赖于某个特定的操作系统或某个特定的硬件平台。因此，攻击者经常利用某个特定系统的细节和弱点来设计病毒程序。&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;单片机是一种集成电路芯片，是采用超大规模集成电路技术把具有数据处理能力的中央处理器CPU、随机存储器RAM、只读存储器ROM、多种I/O口和中断系统、定时器/计数器等功能（可能还包括显示驱动电路、脉宽调制电路、模拟多路转换器、A/D转换器等电路）集成到一块硅片上构成的一个小而完善的微型计算机系统&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;1.计算机病毒的特征&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;分类：&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;1、通用型
-按单片机（Microcontrollers）适用范围来区分。例如，80C51式通用型单片机，它不是为某种专门用途设计的；专用型单片机是针对一类产品甚至某一个产品设计生产的，例如为了满足电子体温计的要求，在片内集成ADC接口等功能的温度测量控制电路。&lt;/li&gt;
-  &lt;li&gt;2、总线型
-按单片机（Microcontrollers）是否提供并行总线来区分的。总线型单片机普遍设置有并行地址总线、 数据总线、控制总线，这些引脚用以扩展并行外围器件都可通过串行口与单片机连接，另外，许多单片机已把所需要的外围器件及外设接口集成一片内，因此在许多情况下可以不要并行扩展总线，大大减省封装成本和芯片体积，这类单片机称为非总线型单片机。&lt;/li&gt;
-  &lt;li&gt;3、控制型
-按照单片机（Microcontrollers）大致应用的领域进行区分的。一般而言，工控型寻址范围大，运算能力强；用于家电的单片机多为专用型，通常是小封装、低价格，外围器件和外设接口集成度高。 显然，上述分类并不是惟一的和严格的。例如，80C51类单片机既是通用型又是总线型，还可以作工控用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;51单片机的结构与功能&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;基本功能：
-1.8位数据总线，16位地址总线的CPU；
-2.具有布尔处理能力和位处理能力；
-3.采用哈佛结构，程序存储器与数据存储器地址空间各自独立，便于程序设计；
-4.相同地址的64KB程序存储器和64KB数据存储器；
-5.0-8KB片内程序存储器(8031无，8051有4KB，8052有8KB，89C55有20KB)；
-6.128字节片内数据存储器（8051有256字节）；
-7.32根双向并可以按位寻址的I/O线；
-8.两个16位定时/计数器(8052有3个)；
-9.一个全双工的串行I/O接口；
-10.多个中断源的中断结构，具有两个中断优先级；
-11.片内时钟振荡器 。&lt;/p&gt;
-
-&lt;p&gt;特点：
-1.以微处理器（CPU）为核心；
-2.CPU与其他部件间通过三总线连接。
-总线: 指能为多个部件服务的信息传送线 。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;内部结构&lt;/strong&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526114221796.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526114711179.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;单片机外部结构&quot;&gt;单片机外部结构&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526115541954.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;一共40根外部引脚如图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/2019052611494879.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;strong&gt;引脚功能介绍&lt;/strong&gt;&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;引脚号&lt;/th&gt;
-      &lt;th&gt;引脚名称&lt;/th&gt;
-      &lt;th&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1~8&lt;/td&gt;
-      &lt;td&gt;P1.0~P1.7&lt;/td&gt;
-      &lt;td&gt;端口P1&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;9&lt;/td&gt;
-      &lt;td&gt;RST&lt;/td&gt;
-      &lt;td&gt;复位信号输入端&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;10~17&lt;/td&gt;
-      &lt;td&gt;P3.0~P3.7&lt;/td&gt;
-      &lt;td&gt;端口P3，该端口具备第二功能&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;18&lt;/td&gt;
-      &lt;td&gt;XTAL2&lt;/td&gt;
-      &lt;td&gt;时钟震荡器输出端，内部震荡器输出段&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;19&lt;/td&gt;
-      &lt;td&gt;XTAL1&lt;/td&gt;
-      &lt;td&gt;时钟震荡器输入端，内部震荡器输入段&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;20&lt;/td&gt;
-      &lt;td&gt;GND&lt;/td&gt;
-      &lt;td&gt;电源地&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;21~28&lt;/td&gt;
-      &lt;td&gt;P2.0~P2.7&lt;/td&gt;
-      &lt;td&gt;端口P2&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;29&lt;/td&gt;
-      &lt;td&gt;PSEN（低）&lt;/td&gt;
-      &lt;td&gt;外部程序存储器从程序存储器中取指令或读取数据时，该信号有效&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;30&lt;/td&gt;
-      &lt;td&gt;ALE/PROG（低）&lt;/td&gt;
-      &lt;td&gt;地址锁存信号访问外部存储器时，该信号锁存低8位地址；无RAM时，此引脚输出晶振的6分频信号&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;31&lt;/td&gt;
-      &lt;td&gt;EA（低）/VPP&lt;/td&gt;
-      &lt;td&gt;程序存储器有效地址，EA=1时从内部开始执行程序；EA=0时从外部开始执行程序&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;32~39&lt;/td&gt;
-      &lt;td&gt;P0.7~P0.0&lt;/td&gt;
-      &lt;td&gt;端口P0&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;40&lt;/td&gt;
-      &lt;td&gt;VCC&lt;/td&gt;
-      &lt;td&gt;电源正&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;strong&gt;1、P0口的结构&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;P0口字节地址为80H，位地址80H～87H。
-如图，一个端口由锁存器、输入缓冲器、多路开关、一个非门、一个与门及场效应管驱动电路构成。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;P0位结构：
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526125249154.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;输入缓冲器
-在P0口中，有两个三态的缓冲器，三态门有3个状态，即在其输出端可以是高电平、低电平，同时还有一种高阻状态(或称为禁止状态)，要读取D锁存器输出端Q的数据，需要使读锁存器中这个缓冲器的三态控制端有效，下面一个是读引脚的缓冲器，要读取P0.X引脚上的数据，也要使标号为“读引脚”的三态缓冲器的控制端有效，引脚上的数据才会传输到单片机的内部数据总线上。&lt;/li&gt;
-  &lt;li&gt;D锁存器
-构成一个锁存器，通常要用一个时序电路，一个触发器可以保存一位二进制数(即具有保持功能)，在51单片机的32根I/O口线中，都是用一个D触发器来构成锁存器的。图1-4中的D锁存器，D端是数据输入端，CP是控制端(即时序控制信号输入端)，Q是输出端，Q非是反向输出端。
-对于D锁存器来讲，当D输入端有一个输入信号，如果这时控制端CP没有信号(即时序脉冲没有到来)，这时输入端D的数据是无法传输到输出端Q及反向输出端的。如果时序控制端CP的时序脉冲到达，这时D端输入的数据就会传输到Q及Q非端。数据传送过来后，当CP时序控制端的时序信号消失时，输出端还会保持着上次输入端D的数据(即把上次的数据锁存起来)。如果下一个时序控制脉冲信号到来，这时D端的数据才再次传送到Q端，从而改变Q端的状态。&lt;/li&gt;
-  &lt;li&gt;多路开关
-在51单片机中，当内部的存储器够用时(即不需要外扩展存储器时，这里讲的存储器包括数据存储器及程序存储器)，P0口可以作为通用的输入/输出端口(即I/O)使用，对于8031(内部没有ROM)的单片机，或者编写的程序超过了单片机内部的存储器容量需要外扩存储器时，P0口就作为地址/数据总线使用。那么这个多路选择开关就是用于选择是作为普通I/O口使用还是作为地址/数据总线使用的选择开关了。从图1-4可知，当多路开关与下端接通时，P0口作为普通的I/O口使用;当多路开关是与上端接通时，P0口作为地址/数据总线使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;利用P0口进行扩展外部存储器和I/O时，P0口将作为地址和数据分时复用，CPU发控制信号，打开与门，使MUX打向上边，形成推拉式结构，数据信号可直接读入或输出到内部总线。利用P0作为通用I/O时，此时P0口是一个准双向口，CPU发控制信号，封锁与门，使上拉管截止，MUX打向下边，与D触发器Q连接。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;2、P1口的结构&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;P1口字节地址为90H，位地址为90H～97H。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;P1位结构：
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130222842.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;与P0不同，P1口只能作为I/O口使用，无MUX，但其内部有一个上拉电阻，所以连接外围负载时不需要外接上拉电阻，这一点P1、P2、P3都一样。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;3、P2口的结构&lt;/strong&gt;
-000000&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;P2口字节地址为A0H，位地址为A0H～A7H&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;P2位结构：
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130425704.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;P2口作为I/O口线时用法与P0口一样，当内部开关拨向另一个方向，即作地址输出时，可以输出程序存储器或外部数据存储器的高8位地址，并与P0口输出的低地址一起构成16位的地址线。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;4、P3口的结构&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;P3口字节地址为B0H，位地址为B0H～B7H。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130610406.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;P3口作为I/O口线用时同其他的端口相同，也是准双向口，不同的是，P3口的每一位都有另一种功能，也叫第二功能，具体作用在用到时将详细解释。当P3口作为通用I/O口时，准双向口第二功能端保持高电平。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当P3口作为第二功能时，锁存器输出Q=1，如图为P3口第二功能列表：
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190526130736542.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;5、注意&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;(1)在无片外扩展存储器的系统中，这4个端口的每一位都可以作为准双向通用I/O端口使用。在具有片外扩展存储器的系统中，P2口作为高8位地址线，P0口作为双向总线，分时作为低8位地址和数据的输入/输出线。&lt;/li&gt;
-  &lt;li&gt;(2)P0口作为通用双向I/O口使用时，必须外接上拉电阻。&lt;/li&gt;
-  &lt;li&gt;(3)P3口除了作通用I/O口使用外，各位还具有第二功能。当P3口某一位用于第二功能作输出时，则不能再作通用I/O口使用。&lt;/li&gt;
-  &lt;li&gt;(4)当P0～P4端口用作输入时，为了避免误读，都必须先向对应的输出锁存器写入1，使FET截止，然后再读端口引脚，例如以下程序：
-MOV　P1, #0FFH
-MOV　A, P1&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;51的程序存储器和数据存储器是独立分开的，数据寄存器除内部数据寄存器外，还可以扩展数据寄存器，并存但访问指令不同&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;程序寄存器&quot;&gt;程序寄存器&lt;/h2&gt;
-
-&lt;p&gt;当EA引脚接高电平，CPU将使用内部程序寄存器，若程序超过内部程序存储器空间时，则CPU会自动从外部程序存储器重读取超过部分的程序代码&lt;/p&gt;
-
-&lt;h2 id=&quot;数据寄存器&quot;&gt;数据寄存器&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;0000H ~ 007FH&lt;/strong&gt;
-1、寄存器组区
-0000H~001FH共有32个地址位寄存器组区
-每组寄存器组都包括R0、R1、R2、R3、R4、R5、R6、R7等8个寄存器，任何一个时间，都只能使用其中一个寄存器组。
-寄存器组的切换，可由程序状态字（PSW）中的RS1、RS0来决定
-RS0 RS1 寄存器组 位址
-0 0 RB0 0000H~0007H
-0 1 RB1 0008H~000FH
-1 0 RB2 0010H~0017H
-1 1 RB3 0018H~001FH&lt;/p&gt;
-
-&lt;p&gt;2、可位寻址区
-0020H~002FH 共16字节的存储区为可位寻址区
-设置20H存储器地址的位5设置为1：SETB 20H.5
-设置20H存储器地址的位5设置为0：CLR 20H.5&lt;/p&gt;
-
-&lt;p&gt;3、一般数据与堆栈区
-0030H~007FH的80字节为一般数据访问及堆栈区
-0080H~00FFH之间的128B位特殊功能寄存器（SFR）
-特殊功能寄存器
-P0、P1、P2、P3
-它们是51的4个输入/输出端口，其地址分别为80H、90H、A0H及B0H。
-P0口：该8位都为漏级开路输出，每个引脚可以驱动8个LS型TTL负载；且内部没有上拉电阻，执行输出功能时，外部必须接上拉电阻（10千欧即可）；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；若系统连接外部存储器，则P0可作为地址总线（A0A7）及数据总线（D0D7）的多功能引脚。
-P1口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；
-P2口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；若系统连接外部存储器，而外部存储器的地址线超过8条时，则P0口可作为地址总线（A8~A15）引脚。
-P3口：内部有30千欧上拉电阻，执行输出功能时，不必连接外部上拉电阻；该8位都为漏级开路输出，每个引脚可以驱动4个LS型TTL负载；若要执行输入功能，必须先输出高电平，方能读取该端口所连接的外部数据；
-P3口其他功能：
-P3 其它功能 说明
-P3.0 RXD 串行口的接收引脚
-P3.1 RTD 串行口的传送引脚
-P3.2 INT0 INT0中断输入
-P3.3 INT1 INT1中断输入
-P3.4 T0 timer 0输入
-P3.5 T1 Timer 1输入
-P3.6 WR 写入外部存储器控制引脚
-P3.7 RD 读取外部存储器控制引脚&lt;/p&gt;
-
-&lt;p&gt;SP
-SP为堆栈指针寄存器，其地址为81H。&lt;/p&gt;
-
-&lt;p&gt;DPL、DPH
-DPL与DPH均为8位的数据指针寄存器，其地址分别为82H、83H。若以DPL为低8位、DPH为高8位，即可组成一个16位的数据指针寄存器，简称DPTR，如此将可寻址到64KB的数据地址。&lt;/p&gt;
-
-&lt;p&gt;PCON
-PCON作为电源控制寄存器，其地址位87H，其功能是设定CPU的电源方式。
-它是一个不可位寻址的寄存器。如图所示：
-SMOD ― ― ― GF1 GF0 PD IDL
-Bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
-其中各位说明如下：
-SMOD位为比特率倍增位。当串行端口工作于模式1、模式2、模式3，且使用定时器1为其比特率产生器时，若其为1，这比特率加倍，若为0，这比特率正常。
-GF1、GF0位为一般用途标志位，用户可自行设定或清除这两个标志。通常使用这个两个标志作为有中断唤醒闲置模式中的8051系统。
-PD位为功率下降模式位。为1时，进入功率下降模式；为0时，结束功率下降模式。
-IDL位为闲置模式位。为1时，进入闲置模式；为0时，结束闲置模式。&lt;/p&gt;
-
-&lt;p&gt;TCON
-TCON为定时器/计数器控制寄存器，其地址为88H&lt;/p&gt;
-
-&lt;p&gt;TMOD
-TMOD为计数器/计数方式控制寄存器，其地址为89H，其功能是设置它的方式&lt;/p&gt;
-
-&lt;p&gt;TL0、TL1、TH0、TH1
-TL0、TH0为第一组定时器、计数器的计量寄存器，其地址为8AH、8CH，将TL0与TH0组合即可进行16位的定时/计数。TL1、TH1为第二组定时器、计数器的计量寄存器，其地址为8BH、8DH，将TL1与TH1组合即可进行16位的定时/计数。&lt;/p&gt;
-
-&lt;p&gt;SCON
-SCON为串行端口控制寄存器，其地址为98H，其功能是设定串行端口工作方式与标志。&lt;/p&gt;
-
-&lt;p&gt;SBUF
-SBUF为串行端口缓冲器，其地址为99H， 这是由使用同一个地址的两个寄存器所构成，其中一个寄存器作为传送数据用的缓冲器，另一个寄存器作为接收数据用的缓冲器。至于如何分辨同一个地址的两个寄 存器，则视指令而定，若是数据传送指令，则自动定位到传送数据用的缓冲器；若是接受数据指令，则自动定位到接收数据用的缓冲器。详细以后再讲咯。IE
-IE为中断使能寄存器，其地址为A8H。&lt;/p&gt;
-
-&lt;p&gt;IP
-IP为中断优先级寄存器。&lt;/p&gt;
-
-&lt;p&gt;T2CON
-T2CON为Timer 2的定时器/计数器控制寄存器，其地址为C8H，其功能死设定Timer 2的启动、记录定时/计数溢出，以及外部中断触发方式等。&lt;/p&gt;
-
-&lt;p&gt;RCAP、RCAP2H
-RCAP、RCAP2H为捕捉寄存器，其地址为CAH、CBH。当Timer 2在捕捉方式时，若T2EX（P1.1）引脚上的输入信号有高电平转为低电平时，TL2与TH2的内容将被载入RCAP与RCAP2H，就像是把Timer 2的内容捉进RCAP寄存器一样。&lt;/p&gt;
-
-&lt;p&gt;TL2、TH2
-TL2、TH2为第三组定时器、计数器的计量寄存器，其地址为CCH、CDH，将TL2与TH2组合即可进行16位的定时/计数。&lt;/p&gt;
-
-&lt;p&gt;PSW
-PSW为CPU的程序状态字寄存器，其地址为D0H，其内容如下：
-7 6 5 4 3 2 1 0
-PSW CY AC F0 RS1 RS0 OV P
-PSW.7：本位为进位位（CY），加减法时产生进位或错位，将自行设定为1，否则为0。
-PSW.6：本位为辅助进位位（AC），进行加减法运算产生进位或错位，将自行设定为1，否则为0。
-PSW.5：本位为用户标志位，用户自行设定。
-PSW.4与PSW.3：这两个位为寄存器组选择位（RS1、RS0），其功能如下表所示。
-RS1 RS0 寄存器组
-0 0 RB0
-0 1 RB1
-1 0 RB2
-1 1 RB3
-PSW.2：本位为溢出标志位（OV），运行时，若发生溢出，为1，否则为0。
-PSW.1：本位为保留位，没有提供服务。
-PSW.0：本位位奇偶位（P），8051采用偶同位，若ACC中奇数个1，则为1，偶数个1，则为0。&lt;/p&gt;
-
-&lt;p&gt;ACC
-ACC累加器又称为A寄存器，其地址为E0H。
-B
-B寄存器的地址为F0H，主要功能是配合A寄存器进行乘法或除法运算。进行乘法运算时，乘数放在B寄存器，而运算结果，高8位放在B寄存器；进行除法运算时，除数放在B寄存器，而运算的结果，余数放在B寄存器。若不进行乘/除法运算，B寄存器也可当成一般寄存器使用。&lt;/p&gt;
-
-&lt;h2 id=&quot;门电路&quot;&gt;门电路&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;与门&lt;/li&gt;
-  &lt;li&gt;或门&lt;/li&gt;
-  &lt;li&gt;非门&lt;/li&gt;
-  &lt;li&gt;同或门&lt;/li&gt;
-  &lt;li&gt;异或门&lt;/li&gt;
-  &lt;li&gt;门间的组合电路&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602123611150.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;门电路的实现TTL和MOS集成门电路&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;寄存器和锁存器&quot;&gt;寄存器和锁存器&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;触发器分类：
-1、基本R-S触发器
-2、同步RS触发器、同步D触发器
-3、主从R-S触发器、主从JK触发器
-4、边沿触发器：
-上升沿触发器（D触发器、JK触发器）
-下降沿触发器（D触发器、JK触发器）&lt;/li&gt;
-  &lt;li&gt;触发器逻辑功能表示方法：
-特性表、卡洛图、特性方程、状态图、时序图&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;各种触发器介绍&lt;/strong&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104712870.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104721142.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104728648.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104735651.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104748193.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104756656.JPG&quot; alt=&quot;在这里插入图片描述&quot; /&gt;
-&lt;img src=&quot;https://img-blog.csdnimg.cn/20190602104803564.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyODU2MTU0,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="hardware" /><summary type="html">单片机内部结构</summary></entry></feed>
+&lt;p&gt;计算机病毒多种多样，但是它们都具有共同的特征，即传染性、非授权性、潜伏性和破坏性。&lt;/p&gt;
+
+&lt;p&gt;计算机病毒的传染性是指病毒具有把自身复制到其他系统或文件等宿主中去的能力，这是病毒的基本特征。非授权性是指病毒程序的执行不需要得到用户的同意，对用户来说是未知的。潜伏性是病毒生存的必要条件，即病毒潜伏在系统中而不被人们所发觉。破坏性是指病毒在一定条件下可以自动触发，并对计算机实施破坏，是病毒的表现特征。病毒的非授权性、潜伏性使得病毒的行为是不可预见的，也增加了病毒检测的困难。病毒破坏性的触发条件越多，则传染性越强，但同时其潜伏性降低。一个病毒必须具备传染性，但不一定需要拥有其他属性。&lt;/p&gt;
+
+&lt;p&gt;2.计算机病毒的分类&lt;/p&gt;
+
+&lt;p&gt;计算机病毒按不同的分类标准，有许多不同分类:&lt;/p&gt;
+
+&lt;p&gt;按照操作系统分，可分为攻击DOS系统的病毒、攻击Windows系统的病毒、攻击Unix/Linux系统的病毒、攻击OS/2系统的病毒、攻击Macintosh系统的病毒、攻击手机的病毒、其他操作系统上的病毒。&lt;/p&gt;
+
+&lt;p&gt;按照链接方式分，计算机病毒可分为源码型病毒、嵌入型病毒、Shell病毒、宏病毒、脚本型病毒、操作系统型病毒。&lt;/p&gt;
+
+&lt;p&gt;按照破坏情况分，计算机病毒可分为良性病毒和恶性病毒。按传播媒介来分，计算机病毒可分为单机病毒和网络病毒。&lt;/p&gt;
+
+&lt;p&gt;3.计算机病毒的组成&lt;/p&gt;
+
+&lt;p&gt;病毒程序一般由传染模块、触发模块、破坏模块和主控模块组成，相应地完成病毒的传染、触发和破坏等任务。也有少数病毒不具备所有的模块。&lt;/p&gt;
+
+&lt;p&gt;(1)传染模块。&lt;/p&gt;
+
+&lt;p&gt;传染模块是病毒进行扩散传播的部分，负责把计算机病毒从一个系统或文件传播到更多的系统或文件中去。每个病毒都有一个自我识别的标记，叫作传染标记或病毒签名。病毒程序传染系统或文件时，要把传染标记写入系统或文件中某个特定区域，例如，宿主程序、注册表、物理磁道等，作为该系统或文件已被传染的标记，以防止重复传染，增强病毒的潜伏效果。传染模块的主要功能有:寻找一个可传染的系统或文件;检查该系统或文件中是否有传染标记，判断该系统或文件是否已经被传染;如果没有传染标记，则进行传染操作，将病毒代码植入宿主系统或文件中，完成一次传染。&lt;/p&gt;
+
+&lt;p&gt;(2)触发模块。&lt;/p&gt;
+
+&lt;p&gt;病毒触发模块主要检查预定触发条件是否满足，如果满足，则调用相应传染或破坏模块，进行传染和破坏动作。病毒的触发条件有多种形式，如日期、时间、键盘、发现特定程序、发现网络连接、发现系统漏洞、传染的次数、特定中断调用的次数等。依据触发条件的情况，可以控制病毒传染和破坏动作的频率，使病毒在隐蔽的状态下，进行传染和破坏动作。&lt;/p&gt;
+
+&lt;p&gt;(3)破坏模块。&lt;/p&gt;
+
+&lt;p&gt;破坏模块负责实施病毒的破坏动作。这些破坏动作可能是破坏程序及数据、降低系统的性能、干扰系统的运行，还有些病毒甚至可以破坏计算机硬件。也有少数病毒的破坏模块并没有明显的恶意破坏行为，仅在被传染的系统设备上表现出特定的现象，该模块有时又称为表现模块。&lt;/p&gt;
+
+&lt;p&gt;(4)主控模块。&lt;/p&gt;
+
+&lt;p&gt;主控模块在总体上控制病毒程序的运行。染毒程序运行时，首先运行的是病毒的主控模块。&lt;/p&gt;
+
+&lt;h3 id=&quot;1652网络环境下的病毒发展新趋势&quot;&gt;16.5.2网络环境下的病毒发展新趋势&lt;/h3&gt;
+
+&lt;p&gt;在互联网给人们的工作、生活带来方便的同时，也给大量新病毒的产生和发展带来了“方便”。在互联网高度发达的今天，计算机病毒的数量急剧增多，传播途径也更加多样，传染速度也更加快捷。除了以往通过相互复制文件、系统之间交叉传染等方式外，目前的计算机病毒更多地通过网页、电子邮件、局域网共享、系统漏洞等方式在网络上进行自动传播。有些流行病毒，常常借助于网络在两、三天内迅速传遍全国，传遍全世界。&lt;/p&gt;
+
+&lt;p&gt;例如，E-mail病毒就是目前最为流行Internet病毒种类之一，它通过在电子邮件附件中添加危险的病毒执行程序，在邮件正文中添加诱惑性的文字，诱使收件人执行附件病毒程序，以达到其激活的目的。目前此类病毒多数针对微软的Outlook和OutlookExpress程序，并以使用Windows的地址簿联系人发送病毒邮件形式传播。不但危害个人，而且可能导致Internet邮件服务器由于收发大量的病毒附加的邮件被大量占用网络资源，直至邮件服务器崩溃。&lt;/p&gt;
+
+&lt;p&gt;此外，由于Internet即时通信被广泛运用，借助于MSN、QQ、OICQ等传播病毒也成为近年来病毒流行的一个趋势，病毒很可能通过这些软件自动发送有害信息实现自动传播。目前，通过局域网共享传播的病毒也有很多。在广泛使用的Windows系统中，管理共
+享、特殊端口等默认是打开的，有些版本的系统中，甚至具有可写权限。这样，病毒在搜索到局域网共享资源后，便可以直接传染目标计算机相应文件夹中的文件或者将病毒写入相应系统中，以便得到在目标计算机中执行的机会。也正是因为这个原因，很多病毒在传染一台计算机后会造成某个局域网普遍传染的情况，并且在不断开网络连接的情况下很难将病毒清除干净。&lt;/p&gt;
+
+&lt;p&gt;在当前的网络环境下，最常见的恶意程序是木马程序，也称后门程序。它们大多利用系统漏洞或者空闲的端口，通过在系统中安装相应的木马程序，并通过互联网使用专门的软件监视宿主计算机，以这样的方式获得宿主系统文件访问授权，以及收集宿主系统的信息，如用户个人资料、银行账号与密码、网游账号等。&lt;/p&gt;
+
+&lt;p&gt;由于网络传输速度很快，所以网络环境下的病毒传染速度也非常快，一度轰动的“冲击波”、“震荡波”等病毒都是在相应的系统漏洞被发现后几天时间里，就迅速在全世界大范围蔓延开来。可以说，今天的计算机病毒的品种和传播速度，超过了以往任何时候。&lt;/p&gt;
+
+&lt;h3 id=&quot;1653计算机病毒的检测与清除&quot;&gt;16.5.3计算机病毒的检测与清除&lt;/h3&gt;
+
+&lt;p&gt;本节简单介绍计算机病毒的检测方法，以及如何清除病毒。&lt;/p&gt;
+
+&lt;p&gt;1.特征码检测所谓特征码查毒法，就是在获取病毒样本后，提取出其特征码，(例如，杨基病毒的特征码是16进制的“F47A2C00”，快乐时光病毒中的“FunTime”字符串等)，然后通过该特征码对目标文件或内存等进行扫描。如果发现这种特征码，就说明感染了这种病毒，然后针对性地清除病毒。&lt;/p&gt;
+
+&lt;p&gt;特征码技术是最早被采用，而且被许多反病毒软件一直沿用至今的病毒检测方法。特征码检测方法检测病毒，方法简单、准确、快速，可识别病毒的名称，误报警率低。&lt;/p&gt;
+
+&lt;p&gt;但是，特征码技术只能诊断已知的计算机病毒，其响应速度永远滞后于病毒，而且不能检查未知病毒和变形病毒，不能对付隐蔽性病毒。
+随着计算机病毒的发展，不断出现的新的病毒，甚至有些病毒具有自动变形功能，例如，“卡死脖”病毒，采用传统病毒特征码搜索技术的杀毒软件常常难以应付这些变形病毒。为此，人们提出了广谱特征码过滤技术，该技术在一定程度上可以弥补以上缺陷。&lt;/p&gt;
+
+&lt;p&gt;2.校验和检测&lt;/p&gt;
+
+&lt;p&gt;先计算正常文件的内容和正常的系统扇区数据的校验和，将该校验和写入数据库中保存。检测时，检查文件现在内容的校验和与原来保存的校验和是否一致，从而可以发现文件或扇区是否被感染，这种方法称校验和检测。&lt;/p&gt;
+
+&lt;p&gt;校验和检测技术的优点是:方法简单、能发现未知病毒、被查文件的细微变化也能发现。但是，它不能识别病毒种类。而且，由于病毒感染并非是文件内容改变的唯一原因，文件内容的改变有可能是正常程序引起的，所以校验和检测技术受到种种限制，同时这种方法也会影响文件的运行速度。另外，校验和不能检测新的文件，如从网络传输来的文件、磁盘和光盘拷入的文件、备份文件和压缩文档中的文件等。&lt;/p&gt;
+
+&lt;p&gt;3.行为监测&lt;/p&gt;
+
+&lt;p&gt;随着近年来病毒与反病毒斗争的不断升级、新病毒产生的速度不断加快，传统反病毒技术滞后于病毒的特点越来越不能适应防病毒的需要，更需要采用通用反病毒技术来保护计算机的安全。现阶段中被广泛研究和采用的通用病毒检测技术有病毒行为监测技术、启发式扫描技术和虚拟机技术。&lt;/p&gt;
+
+&lt;p&gt;通过研究发现，病毒不论伪装得如何巧妙，它们总是存在着一些和正常程序不同的行为，而这些行为在正常应用程序中却十分罕见，这就是病毒的行为特性。常见的病毒行为特性有:对可执行文件进行写操作、写磁盘引导区、病毒程序与宿主程序的切换、程序自己重定位、通过搜索函数索引表来获取API函数地址等。利用这些特征，就可以对病毒实施监视，在病毒程序体进行活动时发出报警。采用这种行为特性检测方法不仅可以检测出已知病毒，而且可以检测出新出现的未知病毒，无论该病毒是什么种类，或是否变形。但是，行为监测技术也可能误报警，而且不能识别病毒名称。&lt;/p&gt;
+
+&lt;p&gt;4.启发式扫描&lt;/p&gt;
+
+&lt;p&gt;在特征码扫描技术的基础上，利用对病毒代码的分析，获得一些统计的、静态的启发性知识，可以用于静态的启发性扫描技术(HeuristicScanning)。&lt;/p&gt;
+
+&lt;p&gt;启发式扫描主要分析文件中的指令序列，根据统计知识，判断该文件可能被感染或者没有被感染，从而有可能找到未知的病毒。因此，启发式扫描技术是一种概率方法，遵循概率理论的规律。早期的启发式扫描软件采用代码反编译技术作为它的实现基础。这类病毒检测软件在内部保存数万种病毒行为代码的跳转表，每个表项对应一类病毒行为的必用代码序列，如病毒格式化磁盘必须用到的代码等。启发式病毒扫描软件利用代码反编译技术，反编译出被检测文件的代码，然后在这些表格的支持下，使用“静态代码分析法”和“代码相似比较法”等有效手段，就能有效地查出已知病毒的变种，以及判定文件是否含有未知病毒。&lt;/p&gt;
+
+&lt;p&gt;由于病毒代码千变万化，具体实现启发式病毒扫描技术是相当复杂的。通常这类病毒检测软件要能够识别并探测许多可疑的程序代码指令序列，如格式化磁盘类操作、搜索和定位各种可执行程序的操作、实现驻留内存的操作、子程序调用中只执行入栈操作、远距离(如超过文件长度的三分之二)跳往文件头的指令等。一般来说，仅仅一项可疑的功能操作不足以触发病毒报警。但如果同时具有多项可疑操作，目标程序就很可能是病毒程序。&lt;/p&gt;
+
+&lt;p&gt;5.虚拟机&lt;/p&gt;
+
+&lt;p&gt;自动变形病毒，也称为多态性病毒或多型(形)性病毒。自动变形病毒每次感染宿主时都自动改变自身的程序代码和特征码，这类病毒的代表有“幽灵”病毒等。&lt;/p&gt;
+
+&lt;p&gt;一般而言，自动变形病毒采用以下几种操作来不断变换自己:采用等价代码对原有代码进行替换;改变与执行次序无关的指令的次序;增加许多垃圾指令;对原有病毒代码进行压缩或加密等。因为自动变形病毒对其代码不断进行变换，而且每次传染使用不同的密钥。将染毒文件的病毒代码相互比较，也难以找出相同的可作为病毒特征的稳定特征码，因此用传统检测方法根本无法检测出这类病毒。但是，自动变形病毒也有一个共同的规律:即无论病毒如何变化，每一个自动变形病毒在其自身执行时都要对自身进行还原。&lt;/p&gt;
+
+&lt;p&gt;为了检测自动变形病毒，出现了一种新的病毒检测方法——“虚拟机技术”。该技术用软件方法让病毒在一个虚拟的环境中，仿真一部分系统指令和功能调用，对病毒代码作解释执行，而且仿真运行不对系统产生实际的影响，即可获得程序运行的后果，并在此基础上对程序运行分析，进而判断是否存在病毒。不管病毒使用什么样的加密、隐形等伪装手段，只要在虚拟机所营造的虚拟环境下，病毒都会随着运行过程自动褪去伪装(实际上是被虚拟机动态还原)。正是基于上述设计原理，虚拟机在处理加密、变换、变形病毒方面具有很强的优越性。
+虚拟机检测方法，实际上是用软件实现了模拟人工反编译、智能动态跟踪、分析代码运行的过程，其效率更高，也更准确。使得反病毒从单纯的静态分析进入了动态和静态分析相结合的新时期，极大地提高了对已知病毒和未知病毒的检测水平。在今后相当长的一段时间内，虚拟机技术还会有很大的发展。&lt;/p&gt;
+
+&lt;p&gt;6.病毒的清除&lt;/p&gt;
+
+&lt;p&gt;将病毒代码从宿主中去除，使之恢复为可正常运行的系统或程序，称为病毒清除。大多数情况下，采用反病毒软件或采用手工处理方式可以恢复受感染的文件或系统。&lt;/p&gt;
+
+&lt;p&gt;不是所有染毒文件都可以消毒，也不是所有染毒的宿主都能够被有效恢复。依据病毒的种类及其破坏行为的不同，感染病毒后，如果宿主数据没有被删除，常常可以恢复;如果宿主数据被病毒删除或覆盖、或者宿主数据的逻辑关系被病毒破坏，常常不能恢复。&lt;/p&gt;
+
+&lt;h3 id=&quot;1654计算机病毒的预防&quot;&gt;16.5.4计算机病毒的预防&lt;/h3&gt;
+
+&lt;p&gt;“防重于治”，对于计算机病毒也是如此。在日常使用计算机的过程中，同时做好预防工作，可以很大程度上避免被病毒感染，减少不必要的物力、数据损失。&lt;/p&gt;
+
+&lt;p&gt;要预防计算机病毒，最好的方法就是不与外界交换文件，但这是不可能的。人们在工作中，要经常与外界进行各种数据交换。而大量与外界交换信息，就给病毒的感染与传播创造了条件。&lt;/p&gt;
+
+&lt;p&gt;为了保护计算机不受病毒破坏，至少必须做到:&lt;/p&gt;
+
+&lt;p&gt;(1)一定要在计算机中安装反病毒软件。
+(2)不要轻易使用来历不明的或者没有经过确认的软件;对从网络上下载的程序和文档应十分小心，在执行文件或打开文档之前，要检查是否有病毒;从外部取得的介质及其中的文件，应检查病毒后再使用;压缩后的文件应解压缩后检查病毒。
+(3)电子邮件的附件应该先检查病毒后再开启，并在发送邮件之前检查病毒;不要运行来历不明的E-mail附件，尤其是在邮件正文中以诱惑性的文字建议执行的附件程序。
+(4)定期使用反病毒软件扫描系统。
+(5)确保所使用的反病毒软件的扫描引擎和病毒代码库为最新的，因为旧的扫描引擎和病毒代码库不会检查到新出现的病毒。
+(6)为防止引导型病毒对系统的破坏，应该在系统安装完成后立即制作系统应急启动盘，以便万一硬盘分区表遭到破坏时，能从应急盘启动，并用备份的引导区、分区表等直接进行恢复。
+(7)对于一些重要的文件，要定期进行备份，以便万一系统遭受病毒破坏时能够从备份恢复。
+(8)利用安全扫描工具定时扫描系统和主机。若发现漏洞，及时寻找解决方案，从而减少被病毒和蠕虫感染的机会。
+(9)使用反病毒软件时，最好先查毒，找到了带毒文件后，再确定是否进行杀毒操作。因为查毒不是危险操作，它可能产生误报，但绝不会对系统造成任何损坏;而杀毒是危险操作，有的操作可能把文件破坏。
+(10)建立本单位的计算机病毒防治管理制度;并对计算机用户进行反病毒培训。&lt;/p&gt;
+
+&lt;h2 id=&quot;166-身份认证与访问控制&quot;&gt;16.6 身份认证与访问控制&lt;/h2&gt;
+
+&lt;p&gt;访问控制是通过某种途径限制和允许对资源的访问能力及范围的一种方法。它是针对越权使用系统资源的保护措施，通过限制对文件等资源的访问，防止非法用户的侵入或者合法用户的不当操作造成的破坏，从而保证信息系统资源的合法使用。&lt;/p&gt;
+
+&lt;p&gt;访问控制技术可以通过对计算机系统的控制，自动、有效地防止对系统资源进行非法访问或者不当地使用，检测出一部分安全侵害，同时可以支持应用和数据的安全需求。&lt;/p&gt;
+
+&lt;p&gt;访问控制技术并不能取代身份认证，它是建立在身份认证的基础之上的。访问控制技术包括如下几方面的内容:&lt;/p&gt;
+
+&lt;p&gt;(1)用户标识与认证。用户标识与认证是一种基于用户的访问控制技术，它是防止未经授权的用户进入系统的一种常规技术措施。用户标识用于向系统声明用户的身份。用户标识一般应当具有唯一性，其最常见的形式就是用户ID。系统必须采用一定的策略来维护所有的用户标识。验证用户标识的有效性、真实性，通常有三种类型的认证方式:一是用户个人掌握的秘密信息，例如，口令、密钥、PIN码等;二是用户个人所拥有的带有认证信息的特定物品，例如，磁卡、IC卡等;三是用户个人的特定生理、生物学特征，例如，声音、指纹等。在同一种系统中可以单独采用一种认证方法，也可以联合采用多种认证方法。&lt;/p&gt;
+
+&lt;p&gt;(2)逻辑访问控制。逻辑访问控制是基于系统的访问控制技术，用来控制特定的用户对特定资源的访问。通常，把用户分成不同的组，再对组授予不同的访问权限来实现对用户的逻辑访问控制，防止用户访问他所不需要访问的资源、或者进行与工作无关的访问。
+(3)审计与跟踪。审计与跟踪系统的一个或多个运行记录，在事件发生后对事件进行调查，分析其时间、原因、活动内容、引发的相关事件、涉及的用户等。
+(4)公共访问控制。如果一个应用系统是面向公众开放，允许公众进行访问时，面临的主要威胁是来自外部的匿名攻击，必须采取访问控制等措施以保护系统数据的完整性和敏感信息的保密性。&lt;/p&gt;
+
+&lt;h3 id=&quot;1661-身份认证技术&quot;&gt;16.6.1 身份认证技术&lt;/h3&gt;
+
+&lt;p&gt;身份认证是对系统的用户进行有效性、真实性验证。&lt;/p&gt;
+
+&lt;p&gt;1.口令认证方式使用口令认证方式，用户必须具有一个唯一的系统标识，并且保证口令在系统的使用和存储过程中是安全的，同时口令在传输过程中不能被窃取、替换。另外特别要注意的是在认证前，用户必须确认认证者的真实身份，以防止把口令发给冒充的认证者。
+使用口令的单向身份认证过程一般是:请求认证者和认证者之间建立安全连接、并确认认证者身份等;然后请求认证者向认证者发送认证请求，认证请求中必须包括请求认证者的ID和口令;认证者接受ID和口令，在用户数据库中找出请求认证的ID和口令;查找是否有此用户并比较两口令是否相同;最后向请求认证者发回认证结果。如果请求认证者的ID在认证者的用户数据库中，并且请求认证者发送的口令与数据库中相应的口令相同，则允许请求认证者通过认证。&lt;/p&gt;
+
+&lt;p&gt;2.基于公钥签名的认证方式&lt;/p&gt;
+
+&lt;p&gt;公开密钥签名算法的身份认证方式，是通过请求认证者与认证者(对于双向身份认证而言，双方互为请求认证者和认证者)之间对于一个随机数做数字签名与验证数字签名来实现的。这种方式中认证双方的个人秘密信息不用在网络上传送，从而减少了口令等秘密信息泄漏的风险。&lt;/p&gt;
+
+&lt;p&gt;采用数字签名技术认证与口令认证方式有一个很大的不同:口令认证通常在正式数据交换开始之前进行。认证一旦通过，双方即建立安全通道进行通信，此后的通信被认为是安全的，不再进行身份认证;而数字签名认证在每一次的请求和响应中进行，即接收信息的一方先从接收到的信息中验证发送者的身份信息，验证通过后才对收到的信息进行相应处理。&lt;/p&gt;
+
+&lt;p&gt;使用公钥加密算法进行身份认证要求:请求认证者必须具有私钥实现数字签名的功能;认证者必须具有使用公钥验证数字签名的功能;认证者必须具有产生随机数的功能，而且随机数的质量必须达到一定要求。&lt;/p&gt;
+
+&lt;p&gt;使用公钥加密算法进行身份认证的方式，对用于数字签名的私钥由参与通信的认证者自己保密，而用于验证数字签名的公钥则需要采用可靠的方式进行安全分发。一般可以采用公钥数据库方式或者使用认证机构签发数字证书的方式(认证机构与数字证书的内容参见前文PKI部分)。&lt;/p&gt;
+
+&lt;p&gt;如果使用公钥数据库的方式管理公钥，则请求认证者ID就包含在认证请求中发给认证者，认证者使用该ID从公钥数据库中获得请求认证者的公钥。如果使用认证机构签发数字证书的方式管理公钥，则请求认证者的数字证书包含在认证请求中发给认证者，认证者验证请求认证者的数字证书后，从数字证书中获取请求认证者的公钥。&lt;/p&gt;
+
+&lt;p&gt;3.持卡认证方式&lt;/p&gt;
+
+&lt;p&gt;持卡认证方式最早采用磁卡。磁卡中最重要的部分是磁道，不仅存储数据，而且还存储用户的身份信息。目前所用的卡是IC卡，与磁卡相比，它除了存储容量大之外，还可一卡多用，同时具有可靠性高，寿命长，读写机构简单可靠，造价便宜，维护方便，容易推广等诸多优点。正由于上述优点，使得IC卡在世界各地广泛使用。IC卡上一般分为不加密的公共区、加密的数据区等，有些还有自己的操作系统和微处理器。IC卡已被广泛应用于身份认证领域。&lt;/p&gt;
+
+&lt;p&gt;一般IC卡与用户的个人PIN一起使用。在脱机系统中，PIN以加密的形式存在卡中，识别设备读出IC卡中的身份信息，然后将其中的PIN解密，与用户输入的PIN比较，以决定IC卡持有者是否合法。在联机系统中，PIN可不存在IC卡上，而存在主机系统中，鉴别时，系统将用户输入的PIN与主机的PIN比较，而由此认证其身份的合法性。&lt;/p&gt;
+
+&lt;p&gt;4.基于人体生物特征的认证方式&lt;/p&gt;
+
+&lt;p&gt;这种方式是指通过计算机，利用人体固有的生理特征或行为特征进行个人身份鉴定。与传统的身份鉴别手段相比，基于生物特征的认证技术具有突出的优点:一是不会遗忘或丢失;二是防伪性能好，无法伪造;三是随时随地可用。能够用来鉴别身份的生物特征一般具有广泛性(每个人都应该具有这种特性)、唯一性(每个人拥有的特征应各不相同)、稳定性(所选择的特征应该不随时间变化而发生变化)和可采集性(所选择的特征应该便于采集、测量)。目前，可用于身份鉴别的生物特征主要有指纹、笔迹、脸像、红外温、视网膜、手形、掌纹等。&lt;/p&gt;
+
+&lt;p&gt;由于生物特征识别的设备比其他身份认证的设备要复杂，所以一般用在非常重要的机密场合，如军事等。生物特征识别主要采用模式识别技术。身份识别系统工作方式分为识别模式和鉴定模式，其性能指标主要有错误拒绝率和错误接受率等。在选择这种认证方式时需要对这些参数作认真的考虑。&lt;/p&gt;
+
+&lt;p&gt;5.动态口令技术(一次性口令技术)&lt;/p&gt;
+
+&lt;p&gt;一般情况下，所使用的计算机口令都是静态的，也就是说在一定的时间内是相对不变的，而且可重复使用。这种口令很容易被系统中的嗅探程序所劫持，而且很容易受到基于字典的暴力攻击。&lt;/p&gt;
+
+&lt;p&gt;针对这种静态口令认证方式的缺陷，人们提出了利用散列函数产生一次性口令的方法，即用户每次登录系统时使用的口令都是变化的。一次性口令是动态变化的密码，其变化来源于产生密码的运算因子。一次性口令的产生因子一般都采用双运算因子:一是用户的私钥，它代表用户身份的识别码，是固定不变的。二是变动因子，正是变动因子的不断变化，才能够产生动态的一次性口令。&lt;/p&gt;
+
+&lt;p&gt;动态口令技术认证方式中要用到动态口令密码卡，这是一种便于携带的智能化硬件产品。这种密码卡内置的构件和程序能通过密码卡内的密钥加上其他因子动态地计算出新的口令。当密码卡持有者将这个口令输入计算机时，系统中的认证服务器会根据相同的算法和动态因子计算出对应于该密码卡的认证口令，并把这个口令与密码卡产生的口令比对，进行身份认证。&lt;/p&gt;
+
+&lt;p&gt;6.PPP中的认证协议
+点到点协议(Point-to-PointProtocol，PPP)提供了一种在点到点链路上封装网络层协议信息的标准方法。PPP也定义了可扩展的链路控制协议。链路控制协议使用验证协议磋商机制，在链路层上传输网络层协议前验证链路的对端。&lt;/p&gt;
+
+&lt;p&gt;PPP包含如下几个部分:在串行链路上封装数据报的方法;建立、配置和测试数据链路连接的链路控制协议(LinkControlProtocol，LCP);建立和配置不同网络层协议的一组网络控制协议(Network Control Protocol，NCP)。&lt;/p&gt;
+
+&lt;p&gt;PPP协议定义了两种验证协议:密码验证协议(Password Authentication Protocol，PAP)和挑战—握手验证协议(Challenge-Handshake Authentication Protocol，CHAP)，此外还有扩展认证协议(ExtensibleAuthenticationProtocol，EAP)。&lt;/p&gt;
+
+&lt;p&gt;一个典型的PPP链路建立过程分为三个阶段:创建阶段、认证阶段和网络层协商阶段。&lt;/p&gt;
+
+&lt;p&gt;(1)创建阶段。在这个阶段，将对基本的通信方式进行选择。链路两端设备通过LCP向对方发送配置信息，建立链路。在链路创建阶段，只是对验证协议进行选择，具体的用户验证过程在认证阶段实现。&lt;/p&gt;
+
+&lt;p&gt;(2)认证阶段。在这个阶段，客户端会将自己的身份发送给远端的接入服务器。该阶段使用一种安全的验证方式避免第三方窃取数据或冒充远程客户接管与客户端的连接。认证成功，则转到网络层协商阶段。如果认证失败，则链路终止。&lt;/p&gt;
+
+&lt;p&gt;(3)网络层协商阶段。认证阶段完成之后，PPP将调用在链路创建阶段选定的各种NCP协商高层协议问题，例如，在该阶段IP控制协议可以向拨入用户分配动态地址。这样，经过三个阶段以后，一条完整的PPP链路就建立起来了。&lt;/p&gt;
+
+&lt;p&gt;最常用的认证协议有PAP和CHAP，此外还有EAP。&lt;/p&gt;
+
+&lt;p&gt;(1)PAP。PAP是一种简单的明文验证方式。网络接入服务器要求用户提供用户名和口令，PAP以明文方式返回用户信息，并且对回送或者重复验证和错误攻击没有保护措施。很明显，这种验证方式的安全性较差，第三方可以很容易地获取被传送的用户名和口令，并利用这些信息与网络接入服务器建立连接获取网络接入服务器提供的资源。所以，一旦用户密码被第三方窃取，PAP无法提供避免受到第三方攻击的保障措施。&lt;/p&gt;
+
+&lt;p&gt;(2)CHAP。CHAP是一种加密的验证方式，能够避免建立连接时传送用户的明文密码。网络接入服务器向远程用户发送一个挑战口令，其中包括会话ID和一个任意生成的挑战字串。远程客户端使用MD5散列算法返回用户名和加密的挑战口令、会话ID及用户口令。&lt;/p&gt;
+
+&lt;p&gt;CHAP对PAP进行了改进，不再直接通过链路发送明文口令，而是使用挑战口令以散列算法对口令进行加密。因为服务器端存有客户的明文口令，所以服务器可以重复客户端进行的散列操作，并将结果与用户返回的口令进行对照。&lt;/p&gt;
+
+&lt;p&gt;CHAP为每一次验证任意生成一个挑战字串来防止受到攻击。在整个连接过程中，CHAP将不定时地随机向客户端重复发送挑战口令，从而避免非法入侵者冒充远程客户进行攻击。&lt;/p&gt;
+
+&lt;p&gt;HAP验证方式具有如下的优点:
+1通过可变的挑战口令和随机地、重复地发挑战口令，CHAP防止了重放攻击。
+2该认证方法依赖于认证者和对端共享的密钥，密钥不是通过链路发送的。
+3虽然该认证是单向的，但是在两个方向都进行CHAP协商，同一密钥可以很容易地实现交互认证。
+4由于CHAP可以用在许多不同的系统认证中，因此可以用用户名作为索引，以便在一张大型密钥表中查找正确的密钥。这样也可以在一个系统中支持多个用户名—密钥对，在会话中随时改变密钥。&lt;/p&gt;
+
+&lt;p&gt;CHAP在设计上的要求:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;CHAP算法要求密钥长度必须至少是1字节，至少应该不易让人猜出，密钥最好至少是散列算法所选用的散列码的长度，如此可以保证密钥不易受到穷举搜索攻击。所选用的散列算法，必须保证从已知挑战口令和响应值来确定密钥在计算上是不可行的。&lt;/li&gt;
+  &lt;li&gt;每一个挑战口令应该是唯一的，否则在同一密钥下，重复挑战口令将使攻击者能够用以前截获的响应值应答挑战口令。由于希望同一密钥可以用于地理上分散的不同服务器的认证，因此挑战口令应该做到全局临时唯一。&lt;/li&gt;
+  &lt;li&gt;每一个挑战口令也应该是不可预计的，否则攻击者可以欺骗对方，让对方响应一个预计的挑战口令，然后用该响应冒充对端欺骗认证者。虽然CHAP不能防止实时地主动搭线窃听攻击，但是只要能产生不可预计的挑战口令就可以防范大多数的主动攻击。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;(3)EAP&lt;/p&gt;
+
+&lt;p&gt;EAP是一个用于PPP认证的通用协议，可以支持多种认证方法。EAP并不在链路控制阶段而是在认证阶段指定认证方法，这样认证方就可以在得到更多的信息以后再决定使用什么认证方法。这种机制还允许PPP认证方简单地把收到的认证信息传给后方的认证服务器，由后方的认证服务器来真正实现各种认证方法。&lt;/p&gt;
+
+&lt;p&gt;EAP的认证过程是:在链路阶段完成以后，认证方向对端发送一个或多个请求报文。在请求报文中有一个类型字用来指明认证方所请求的信息类型，例如，可以是对端的ID、MD5的挑战口令、一次性密码及通用密码卡等。MD5的挑战口令对应于CHAP认证协议的挑战口令。典型情况下，认证方首先发送一个ID请求报文随后再发送其他的请求报文。对端对每一个请求报文响应一个应答报文。和请求报文一样，应答报文中也包含一个类型字段，对应于所回应的请求报文中的类型字段。认证方再通过发送一个成功或者失败的报文来结束认证过程。&lt;/p&gt;
+
+&lt;p&gt;EAP具有突出的优点:它可以支持多种认证机制，而不需要在建立连接阶段指定;某些设备，例如，网络接入服务器，不需要关心每一个请求信息的真正含义，而是作为一个代理把认证报文直接传给后端的认证服务器，设备只需关心认证结果是成功还是失败，然后结束认证阶段。&lt;/p&gt;
+
+&lt;p&gt;当然EAP也有一些缺点:它需要在LCP中增加一个新的认证协议，这样现有的PPP要想使用EAP就必须进行修改。同时，使用EAP也和现有的在LCP协商阶段指定认证方法的模型不一致。&lt;/p&gt;
+
+&lt;p&gt;7.RADIUS协议&lt;/p&gt;
+
+&lt;p&gt;RADIUS(RemoteAuthenticationDial-inUserService)协议是由朗讯公司提出的客户/服务器方式的安全认证协议，它能在拨号网络中提供注册、验证功能，现已成为Internet的正式协议标准，是当前流行的AAA(Authentication、Authorization、Accountion)协议。&lt;/p&gt;
+
+&lt;p&gt;RADIUS协议可以把拨号和认证这两种功能放在两个分离的服务器——网络接入服务器(NAS)和后台认证服务器(RADIUS服务器)上。在RADIUS服务器上存放有用户名和它们相应的认证信息的一个大数据库，来提供认证用户名和密码及向用户发送配置服务的详细信息等。&lt;/p&gt;
+
+&lt;p&gt;RADIUS具有非常突出的特点:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;RADIUS协议使用UDP进行传输，它使用1812号端口进行认证，以及认证通过后对用户授权，使用1813号端口对用户计费。&lt;/li&gt;
+  &lt;li&gt;支持多种认证方法，RADIUS能支持PAP、CHAP、UNIXLogin及其他认证方法;&lt;/li&gt;
+  &lt;li&gt;支持认证转接(AuthenticationForwarding)，一个RADIUS服务器可以作为另一个RADIUS服务器的客户端向它要求认证，这叫作认证转接。&lt;/li&gt;
+  &lt;li&gt;协议扩展性好，通过协议中变长的属性串能够进一步扩展RADIUS协议。&lt;/li&gt;
+  &lt;li&gt;认证信息都加密传输，安全性高。RADIUS服务器和接入服务器之间传递的认证信息用一个事先设置的口令进行加密，防止敏感信息泄露，因此安全性高。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;RADIUS的认证过程如下:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;接入服务器从用户那里获取用户名和口令(PAP口令或CHAP口令)，把它同用户的一些其他信息(如主叫号码、接入号码、占用的端口等)组成RADIUS认证请求数据包发送给RADIUS服务器，请求认证。&lt;/li&gt;
+  &lt;li&gt;RADIUS服务器收到认证请求包后，首先查看接入服务器是否已经登记，然后根据请求中用户名、口令等信息验证用户是否合法。如果用户非法，则向接入服务器发送访问拒绝包;如果用户合法，那么RADIUS服务器会将用户的配置信息，例如，用户类型、IP地址、连接协议、端口信息、ACL授权等信息，一起组成访问接受包发送回接入服务器。&lt;/li&gt;
+  &lt;li&gt;接入服务器收到访问接受/拒绝包时，首先要判断包中的签名是否正确，如果不正确将认为收到了一个非法的包。验证签名的正确性后，如果收到了访问接受包，那么接入服务器会接受用户的上网请求，并用收到的授权信息对用户进行配置、授权，限制用户对资源的访问;如果收到的是访问拒绝包则拒绝该用户的上网请求。&lt;/li&gt;
+  &lt;li&gt;当用户成功登录后，接入服务器会向RADIUS服务器发送一个连接开始的记账信息包，其中包括用户使用的连接种类、协议和其他自定义的用户记账的信息;当用户断开连接后，接入服务器再向RADIUS服务器发送一个连接结束的记账信息包，通知RADIUS服务器停止对该用户记账。RADIUS服务器根据收到的记账信息包按照该用户的设置为用户记账。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1662访问控制技术&quot;&gt;16.6.2访问控制技术&lt;/h3&gt;
+
+&lt;p&gt;访问控制是在身份认证的基础上，根据不同身份的用户对用户的访问请求加以限制。身份认证关心的是“你是谁，你是否拥有你所声明的身份”这个问题;而访问控制则关心“你能做什么，不能做什么”的问题。&lt;/p&gt;
+
+&lt;p&gt;在访问控制过程中，一般把发出访问、存取请求的一方，例如，用户、程序、进程等叫作主体;而把被访问的对象和资源，例如，文件、数据库、设备、内存区域等叫作客体。另外还有一套定义主体与客体之间相互关系，确定不同主体对不同客体的访问能力与权限的规则，叫作访问规则。一个完整的访问控制体系就是由上述三方面共同构成的。&lt;/p&gt;
+
+&lt;p&gt;1.访问控制策略&lt;/p&gt;
+
+&lt;p&gt;访问控制策略一般可以划分为三类:自主访问控制(DiscretionaryAccessControl，DAC)，强制访问控制(MandaroryAccessControl，MAC)，基于角色的访问控制(RoalBasedAccessControl，RBAC)。其中DAC、MAC是属于传统的访问控制策略，而RBAC则是后来出现的一种访问控制策略，被认为具有很大的优势，具有很好的发展前景。&lt;/p&gt;
+
+&lt;p&gt;(1)DAC。自主访问控制是目前计算机系统中实现最多的访问控制机制，它使主体可以自主地进行配置以决定其他的主体可以采取什么样的方式来访问其所拥有的一些资源，即一个拥有一定权限范围的主体可以直接或者间接地把权限授予其他的主体。&lt;/p&gt;
+
+&lt;p&gt;常见的操作系统如Windows、UNIX等都是采用自主访问控制策略来实施访问控制的。其常见的方式是由某个用户(一般为某个文件或资源的拥有者或超级管理员)采用某种方式指定不同类型、不同分组的其他用户对其名下的资源的访问许可和访问方式。&lt;/p&gt;
+
+&lt;p&gt;自主访问控制策略中，由用户自己决定其他用户对系统中某些资源的访问权限，这样虽然方便，但是却很难保证这种类型的授权对于整个系统来说是安全的。首先，用户往往不知道或者难以确定其他的用户是否适合具有对某些资源的访问权限;其次，如果不是所有的用户都有很强的安全意识，可能随意授权，那么这对于系统安全就是一个潜在的威胁;再次，由用户自己决定访问权限的分配，不利于系统管理员实施统一的全局访问控制;另外，许多组织中往往希望对于信息系统采取的授权与控制结构能够与该组织的行政结构一致。总之，自主访问控制策略容易使系统失控，容易给非法入侵者留下可乘之机。所以，自主访问控制策略的安全性不是很高。&lt;/p&gt;
+
+&lt;p&gt;随着网络规模的扩大，用户对访问控制服务的质量也提出了更高的要求，采用自主访问控制策略已经很难满足一个安全性要求比较高的系统的需要。&lt;/p&gt;
+
+&lt;p&gt;(2)MAC。&lt;/p&gt;
+
+&lt;p&gt;强制访问控制是系统统一采用某种访问权限的授予和撤销的策略，而且强制所有主体都必须服从这种访问权限的分配。&lt;/p&gt;
+
+&lt;p&gt;MAC一般用在安全级别层次比较多的军事、安全等特殊应用领域中。它预先为系统中接受的所有主体、客体根据可以信任的程度、所处的岗位和承担的任务、信息的敏感程度、时间发展的阶段等划分成若干级别，例如，信息可以分为绝密、机密、秘密和无密级等不同的级别。然后再根据主体和客体的级别标记来决定访问模式，任何用户对任何客体的访问请求都由这种安全级别的划分及相应的权限配置来控制。&lt;/p&gt;
+
+&lt;p&gt;强制访问控制由于过于强调系统的安全性能，虽然能够很好地控制系统的安全，但是它管理起来比较麻烦，工作量很大，也不够灵活。
+(3)RBAC。DAC和MAC访问控制策略都各有其特点，但是也各有它们的不足。而基于角色的访问控制则可以在克服以上两者的缺点的同时，提供一个良好的安全的系统环境，因而是面向企业的系统中一种十分有效的访问控制策略。&lt;/p&gt;
+
+&lt;p&gt;DAC系统中，有一种常见的情况，就是在一个组织中，最终用户能够使用某些资源，但是它并不是该资源的拥有者，资源的拥有者是这个组织或组织中的所有用户。这时，就应该基于用户的职务来进行访问权限的设置和分配，而不应该基于资源的拥有者来进行。&lt;/p&gt;
+
+&lt;p&gt;例如，在图书馆中，应该根据某一个用户是流通人员、文献编目人员，还是分馆的管理员等不同的角色来分配和设置权限。如果是文献编目人员，那么他对系统中流通的图书这种资源就只能有查看的权限，而对未进行典藏的图书等资源就有比较高的访问权限;如果是分馆的管理员，那么他相应地就具有对该分馆的读者、文献等资源有较高的访问权限，而对其他用户则没有。也就是说，用户具有什么样的访问权限，不直接取决于用户自己，而是取决于他所属的角色，有什么样的角色就有什么样的权限。&lt;/p&gt;
+
+&lt;p&gt;角色的种类和访问权限由系统管理员来定义，每一个成员属于哪种类型的角色也由系统管理员来规定，即只有系统管理员才有权定义和分配角色，而且对于用户来说只能服从系统中的这一系列规定，而不能有自主的配置，因此这是一种非自主型访问控制策略。&lt;/p&gt;
+
+&lt;p&gt;2.访问许可的授权对访问许可的授权有三种类型:(1)等级型。把对客体的存取控制权限的修改能力划分成不同的等级，拥有高级别修
+改能力的主体可以把这种权限分配给比其级别低的主体。依此类推，从而将访问许可的授权关系组成一个树型结构。&lt;/p&gt;
+
+&lt;p&gt;例如，超级管理员可以作为这个等级树的根，具有修改所有客体的存取控制表的能力，且可以向任意一个主体分配这种修改权。系统管理员把用户根据部门划分成多个子集，并对部门领导授予相应存取控制权限的修改权和对修改权的分配权。部门领导又可以把自己所拥有的权力按照同样的方法向下授权。&lt;/p&gt;
+
+&lt;p&gt;这种方式的优点是树型结构与实际组织机构类似，并且可以由领导根据日常实际工作需要进行授权来对各级用户进行控制与管理。但这种方式也有一个缺点，就是对同一个客体来说，可能存在多个主体有能力修改其存取控制权限。&lt;/p&gt;
+
+&lt;p&gt;(2)拥有型。这种类型对每一个客体都有一个拥有者(一般情况下就是该客体的创建者)，拥有者具有对所拥有的客体的全部的控制权，并且可以任意修改其拥有的客体的访问控制表，并可对其他主体授予或撤销对其客体的任何一种访问权限。但是拥有者无权将其对客体的访问控制权的分配权授予其他主体。&lt;/p&gt;
+
+&lt;p&gt;在UNIX系统中就是用这种方式来进行授权控制的。&lt;/p&gt;
+
+&lt;p&gt;(3)自由型。自由型的特点是一个客体的拥有者可以对任何主体授予对他所拥有的客体的访问权限，同时还可以把这种分配权授予其他主体而不受任何限制。这样，获得了这种授权的主体就可以把这种分配权授予更多的主体而不受该客体拥有者的限制。这样，一旦访问控制的分配权被授予出去，就很难控制对客体的访问了。显然，这样做安全性比较差，一般的系统中很少采用这种方式。&lt;/p&gt;
+
+&lt;p&gt;对于系统中如何更好地进行访问控制，可以参考本书下册中的相关讲解。&lt;/p&gt;
+
+&lt;h2 id=&quot;167-网络安全体系&quot;&gt;16.7 网络安全体系&lt;/h2&gt;
+
+&lt;p&gt;ISO的OSI/RM是著名的网络架构模型，但是，OSI/RM并没有在安全性方面作专门的设计，因此该模型本身的安全性是很弱的。为了改善网络的安全状况，提高网络安全强度，ISO又在OSI/RM的基础上提出了一套OSI安全架构，用以强化网络的安全性。&lt;/p&gt;
+
+&lt;h3 id=&quot;1671-osi安全架构&quot;&gt;16.7.1 OSI安全架构&lt;/h3&gt;
+
+&lt;p&gt;OSI安全架构是一个面向对象的、多层次的结构，它认为安全的网络应用是由安全的服务实现的，而安全服务又是由安全机制来实现的。&lt;/p&gt;
+
+&lt;p&gt;1.OSI安全服务&lt;/p&gt;
+
+&lt;p&gt;针对网络系统的技术和环境，OSI安全架构中对网络安全提出了5类安全服务，即对象认证服务、访问控制服务、数据保密性服务、数据完整性服务、禁止否认服务。&lt;/p&gt;
+
+&lt;p&gt;(1)对象认证服务。对象认证服务又可分为对等实体认证和信源认证，用于识别对等实体或信源的身份，并对身份的真实性、有效性进行证实。其中，对等实体认证用来验证在某一通信过程中的一对关联实体中双方的声称是一致的，确认对等实体中没有假冒的身份。信源认证可以验证所接收到的信息是否确实具有它所声称的来源。&lt;/p&gt;
+
+&lt;p&gt;(2)访问控制服务。访问控制服务防止越权使用通信网络中的资源。访问控制服务可以分为自主访问控制、强制访问控制、基于角色的访问控制。由于DAC、MAC固有的弱点，以及RBAC的突出优势，所以RBAC一出现就成为在设计中最受欢迎的一种访问控制方法。访问控制的具体内容前面已有讲述，此处不再赘述。&lt;/p&gt;
+
+&lt;p&gt;(3)数据保密性服务。数据保密性服务是针对信息泄漏而采取的防御措施，包括信息保密、选择段保密、业务流保密等内容。数据保密性服务是通过对网络中传输的数据进行加密来实现的。&lt;/p&gt;
+
+&lt;p&gt;(4)数据完整性服务。数据完整性服务包括防止非法篡改信息，如修改、删除、插入、复制等。&lt;/p&gt;
+
+&lt;p&gt;(5)禁止否认服务。禁止否认服务可以防止信息的发送者在事后否认自己曾经进行过的操作，即通过证实所有发生过的操作防止抵赖。具体的可以分为防止发送抵赖、防止递交抵赖和进行公证等几个方面。&lt;/p&gt;
+
+&lt;p&gt;2.OSI安全机制&lt;/p&gt;
+
+&lt;p&gt;为了实现前面所述的OSI5种安全服务，OSI安全架构建议采用如下8种安全机制:加密机制、数字签名机制、访问控制机制、数据完整性机制、鉴别交换机制、流量填充机制、路由验证机制、公正机制。&lt;/p&gt;
+
+&lt;p&gt;(1)加密机制。&lt;/p&gt;
+
+&lt;p&gt;加密机制即通过各种加密算法对网络中传输的信息进行加密，它是对信息进行保护的最常用措施。加密算法有许多种，大致分为对称密钥加密与公开密钥加密两大类，其中有些(例如，DES等)加密算法已经可以通过硬件实现，具有很高的效率。&lt;/p&gt;
+
+&lt;p&gt;(2)数字签名机制。&lt;/p&gt;
+
+&lt;p&gt;数字签名机制是采用私钥进行数字签名，同时采用公开密钥加密算法对数字签名进行验证的方法。用来帮助信息的接收者确认收到的信息是否是由它所声称的发送方发出的，并且还能检验信息是否被篡改、实现禁止否认等服务。&lt;/p&gt;
+
+&lt;p&gt;(3)访问控制机制。&lt;/p&gt;
+
+&lt;p&gt;访问控制机制可根据系统中事先设计好的一系列访问规则判断主体对客体的访问是否合法，如果合法则继续进行访问操作，否则拒绝访问。访问控制机制是安全保护的最基本方法，是网络安全的前沿屏障。&lt;/p&gt;
+
+&lt;p&gt;(4)数据完整性机制。&lt;/p&gt;
+
+&lt;p&gt;数据完整性机制包括数据单元的完整性和数据单元序列的完整性两个方面。它保证数据在传输、使用过程中始终是完整、正确的。数据完整性机制与数据加密机制密切相关。&lt;/p&gt;
+
+&lt;p&gt;(5)鉴别交换机制。&lt;/p&gt;
+
+&lt;p&gt;鉴别交换机制以交换信息的方式来确认实体的身份，一般用于同级别的通信实体之间的认证。要实现鉴别交换常常用到如下技术：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;口令:由发送方提交，由接收方检测。&lt;/li&gt;
+  &lt;li&gt;加密:将交换的信息加密，使得只有合法用户才可以解读。&lt;/li&gt;
+  &lt;li&gt;实体的特征或所有权:例如，指纹识别、身份卡识别等。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;(6)业务流填充机制。&lt;/p&gt;
+
+&lt;p&gt;业务流填充机制是设法使加密装置在没有有效数据传输时，还按照一定的方式连续地向通信线路上发送伪随机序列，并且这里发出的伪随机序列也是经过加密处理的。这样，非法监听者就无法区分所监听到的信息中哪些是有效的，哪些是无效的，从而可以防止非法攻击者监听数据，分析流量、流向等，达到保护通信安全的目的。&lt;/p&gt;
+
+&lt;p&gt;(7)路由控制机制。&lt;/p&gt;
+
+&lt;p&gt;在一个大型的网络里，从源节点到目的节点之间往往有多种路由，其中有一些是安全的，而另一些可能是不安全的。在这种源节点到目的节点之间传送敏感数据时，就需要选择特定的安全的路由，使之只在安全的路径中传送，从而保证数据通信的安全。&lt;/p&gt;
+
+&lt;p&gt;(8)公证机制。&lt;/p&gt;
+
+&lt;p&gt;在一个复杂的信息系统中，一定有许多用户、资源等实体。由于各种原因，很难保证每个用户都是诚实的，每个资源都是可靠的，同时，也可能由于系统故障等原因造成信息延迟、丢失等。这些很可能会引起责任纠纷或争议。而公证机构是系统中通信的各方都信任的权威机构，通信的各方之间进行通信前，都与这个机构交换信息，从而借助于这个可以信赖的第三方保证通信是可信的，即使出现争议，也能通过公证机构进行仲裁。&lt;/p&gt;
+
+&lt;p&gt;3.OSI安全服务与安全机制之间的关系&lt;/p&gt;
+
+&lt;p&gt;OSI安全服务与安全机制之间不是一一对应的关系。有的服务需要借助多种机制来实线，同时，有些机制可以提供多种服务。一般来说，OSI安全服务与安全机制之间具有如表16-1所示的关系，在设计中可以参考选用这些安全机制从而提供相应的安全服务。&lt;/p&gt;
+
+&lt;h3 id=&quot;1672vpn在网络安全中的应用&quot;&gt;16.7.2VPN在网络安全中的应用&lt;/h3&gt;
+
+&lt;p&gt;虚拟专用网络(VirtualPrivateNetwork，VPN)是指利用不安全的公共网络如Internet等作为传输媒介，通过一系列的安全技术处理，实现类似专用网络的安全性能，保证重要信息的安全传输的一种网络技术。&lt;/p&gt;
+
+&lt;p&gt;1.VPN技术的优点&lt;/p&gt;
+
+&lt;p&gt;VPN技术具有非常突出的优点，主要包括:&lt;/p&gt;
+
+&lt;p&gt;(1)网络通信安全。&lt;/p&gt;
+
+&lt;p&gt;VPN采用安全隧道等技术提供安全的端到端的连接服务，位于VPN两端的用户在Internet上通信时，其所传输的信息都是经过RSA不对称加密算法加密处理的，它的密钥则是通过Diffie-Hellman算法计算得出的，可以充分地保证数据通信的安全。&lt;/p&gt;
+
+&lt;p&gt;(2)方便的扩充性。&lt;/p&gt;
+
+&lt;p&gt;利用VPN技术实现企业内部专用网络，以及异地业务人员的远程接入等，具有方便灵活的可扩性。首先是重构非常方便，只需要调整配置等就可以重构网络;其次是扩充网络方便，只需要配置几个节点，不需要对已经建好的网络作工程上的调整。&lt;/p&gt;
+
+&lt;p&gt;(3)方便的管理。&lt;/p&gt;
+
+&lt;p&gt;利用VPN组网，可以把大量的网络管理工作放到互联网络服务提供商一端来统一实现，从而减轻了企业内部网络管理的负担。同时VPN也提供信息传输、路由等方面的智能特性及与其他网络设备相独立的特性，也给用户提供了网络管理的灵活的手段。&lt;/p&gt;
+
+&lt;p&gt;(4)节约成本显著。&lt;/p&gt;
+
+&lt;p&gt;利用已有的无处不在的Internet组建企业内部专用网络，可以节省大量的投资成本及后续的运营维护成本。以前，要实现两个远程网络的互联，主要是采用专线连接方式。这种方式成本太高。而VPN则是在Internet基础上建立的安全性较好的虚拟专用网，因此成本比较低，而且可以把一部分运行维护工作放到服务商端，又可以节约一部分维护成本。&lt;/p&gt;
+
+&lt;p&gt;2.VPN的原理&lt;/p&gt;
+
+&lt;p&gt;实现VPN需要用到一系列关键的安全技术，包括:(1)安全隧道技术。即把传输的信息经过加密和协议封装处理后再嵌套装入另一种协
+议的数据包中送入网络中，像普通数据包一样进行传输。经过这样的处理，只有源端和目标端的用户对加密封装的信息能进行提取和处理，而对于其他用户而言，这些信息只是无意义的垃圾。&lt;/p&gt;
+
+&lt;p&gt;(2)用户认证技术。&lt;/p&gt;
+
+&lt;p&gt;在连接开始之前先确认用户的身份，然后系统根据用户的身份进行相应的授权和资源访问控制。&lt;/p&gt;
+
+&lt;p&gt;(3)访问控制技术。&lt;/p&gt;
+
+&lt;p&gt;由VPN服务的提供者与最终网络信息资源的提供者共同协商确定用户对资源的访问权限，以此实现基于用户的访问控制，实现对信息资源的保护。&lt;/p&gt;
+
+&lt;p&gt;VPN系统的结构如图16-12所示。&lt;/p&gt;
+
+&lt;p&gt;在图16-12中，安全隧道代理和管理中心组成安全传输平面(SecureTransmissionPlane，STP)，实现在Internet上安全传输和相应的系统管理功能。用户认证管理中心和密钥分配中心组成公共功能平面(CommonFunctionPlane，CFP)，它是安全传输平面的辅助平面，主要向用户代理提供相对独立的用户身份认证与管理、密钥的分配与管理功能。&lt;/p&gt;
+
+&lt;p&gt;建立VPN通信时，VPN用户代理向安全隧道代理请求建立安全隧道，安全隧道代理接受后，在管理中心的控制和管理下在Internet上建立安全隧道，然后向用户提供透明的网络传输。VPN用户代理包括安全隧道终端功能、用户认证功能和访问控制功能三个部分，它们共同向上层应用提供完整的VPN服务。&lt;/p&gt;
+
+&lt;p&gt;(1)安全传输平面。安全传输平面实现在Internet上安全传输和相应的系统管理功能，这是由安全隧道代理和管理中心共同完成的。&lt;/p&gt;
+
+&lt;p&gt;1 安全隧道代理。&lt;/p&gt;
+
+&lt;p&gt;安全隧道代理可以在管理中心的控制下将多段点到点的安全通路连接成一条端到端的安全隧道。它是VPN的主体，其主要作用有:建立与释放安全隧道。按照用户代理的请求，在用户代理与安全隧道代理之间建立点到点的安全通道，并在这个安全通道中进行用户身份验证和服务等级协商等交互。在安全通道中进行初始化过程，可以充分保护用户身份验证等重要信息的安全。然后在管理中心的控制下建立发送端到接收端之间由若干点到点的安全通道依次连接而成的端到端的安全隧道。在信息传输结束之后，由通信双方中的任一方代理提出释放隧道连接请求，就可以中断安全隧道连接。用户身份的验证。在建立安全隧道的初始化过程中，安全隧道代理要求用户代理提交用户认证管理中心提供的证书，通过验证该证书可以确认用户代理的身份。必要时还可以由用户代理对安全隧道代理进行反向认证以进一步提高系统的安全性。服务等级的协商。用户身份验证通过之后，安全隧道代理与用户代理进行服务等级的协商，根据其要求与VPN系统当时的实际情况确定提供的服务等级并报告至管理中心。信息的透明传输。安全隧道建立之后，安全隧道代理负责通信双方之间信息的传输，并根据商定的服务参数进行相应的控制，对其上的应用提供透明的VPN传输服务。控制与管理安全隧道。在维持安全隧道连接期间，安全隧道代理还要按照管理中心的管理命令对已经建立好的安全隧道进行网络性能及服务等级等有关的管理与调整。&lt;/p&gt;
+
+&lt;p&gt;2 VPN管理中心。&lt;/p&gt;
+
+&lt;p&gt;VPN管理中心是整个VPN的核心部分，它与安全隧道代理直接联系，负责协调安全传输平面上的各安全隧道代理之间的工作。具体功能包括:安全隧道的管理与控制。确定最佳路由，并向该路由上包含的所有安全隧道代理发出命令，建立安全隧道连接。隧道建立以后，管理中心继续监视各隧道连接的工作状态，对出错的安全隧道，管理中心负责重新选择路由并将该连接更换到新的路由。在通信过程中，还可以根据需要向相应安全隧道上的代理发送管理命令，以优化网络性能、调整服务等级等。网络性能的监视与管理。管理中心不断监视各安全隧道代理的工作状态，收集各种VPN性能参数，并根据收集到的数据完成VPN性能优化、故障排除等功能。同时，管理中心还负责完成对各种VPN事件进行日志记录、用户计费、追踪审计、故障报告等常用的网络管理功能。&lt;/p&gt;
+
+&lt;p&gt;(2)公共功能平面。&lt;/p&gt;
+
+&lt;p&gt;公共功能平面是安全传输平面的辅助平面，向VPN用户代理提供相对独立的用户身份认证与管理、密钥的分配与管理功能，分别由用户认证管理中心和VPN密钥分配中心完成。&lt;/p&gt;
+
+&lt;p&gt;1认证管理中心。认证管理中心提供用户身份认证和用户管理。用户认证就是以第三者身份客观地向VPN用户代理和安全隧道代理中的一方或双方提供用户身份的认证，以便他们能够相互确认对方的身份。&lt;/p&gt;
+
+&lt;p&gt;用户管理是指与用户身份认证功能直接相关的用户管理部分，即对各用户(包括用户代理、安全隧道代理及认证管理中心等)的信用程度和认证情况进行日志记录，并可在VPN与建立安全隧道双方进行服务等级的协商时参考。这里的管理是面向服务的，而与用户权限、访问控制等方面有关的用户管理功能则不在此列。&lt;/p&gt;
+
+&lt;p&gt;2密钥分配中心。密钥分配中心向需要进行身份验证和信息加密的双方提供密钥的分配、回收与管理功能。在VPN系统里，用户代理、安全隧道代理、认证管理中心等都是密钥分配中心的用户。&lt;/p&gt;
+
+&lt;p&gt;希赛教育专家提示:采用VPN技术，既能保证整个企业网络的连通性与数据的共享，又能保证财务等重要数据的安全，是一种实现企业内部本地网络互连的良好方案。&lt;/p&gt;
+
+&lt;h2 id=&quot;168-系统的安全性设计&quot;&gt;16.8 系统的安全性设计&lt;/h2&gt;
+
+&lt;p&gt;要设计一个安全的系统，除了要了解一些前面讲到的常用的保护手段和技术措施外，还要对系统中可能出现的安全问题或存在的安全隐患有充分的认识，这样才能对系统的安全作有针对性的设计和强化，即“知己知彼，百战百胜”。
+下面以物理安全、防火墙、入侵检测为例讲解系统安全中可能出现的问题及如何采取相应的措施。&lt;/p&gt;
+
+&lt;h3 id=&quot;1681-物理安全问题与设计&quot;&gt;16.8.1 物理安全问题与设计&lt;/h3&gt;
+
+&lt;p&gt;物理安全包括物理设备本身是否安全可靠，还包括设备的位置与环境的安全、限制物理访问、地域因素等几个方面。&lt;/p&gt;
+
+&lt;p&gt;信息系统的所有重要的物理设备、设施都应该放在专门的区域，并尽可能集中，同时严格限制外来人员来访，尽可能地减少未经授权的访问。物理安全还要求在设计中注意物理设备的冗余备份，例如，核心设备或部件都应该是热备份系统，具有实时或准实时切换的能力。物理安全还要求严格限制对网络信息点、线缆等网络基础设施及其所在地进行物理访问，要想访问必须经过专门的授权。物理安全还包括环境方面的因素，在设计之初就要对信息系统中的温度、湿度、灰尘、振动、雷电、电力等方面的参数有明确的要求，要对自然灾害(地震、台风、闪电等)有充分的考虑，还要对电磁泄漏等方面的要求作明确的定义。设计系统时要对这些因素全盘考虑，并采取适当的防护措施或强化手段。例如，机房这种重要的地点，除了所在的建筑物要有防雷系统外，还可以加装一套专用的防雷系统。这样可以保证即使建筑物遭到雷击时，万一建筑物的避雷系统未能充分保护好昂贵的信息系统，那么单独为机房安装的专用避雷系统也能保障机房设备免受损失。&lt;/p&gt;
+
+&lt;h3 id=&quot;1682-防火墙及其在系统安全中的应用&quot;&gt;16.8.2 防火墙及其在系统安全中的应用&lt;/h3&gt;
+
+&lt;p&gt;网络安全隐患主要是由网络的开放性、无边界性、自由性造成的，所以保护网络安全可以首先考虑把被保护的网络从开放的、无边界的、自由的公共网络环境中独立出来，使之成为有管理的、可控制的、安全的内部网络。也只有做到这一点，实现信息网络的通信安全才有可能。&lt;/p&gt;
+
+&lt;p&gt;目前，最基本的网络分隔手段就是防火墙，它也是目前用来实现网络安全的一种主要措施。利用防火墙，可以用来在拒绝未经允许的网络连接、阻止敏感数据的泄漏的同时，保证合法用户的合法网络流量畅通无阻，可以实现内部可信任网络(如企业网)与外部不可信任网络(如Internet)之间，或是内部不同子网之间的隔离与控制，保证网络系统及网络服务的可用性。&lt;/p&gt;
+
+&lt;p&gt;1.防火墙的基本原理防火墙通常使用的采用包过滤、状态检测、应用网关等几种方式控制网络连接。&lt;/p&gt;
+
+&lt;p&gt;包过滤防火墙是一种简单而有效的安全控制技术，它根据在防火墙中预先定义的规则(允许或禁止与哪些源地址、目的地址、端口号有关的网络连接)，对网络层和传输层的数据包进行检查，进而控制数据包的进出。包过滤的优点是对用户透明、传输性能高。但是由于只能在网络层、传输层进行控制，安全控制的方式也只限于源地址、目的地址和端口号这几种，对于应用层的信息无法感知，因而只能进行较为初步的安全控制，对于拥塞攻击、内存覆盖攻击或病毒等高层次的攻击手段，则无能为力。&lt;/p&gt;
+
+&lt;p&gt;状态检测防火墙保持了包过滤防火墙的优点，所以性能比较好，而且对应用是透明的。同时，状态检测防火墙改进了包过滤防火墙仅仅检查进出网络的数据包，不关心数据包状态的缺点，在防火墙的内部建立状态连接表，维护了连接，将进出网络的数据当成一个个的事件来处理。对于每一个网络连接，状态检测根据预先设置的安全规则，允许符合规则的连接通过，并在内存中记录下该连接的相关信息，生成状态表。对该连接的后续数据包，只要符合状态表，就可以通过。这种方式的好处在于:由于不需要对每个数据包进行规则检查，而是对一个连接的后续数据包(通常是大量的数据包)通过散列算法，直接进行状态检查，从而使得性能得到了较大提高。&lt;/p&gt;
+
+&lt;p&gt;与不关心应用层数的前两种方式不同，应用网关防火墙检查所有应用层的信息包，并将检查的内容信息放入决策过程，从而提高网络的安全性。然而，应用网关防火墙是通过打破客户机/服务器模式实现的。每个客户机/服务器通信需要两个连接:一个是从客户端到防火墙，另一个是从防火墙到服务器。另外，每个网关需要一个不同的应用进程，或一个后台运行的服务程序，对每个新的应用必须添加针对此应用的服务程序，否则不能使用该服务。所以，应用网关防火墙使用起来比较麻烦，而且通用性比较差。&lt;/p&gt;
+
+&lt;p&gt;2.防火墙的优点在系统中使用防火墙，对于系统的安全有很多的优点:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;可以隔离网络，限制安全问题的扩散。防火墙可以隔离不同的网络，或者用来隔离网络中的某一个网段，这样就能够有效地控制这个网段或网络中的问题在不同的网络中传播，从而限制安全问题的扩散。&lt;/li&gt;
+  &lt;li&gt;通过防火墙可以对网络中的安全进行集中化管理，简化网络安全管理的复杂度。只要在防火墙上配置好过滤策略，就能使防火墙成为一个网络安全的检查站，所有进出网络的信息都需要通过防火墙，把非法访问拒于门外。从而实现安全的集中统一的管理，并且能够简化安全管理的复杂度。&lt;/li&gt;
+  &lt;li&gt;能够有效地记录Internet上的活动。因为所有进出内部网络的信息都必须通过防火墙，所以防火墙能够收集内部网络和外部网络之间或者不同网段之间所发生的事件，为管理员的进一步分析与安全管理提供依据。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;3.正确使用防火墙虽然防火墙的技术日渐成熟起来，成为维护网络安全的一个重要的手段。但是，它也不能完全解决网络上的安全问题。在实际使用过程中还有一些安全性是防火墙不能实现的，在实际工作中，一般应注意如下几点:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;防火墙虽然能对来自外部网络的非法连接作很严格的限制，但是对来自本地网络内部的攻击却无从防范。事实上，大多数攻击不是来自外部，而是来自内部。因此，即使使用了防火墙，对本地网络内部的主机、应用系统、数据库等也要采取其他有效的措施，才能真正做到安全。&lt;/li&gt;
+  &lt;li&gt;即使对于来自外部的攻击，目前的任何防火墙也不能做到完全阻挡所有的非法入侵。随着各种新技术的陆续涌现，非法分子对系统的深入研究与剖析，各种新的应用需求不断被开发，防火墙本身也会受到越来越多的威胁。对这些新的动态、趋势要密切关注，不断地升级防火墙、修正完善防火墙的配置，才能使防火墙本身更加坚固，进而长久地发挥安全保护作用。&lt;/li&gt;
+  &lt;li&gt;防火墙不能防范病毒，无法抵御基于数据的攻击。尽管防火墙的过滤技术在不断完善，可是由于病毒的类型太多，隐藏方式也非常复杂，而且它们很多都是隐藏在数据文件中，因此要防火墙对所有的包含病毒的文件作出限制是不太现实的，而应当在系统中单独安装专门的病毒网关或者在主机上安装相应的防病毒软件、反间谍软件等工具软件，才能较好地防范此类安全隐患。&lt;/li&gt;
+  &lt;li&gt;防火墙不能防范全部的威胁，而只能防备已知的威胁。所以在使用过程中，应当经常根据需要配合使用入侵检测系统。&lt;/li&gt;
+  &lt;li&gt;防火墙不能防范不通过它的链接。防火墙可以有效地过滤经过它的信息传输，但不能防范不通过它的信息传输，例如，如果允许拨号访问防火墙后面的内部系统，则防火墙没有任何办法对它进行控制。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1683入侵检测系统&quot;&gt;16.8.3入侵检测系统&lt;/h3&gt;
+
+&lt;p&gt;传统上，一般采用防火墙作为系统安全的边界防线。但是，随着攻击者的知识日趋丰富，攻击工具与手法的日趋复杂多样，单纯的防火墙已经无法满足对安全高度敏感的部门的需要，网络的防卫必须采用一种纵深的、多样的手段。&lt;/p&gt;
+
+&lt;p&gt;与此同时，当今的网络环境也变得越来越复杂，各式各样的复杂的设备，需要不断升级、补漏，系统管理员的工作不断加重，不经意的疏忽便有可能造成安全的重大隐患。所以，信息系统中存在着不少可以被攻击者所利用的安全弱点、漏洞及不安全的配置，主要表现在操作系统、网络服务、TCP/IP协议、应用程序(如数据库、浏览器等)、网络设备等几个方面。正是这些弱点、漏洞和不安全设置给攻击者以可乘之机。&lt;/p&gt;
+
+&lt;p&gt;另外，由于大部分网络缺少预警防护机制，即使攻击者已经侵入到内部网络，侵入到关键的主机，并从事非法的操作，系统管理员也很难察觉到。这样，攻击者就有足够的时间来做他们想做的任何事情。&lt;/p&gt;
+
+&lt;p&gt;要防止和避免遭受攻击和入侵，不仅要找出网络中存在的安全弱点、漏洞和不安全的配置，然后采取相应措施解决这些弱点、漏洞，对不安全的配置进行修正，最大限度地避免遭受攻击和入侵;还要对网络活动进行实时监测，一旦监测到攻击行为或违规操作，能够及时作出反应，包括记录日志、报警甚至阻断非法连接。&lt;/p&gt;
+
+&lt;p&gt;在这种环境下，入侵检测(IntrusionDetection)技术受到人们愈来愈多的关注，而且已经开始在各种不同的环境中发挥其关键作用。入侵检测系统可以在系统中发生一些不正常的操作时发出警报，防患于未然。设置硬件防火墙，可以提高网络的通过能力并阻挡一般性的攻击行为;而采用入侵检测系统，则可以对越过防火墙的攻击行为及来自网络内部的违规操作进行监测和响应。&lt;/p&gt;
+
+&lt;p&gt;入侵检测技术，通过对计算机网络或计算机系统中的若干关键点收集信息并对其进行分析，从中发现网络或系统中是否有违反安全策略的行为和被攻击的迹象。与其他安全产品不同的是，入侵检测系统需要更多的智能，它要根据智能库对收集到的数据进行分析，并采取相应措施。&lt;/p&gt;
+
+&lt;p&gt;作为对防火墙极其有益的补充，入侵检测系统(IDS)能够帮助人们快速发现系统攻击的发生，扩展了系统管理员的安全管理能力(包括安全审计、监视、进攻识别和响应等)，提高了信息系统的安全性。入侵检测系统被认为是防火墙之后的第二道安全闸门，它能在不影响网络性能的情况下对网络进行监听，从而提供对内部攻击、外部攻击和误操作的实时保护。&lt;/p&gt;
+
+&lt;p&gt;入侵检测系统作为一种积极主动的安全防护工具，能够在计算机网络和系统受到危害之前进行报警、拦截和响应。其主要功能包括:通过检测和记录系统中的安全违规行为，惩罚信息系统攻击，防止入侵事件的发生;检测其他安全措施未能阻止的攻击或安全违规行为;检测黑客在攻击前的探测行为，预先给管理员发出警报;报告信息系统中存在的安全威胁;提供有关攻击的信息，帮助管理员诊断系统中存在的安全弱点，利于其进行修补。&lt;/p&gt;
+
+&lt;p&gt;在大型、复杂的计算机系统中布置入侵检测系统，可以明显提高信息系统安全管理的质量。&lt;/p&gt;
+
+&lt;p&gt;1.入侵检测技术&lt;/p&gt;
+
+&lt;p&gt;入侵检测系统的处理过程分为数据采集阶段、数据处理及过滤阶段、入侵分析及检测阶段、报告及响应阶段4个阶段。数据采集阶段主要收集目标系统中引擎提供的通信数据包和系统使用等情况。数据处理及过滤阶段是把采集到的数据转换为可以识别是否发生入侵的数据的阶段。分析及检测阶段通过分析上一阶段提供的数据来判断是否发生入侵。这一阶段是整个入侵检测系统的核心阶段。报告及响应阶段针对上一个阶段中得出的判断作出响应。如果被判断为发生入侵，系统将对其采取相应的响应措施，或者通知管理人员发生入侵，以便于采取措施。&lt;/p&gt;
+
+&lt;p&gt;在入侵检测系统的工作过程中，对信息系统中的各种事件进行分析，从中检测出违反安全策略的行为是入侵检测系统的核心功能。检测技术分为两类:一种是基于标识(signature-based)的入侵检测，另一种是基于异常情况(anomaly-based)的入侵检测。&lt;/p&gt;
+
+&lt;p&gt;基于标识的检测技术，先定义出违背安全策略的事件的特征，如网络数据包的某些头信息等。然后对收集到的数据进行分析，通过判别这类特征是否在所收集到的数据中出现来判断是否受到入侵。此方法非常类似杀毒软件的特征码检测，比较简单有效。&lt;/p&gt;
+
+&lt;p&gt;而基于异常的检测技术则先定义一组系统“正常”情况的数值，如CPU利用率、网络流量规律、文件校验和等(这类数据可以人为定义，也可以通过观察系统，并用统计的办法得出)，然后将系统运行时的数值与所定义的“正常”情况比较，得出是否有被攻击的迹象。这种检测方式的核心在于如何定义所谓的“正常”情况。两种检测技术的方法、所得出的结论有时会有非常大的差异。基于标识的检测技术的核心是维护一个知识库。对于已知的攻击，它可以详细、准确地报告出攻击类型，但是对未知攻击却效果有限，而且知识库必须不断更新。基于异常的检测技术则无法准确判别出攻击的手法，但它可以判别更广泛，甚至未发觉的攻击。如果条件允许，两者结合的检测会达到更好的效果。&lt;/p&gt;
+
+&lt;p&gt;2.入侵检测系统的种类和选用&lt;/p&gt;
+
+&lt;p&gt;一般来说，入侵检测系统可分为主机型和网络型。&lt;/p&gt;
+
+&lt;p&gt;主机型入侵检测系统往往以系统日志、应用程序日志等作为数据源，当然也可以通过其他手段(如监控系统调用)从所在的主机收集信息进行分析。主机型入侵检测系统保护的一般是其所在的主机系统。主机型入侵检测系统需要为不同平台开发不同的程序，而且会增加系统负荷，还要在每一台主机安装，比较麻烦，但是可以充分利用操作系统本身提供的功能，并结合异常分析，更准确地报告攻击行为。&lt;/p&gt;
+
+&lt;p&gt;网络型入侵检测系统则以网络上的数据包作为数据源，通过在一台主机或网络设备上监听本网段内的所有数据包来进行分析判断。一般网络型入侵检测系统担负着保护整个网段的任务。这种系统应用十分简便:一个网段上只需安装一个或几个这样的系统，便可以监测整个网段的情况，但是它不跨越多个物理网段，对于复杂结构的网络(如交换环境)监测效果有一定影响。主机型入侵检测系统和网络型入侵检测系统各有利弊，应用中可以根据实际需要从中选择。&lt;/p&gt;
+
+&lt;h2 id=&quot;169-安全性规章&quot;&gt;16.9 安全性规章&lt;/h2&gt;
+
+&lt;h3 id=&quot;1691-安全管理制度&quot;&gt;16.9.1 安全管理制度&lt;/h3&gt;
+
+&lt;p&gt;信息系统安全，不仅要从技术角度采取若干措施，还要从组织管理的角度出发，制定明确的安全管理的规章制度，以确保安全技术实施的有效性。只有依靠安全管理规章的有力支持和保障，信息安全的技术解决方案才能够切实地取得预期的效果。&lt;/p&gt;
+
+&lt;p&gt;事实上，管理的缺失是信息安全失败的非常重要的原因。有统计表明，危害信息系统安全的因素中，70%以上来自组织内部。系统管理员随意性的配置或者软件升级不及时造成的安全漏洞，使用脆弱的用户口令，随意下载使用来自网络的软件，在防火墙内部架设拨号服务器却没有对账号认证等严格限制，用户安全意识不强，将自己的账号随意转借他人或与别人共享等，这些管理上的问题无论多么高超的安全技术都不能解决，都会使信息系统处于危险之中。如果没有健全的安全性规章或者安全性规章不能贯彻落实，即便设计和实现了再好的安全设备和系统，信息系统安全也不过是空谈而已。&lt;/p&gt;
+
+&lt;p&gt;所以建立定期的安全检测、口令管理、人员管理、策略管理、备份管理、日志管理等一系列安全性规章并认真贯彻执行对于维护信息系统的安全来说是非常必要的。&lt;/p&gt;
+
+&lt;p&gt;为了更好地落实安全性规章，首先需要根据实际情况，建立和健全信息系统安全委员会、安全小组、安全员。安全组织成员应当由主管领导、安全保卫、信息中心、人事、审计等部门的工作人员组成，必要时可聘请相关部门的专家组成。如果有必要，安全组织也可成立专门的独立机构。设立信息安全部门和安全人员，不但可以有效地制定并贯彻落实安全性规章制度，还可以提高对安全事件的反应能力和响应速度。&lt;/p&gt;
+
+&lt;p&gt;有了信息安全部门和人员，还要制定安全管理制度。只有建立健全的安全管理制度，并在信息系统的运行过程中始终坚持贯彻执行，才能从根本上为信息系统的正常运行，以及信息系统安全技术的执行提供良好的、坚固的基础。安全管理制度应该包括下面一些主要方面的内容:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;机房安全管理制度。&lt;/li&gt;
+  &lt;li&gt;系统运行管理制度，包括系统启动、关闭、系统状态监控、系统维护等。&lt;/li&gt;
+  &lt;li&gt;人员管理制度，包括管理人员、设计人员、操作人员、人事变更等。&lt;/li&gt;
+  &lt;li&gt;软件管理制度。&lt;/li&gt;
+  &lt;li&gt;数据管理制度。&lt;/li&gt;
+  &lt;li&gt;密码口令管理制度。&lt;/li&gt;
+  &lt;li&gt;病毒防治管理制度。&lt;/li&gt;
+  &lt;li&gt;用户登记和信息管理制度。&lt;/li&gt;
+  &lt;li&gt;工作记录制度。&lt;/li&gt;
+  &lt;li&gt;数据备份制度。&lt;/li&gt;
+  &lt;li&gt;审计制度。&lt;/li&gt;
+  &lt;li&gt;安全培训制度等。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;此外，有了制度而不认真执行等于没有制度，所以，只有在系统的运行过程中，管理人员、操作人员、用户之间的相互配合与相互协作，共同遵守既定的安全性规章，才能保证信息系统的安全措施是有用的、有效的。&lt;/p&gt;
+
+&lt;p&gt;总之，信息安全所涉及的方面很多，只有在各个方面都进行全面管理，才能在此基础上，与所采用的安全技术和设备一起，有效保证信息系统安全。&lt;/p&gt;
+
+&lt;h3 id=&quot;1692-计算机犯罪与相关法规&quot;&gt;16.9.2 计算机犯罪与相关法规&lt;/h3&gt;
+
+&lt;p&gt;随着计算机技术的不断发展，针对信息系统的各种入侵和攻击事件也与日俱增，而且由此带来的影响和损失也越来越大，有些事件甚至已经严重地危害到国家安全、经济发展和社会稳定。因此，提高信息安全性已经不再仅仅局限于采取适当的安全技术措施，完善安全性规章制度，更需要正确地运用法律手段来对付日益严重的计算机犯罪，避免重大损失的问题。&lt;/p&gt;
+
+&lt;p&gt;1.计算机犯罪&lt;/p&gt;
+
+&lt;p&gt;所谓计算机犯罪是指针对和利用计算机系统，通过非法操作或者以其他手段，对计算机系统的完整性或正常运行造成危害的行为。&lt;/p&gt;
+
+&lt;p&gt;计算机犯罪的犯罪对象是计算机系统或其中的数据，包括计算机设备、系统程序、文本资料、运算数据、图形表格等。所谓非法操作，是指一切没有按照操作规程或是超越授权范围而对计算机系统进行的操作。非法操作是对计算机系统造成损害的直接原因。&lt;/p&gt;
+
+&lt;p&gt;计算机犯罪是随着计算机技术的发展而出现和发展的，在不同的历史时期，具有不同的特点。大体上，计算机犯罪可以划分成两个阶段。
+第一个阶段是计算机单机时代，即早期的电脑犯罪阶段，时间大致从20世纪50年代至80年代。这个时期的主要形式是计算机诈骗，针对计算机内部信息的窃取和破坏。第二个阶段是计算机网络时代，时间大致从20世纪80年代到现在。在这个时期，由于计算机网络的迅速发展及其应用范围越来越广泛，而且计算机软件日益复杂化、普及化，计算机犯罪呈现出一些新的特点:&lt;/p&gt;
+
+&lt;p&gt;(1)呈现国际化趋势。互联网的发展是跨越国界的，随之而来的就是计算机犯罪由区域性犯罪向跨地区、跨国界的国际性犯罪发展。&lt;/p&gt;
+
+&lt;p&gt;(2)从犯罪所针对的对象看，向全社会各单位和个人蔓延。计算机犯罪由早期的主要攻击金融系统、政府机关向攻击其他所有行业、所有部门的信息系统蔓延;由攻击单位、团体的信息系统向攻击个人信息系统蔓延。这两种趋势的出现都是因为计算机已经从早期的特殊部门向全社会众多机关团体以及个人普及。&lt;/p&gt;
+
+&lt;p&gt;(3)从组织形式上看，由个人犯罪向群体犯罪、组织犯罪发展;由单一目的犯罪向综合性犯罪发展。&lt;/p&gt;
+
+&lt;p&gt;(4)从犯罪主体看，所涉及人员范围越来越广泛，并呈现低龄化趋势。从年龄结构来看，低龄化、普遍化是主要特点。从犯罪人员素质层次看，已经从早期的高学历、高技能型向普通人群发展。这些也都是因为计算机技术的普及，使得越来越多的人能够方便地学习到更多的计算机技术，通过长时间的学习和实践，青少年、低学历人员也能够逐渐掌握这些技术，成为计算机和网络犯罪的主体。&lt;/p&gt;
+
+&lt;p&gt;(5)从危害程度看，后果越来越严重。由于知识经济的发展，各企事业单位的日常业务越来越依赖于信息系统，大量政治、军事、经济等方面的重要文件和数据，以及大量的社会财富集中于信息系统中，例如网络银行、股票等往往就表现为计算机系统中账户上的数据。一旦犯罪分子侵入这样的信息系统，必将对国家安全、经济发展、社会进步产生巨大的影响，甚至造成不可挽回的损失。&lt;/p&gt;
+
+&lt;p&gt;(6)通过网络窃取机密信息将成为间谍活动的主要形式之一。随着越来越多的企事业单位和个人连接互联网，其中的很多机密信息和数据都面临着网络窃密行为的威胁。对于没有采取严格安全措施的系统，通过网络窃取其机密信息相对于其他方式更加隐蔽、快捷。例如，通过后门程序盗窃用户的账号和密码，通过系统漏洞取得系统特权，非法窃取商业机密等。&lt;/p&gt;
+
+&lt;p&gt;这些计算机犯罪行为显然具有很大的危害，它们影响社会的稳定，危及国家安全，扰乱经济秩序，影响社会治安，妨害青少年的健康成长，阻碍高科技产业的健康发展。因此，对于各种形式的计算机犯罪必须运用法律手段进行打击和惩处。加大对网络犯罪的打击力度，是保证我国社会稳定、经济持续发展的一项重要任务。&lt;/p&gt;
+
+&lt;p&gt;2.我国的相关法律、法规计算机犯罪，已经成为刑事犯罪的一种新形式。&lt;/p&gt;
+
+&lt;p&gt;我国《刑法》已经增加了计算机犯罪的相关内容，并将计算机犯罪分为5种类型。一类是直接以计算机信息系统为犯罪对象的犯罪，另一类是以计算机为犯罪工具实施其他犯罪。具体的，《刑法》关于计算机犯罪的规定有:&lt;/p&gt;
+
+&lt;p&gt;第二百八十五条(非法侵入计算机信息系统罪)违反国家规定，侵入国家事务、国防建设、尖端科学技术领域的计算机信息系统的，处三年以下有期徒刑或者拘役。&lt;/p&gt;
+
+&lt;p&gt;第二百八十六条(破坏计算机信息系统罪)违反国家规定，对计算机信息系统功能进行删除、修改、增加、干扰，造成计算机信息系统不能正常运行，后果严重的，处5年以下有期徒刑或者拘役;后果特别严重的，处5年以上有期徒刑。违反国家规定，对计算机信息系统中存储、处理或者传输的数据和应用程序进行删除、修改、增加的操作，后果严重的，依照前款的规定处罚。故意制作、传播计算机病毒等破坏性程序，影响计算机系统正常运行，后果严重的，依照第一款的规定处罚。&lt;/p&gt;
+
+&lt;p&gt;第二百八十七条(利用计算机实施的各类犯罪)利用计算机实施金融诈骗、盗窃、贪污、挪用公款、窃取国家秘密或者其他犯罪的，依照本法有关规定定罪处罚。&lt;/p&gt;
+
+&lt;p&gt;这些规定对于我国大规模地推广应用各种信息系统，对于保护信息系统的生产者和使用者的合法权益，对于信息系统的安全运作都具有极为重要的作用。&lt;/p&gt;
+
+&lt;p&gt;除了《刑法》之外，我国在信息系统安全方面，自1994年以来，国务院及其有关部委相继修改和出台了若干相关法规和管理规定，其中对于我国境内发生的各种计算机犯罪及其处罚都有明文规定。因此，为了做好信息系统安全，有必要详细了解这些法律、法规，包括《中华人民共和国宪法》、《中华人民共和国刑法》、《中华人民共和国国家安全法》、《中华人民共和国保守国家秘密法》、《中华人民共和国计算机信息系统安全保护条例》、《中华人民共和国计算机信息网络国际联网管理暂行规定》、《中华人民共和国治安管理处罚条例》《中华人民共和国计算机信息网络国际联网管理暂行规定实施办法》、《中华人民共和国专利法》、《中华人民共和国反不正当竞争法》、《中华人民共和国商标法》、《中华人民共和国海关法》、《中华人民共和国标准化法》、《关于对&lt;中华人民共和国计算机信息系统安全保护条例&gt;中涉及的“有害数据”问题的批复》、《科学技术保密规定》、《计算机信息系统安全专用产品检测和销售许可证管理办法》、《公安部关于对与国际联网的计算机信息系统进行备案工作的通知》、《计算机信息网络国际联网安全保护管理办法》、《电子出版物管理规定》、《中国互联网络域名注册暂行管理办法》、《从事放开经营电信业务审批管理暂行办法》、《计算机信息网络国际联网出入口信道管理办法》、《中国公用计算机互联网国际联网管理办法》、《中国公众多媒体通信管理办法》、《计算机软件保护条例》、《商用密码管理条例》、《计算机信息系统国际联网保密管理规定》、《计算机病毒防治管理办法》、《信息安全等级保护管理办法》等。&lt;/中华人民共和国计算机信息系统安全保护条例&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">第16章:安全性和保密性设计</summary></entry></feed>
